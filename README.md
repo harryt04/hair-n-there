@@ -59,7 +59,7 @@ The contact endpoint uses shared Redis limits when configured. Its fallback is b
 
 1. Import `harryt04/hair-n-there` into the intended Vercel Pro team, using the **Next.js** preset and repository root `.`. Keep the default framework build/output settings; use Node 26 and pnpm.
 2. Select `main` as the production branch and leave Git deployments enabled. Pushes to `main` build and deploy production. Other branches can create previews without pull requests.
-3. Configure production and preview environment values separately, including their separate Discord destinations. Enable Web Analytics in the Vercel project; the standard Speed Insights integration is already in the app.
+3. Configure production and preview environment values separately, including their separate Discord destinations. Enable Web Analytics and Speed Insights in the Vercel project dashboard, then redeploy. The app already mounts `@vercel/speed-insights/next` from the root layout through `Telemetry`; it reports only in production and removes URL query strings and fragments before sending. Keep Vercel system environment variables exposed so `NEXT_PUBLIC_VERCEL_ENV` is available at build time. After visiting the production site, check the Speed Insights dashboard for incoming performance data.
 4. Check a preview: layouts, keyboard navigation, themes, reduced motion, planner totals, and delivery to the preview destination. Do not activate appointment acceptance while service-location requirements remain unresolved.
 5. Add `hairnthere.com` when ready. Follow the DNS records Vercel provides and redirect `www` to the apex. Preview pages are noindex and canonical URLs use the production domain. Enable preview deployment protection where available.
 
