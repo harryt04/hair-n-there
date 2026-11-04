@@ -3,9 +3,9 @@ import { Suspense } from "react";
 import { QuoteEntry } from "@/components/quote/quote-flow";
 
 export const metadata: Metadata = {
-  title: "Plan your appointment",
+  title: "Your service wish list",
   description:
-    "Plan a HairnThere house call or salon visit. Choose services for yourself or a group and request a personal quote from Elisabeth.",
+    "Explore HairnThere service prices and family packages, build a personal wish list, and share your interest with Elisabeth. Appointments are not open yet.",
   alternates: { canonical: "/quote" },
 };
 
@@ -16,7 +16,7 @@ export default function QuotePage() {
         fallback={
           <div className="min-h-[600px]" role="status">
             <p className="text-sm text-muted-foreground">
-              Getting your appointment planner ready…
+              Getting your service planner ready…
             </p>
           </div>
         }

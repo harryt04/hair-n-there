@@ -23,8 +23,9 @@ export default function PrivacyPage() {
     >
       <PolicySection title="Who we are">
         <p>
-          HairnThere is Elisabeth’s house-call and salon hair service in
-          SunCrest and surrounding Utah communities. This policy applies to
+          HairnThere is Elisabeth’s developing hair-service brand in Suncrest,
+          Draper, Utah. Current forms collect consultation and interest
+          inquiries, not appointment requests. This policy applies to
           information collected through the HairnThere website and appointment
           inquiry form.
         </p>
@@ -33,8 +34,11 @@ export default function PrivacyPage() {
         <p>
           When you send an inquiry, we collect your name and email address,
           together with the details you provide about your appointment type,
-          services, quantities, and service area. You may also provide a phone
-          number, preferred date, and a message.
+          services, quantities, family packages, generic person labels, and city
+          or neighborhood. You may also provide a phone number and a message.
+          Neighborhood-day inquiries can include an estimated number of
+          interested households. Please use generic labels for family members
+          rather than children’s full names or dates of birth.
         </p>
         <p>
           We record whether you chose to receive inquiry and appointment texts,
@@ -46,9 +50,10 @@ export default function PrivacyPage() {
       <PolicySection title="How we use your information">
         <p>
           We use inquiry information to respond to you, discuss your requested
-          services, confirm pricing and availability, and coordinate an
-          appointment. If you opt in, we may also use your number for related
-          text-message follow-up when our messaging service is activated.
+          services, confirm pricing and availability, and coordinate an future
+          plans. Appointments are not open and no inquiry creates a reservation.
+          If you opt in, we may also use your number for related text-message
+          follow-up when our messaging service is activated.
         </p>
         <p>
           Our form does not enroll you in a newsletter or authorize unrelated
@@ -95,8 +100,10 @@ export default function PrivacyPage() {
           Submitted inquiries are sent to a private Discord destination used to
           manage HairnThere inquiries. The notification includes the information
           you submitted, service selections, any calculated estimate, and
-          consent details. Discord and the people authorized to manage that
-          destination process the information to support your inquiry.
+          consent details. Complete inquiry details are included in a text
+          attachment with the notification; the service list shown in the
+          preview can be shortened. Discord and the people authorized to manage
+          that destination process the information to support your inquiry.
         </p>
         <p>
           Vercel hosts the website and runs the contact endpoint. Hosting and
@@ -113,6 +120,20 @@ export default function PrivacyPage() {
           processed by that provider to support the requested communication. We
           may also disclose information where required by law or to protect
           legal rights and prevent abuse.
+        </p>
+      </PolicySection>
+      <PolicySection title="Travel planning">
+        <p>
+          Current inquiries ask only for a city or neighborhood, not a street
+          address. Published travel bands and the drive-time example are
+          informational. No live address lookup or routing service is currently
+          used, and example driving minutes are not treated as a verified travel
+          fee.
+        </p>
+        <p>
+          If address-based estimates are introduced, this policy will describe
+          the routing provider and the location information it receives before
+          that feature is activated.
         </p>
       </PolicySection>
       <PolicySection title="Website analytics and performance">

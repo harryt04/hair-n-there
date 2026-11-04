@@ -1,10 +1,24 @@
 # HairnThere
 
-Elisabeth’s hair services website: a warm mountain-boutique design with a service request builder, contact form, Discord delivery, Terms/Privacy pages, and light/dark themes.
+**Beautiful Hair, Wherever You Are.**
 
-## Develop
+HairnThere is Elisabeth’s hair-services website, based around Suncrest in Draper, Utah. Its Scenic Journey design combines warm mountain landscapes, a little Subaru that follows your scroll, and a clear menu for individual and family services.
 
-Use Node 26 (`.nvmrc`) and pnpm 11.17.0 (pinned in `package.json`).
+The site currently welcomes **consultations and interest inquiries**. House-call appointments are not open, the salon booth is a future plan, and event locations must be discussed individually. There is no live booking calendar, deposit collection, payment checkout, or automated phone/SMS agent.
+
+## What’s included
+
+- Responsive mountain-led homepage with light/dark themes, Playfair Display and Montserrat typography, the new circular H/mountain logo, and compact logo/icon assets.
+- A scroll-driven wagon in dedicated scenic bands. It responds to normal mouse, trackpad, keyboard, and touch scrolling; reduced-motion preferences park the car.
+- The supplied 32-service menu, with fixed prices, starting prices, per-row extension labor, and free/quote-only consultations clearly distinguished.
+- Three family packages and a service wish-list planner for multiple people. Prices are estimates, and hair for extensions is separate.
+- Planned household convenience-fee bands and the $60 house-call service minimum. Real travel quotes remain unconfirmed until the private origin and routing provider are configured.
+- A validated contact form with optional SMS consent, Discord delivery, and Terms/Privacy pages adapted from Sunshine Flower Bar.
+- Vercel Analytics, standard Speed Insights, metadata, sitemap, robots instructions, and social/browser icons.
+
+## Run it locally
+
+Install Node 26 and pnpm 11.17.0, matching `.nvmrc` and `package.json`.
 
 ```sh
 pnpm install
@@ -12,50 +26,82 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-Open `http://localhost:3000`. Local checks are `pnpm lint`, `pnpm typecheck`, and `pnpm build`. Run the production output with `pnpm start`. There are no automated tests, pull request requirements, GitHub Actions, or Docker pipeline.
+Open `http://localhost:3000`. The service menu and planner work without delivery credentials. Sending an inquiry requires a configured Discord webhook; without it, the form shows an error rather than claiming the message arrived.
 
-## Vercel
+Useful local commands:
 
-1. Import `harryt04/hair-n-there` into the intended Vercel Pro team. Select Next.js, repository root `.`, pnpm, Node 26, and `main` as the production branch. Default build/output settings work.
-2. Leave native Git deployments enabled. A push to `main` builds and deploys production; pushes to other branches can create previews without pull requests.
-3. Configure the variables listed in `.env.example` in Vercel. Set production and preview webhooks separately. A preview deployment never uses the production webhook. Next’s public environment values require a new build after changing them.
-4. Enable Web Analytics in the project. Analytics and standard Speed Insights mount only when `NEXT_PUBLIC_VERCEL_ENV=production`. Keep Vercel system environment variables exposed; the integrations stay off in local/preview environments. No additional paid analytics add-ons are needed for the initial integration.
-5. Verify a preview and the real contact configuration before assigning `hairnthere.com`. Point DNS to the records Vercel displays, add `www`, and redirect it to the apex. Preview deployments are noindex; canonical URLs use the production domain. Enable deployment protection for previews where available.
-6. To roll back, select a previous working production deployment in Vercel and use its rollback/promote action. Reconcile `main` afterward so the next push retains the fix.
+```sh
+pnpm lint
+pnpm typecheck
+pnpm build
+pnpm start
+```
 
-No account, billing, Git push, domain, or live deployment changes were made while preparing this repository.
+The repository intentionally has no automated test suite, pull request requirement, GitHub Actions, or Docker pipeline. Local checks and manual verification support the built-in Vercel deployment workflow.
 
-## Configuration and content to finish
+## Configure the site
 
-- Public Instagram is [@hairnthere](https://www.instagram.com/hairnthere/). Prior work should be imported from [@justbeyou_hair](https://www.instagram.com/justbeyou_hair/), preserving approved photos and captions. Profile links do not import photos or migrate Instagram posts; use an authorized account export/API for the actual import.
-- Set `NEXT_PUBLIC_SUPPORT_EMAIL` to the public support address. Without it, support links point to the contact page rather than an invented email.
-- Set the appropriate server-only Discord webhook. Missing or invalid configuration returns a visible form error; the site never reports a message as delivered without Discord’s acknowledgement.
-- Replace the two explicitly labeled stock inspiration photos with approved portfolio photos from the old account when available. These are not represented as Elisabeth’s work. Source mood images: [portrait](https://images.unsplash.com/photo-1524504388940-b1c1722653e1), [hair](https://images.unsplash.com/photo-1522337360788-8b13dee7a37e).
-- Prices and travel fees are intentionally “to be confirmed,” as requested. Future approved prices belong in `src/lib/quote.ts` and travel rules in `calculateQuote`. Unconfigured fees never silently become free. The request builder works without known rates; color/extensions remain consultation-based.
-- Both salon and house-call actions begin inquiries. No booking calendar, payments, availability promises, or automatic AI outreach are implemented.
+Copy the variable names from `.env.example`. On Vercel, set them in the project’s environment settings rather than committing values.
 
-## Inquiry handling
+| Variable                                                | Purpose                                                                   |
+| ------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_INSTAGRAM_URL`                             | Public profile; defaults to `https://www.instagram.com/hairnthere/`.      |
+| `NEXT_PUBLIC_SUPPORT_EMAIL`                             | Public support email. Until supplied, support links use the contact page. |
+| `DISCORD_CONTACT_WEBHOOK_URL`                           | Server-only destination for production/local inquiries.                   |
+| `DISCORD_PREVIEW_WEBHOOK_URL`                           | Separate preview destination. Previews never use the production webhook.  |
+| `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` | Optional shared request limiting. Configure the pair together.            |
 
-The client sends service IDs/quantities and contact details to `POST /api/contact`. Zod validates and bounds the input, and the server recomputes the service summary. The route limits streamed body size and request time, rejects cross-site browser submissions and honeypot input, and limits requests. Discord receives escaped customer content with mentions disabled, an explicit consent status, server timestamp, and disclosure version.
+Public environment values are embedded at build time, so redeploy after changing them. Vercel supplies its environment identifiers; keep system environment variables exposed so production analytics can identify production correctly. Analytics and Speed Insights stay off in local and preview environments.
 
-For a shared serverless rate limit, configure `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`. The optional Redis path uses an atomic expiring counter. The fallback is a bounded process-local limiter and **does not provide a global limit across Vercel instances**. Consider Vercel firewall rate limiting as an additional host-level control. If configured Redis is unavailable, submission fails rather than bypassing the limiter.
+The contact endpoint uses shared Redis limits when configured. Its fallback is bounded but process-local, so it cannot enforce a global limit across Vercel instances. Host-level firewall limits can provide another layer of protection. If configured Redis is unavailable, the form fails safely rather than bypassing it.
 
-The form reports success only after Discord acknowledges receipt. Errors preserve the form for retry. There is no application database, queue, automatic retry, or durable idempotency store; a network timeout after acceptance can leave delivery uncertain, so visitors are told it is unconfirmed. Discord is the only current inquiry destination. Do not log form contents or webhook URLs.
+## Deploy with Vercel
 
-## Consent, policy pages, and future SMS
+1. Import `harryt04/hair-n-there` into the intended Vercel Pro team, using the **Next.js** preset and repository root `.`. Keep the default framework build/output settings; use Node 26 and pnpm.
+2. Select `main` as the production branch and leave Git deployments enabled. Pushes to `main` build and deploy production. Other branches can create previews without pull requests.
+3. Configure production and preview environment values separately, including their separate Discord destinations. Enable Web Analytics in the Vercel project; the standard Speed Insights integration is already in the app.
+4. Check a preview: layouts, keyboard navigation, themes, reduced motion, planner totals, and delivery to the preview destination. Do not activate appointment acceptance while service-location requirements remain unresolved.
+5. Add `hairnthere.com` when ready. Follow the DNS records Vercel provides and redirect `www` to the apex. Preview pages are noindex and canonical URLs use the production domain. Enable preview deployment protection where available.
 
-The contact form and `/terms` / `/privacy` are adapted from the Sunshine Flower Bar examples in `harryt04/flowers`, updated for HairnThere and its actual data flow. SMS opt-in is optional and unchecked, with policy links beside it. A checked box requires a phone number. Without consent, follow up by email. No email-marketing permission is collected.
+For rollback, choose a previous working production deployment in Vercel and use its rollback/promote control. Reconcile the code on `main` afterward so a later push preserves the fix. This implementation does not itself provision hosting, change billing/DNS, push Git commits, or deploy.
 
-AI calls/texts and AgentPhone activation remain future work. Before activating them, finalize the public support contact and policy details, verify provider/carrier registration requirements, implement STOP/HELP and opt-out enforcement, and retain durable consent records independently of Discord. Templates and a recorded checkbox do not establish carrier approval. No SMS is sent by this website.
+## Pricing and service availability
 
-## Design and assets
+Prices live in `src/data/services.ts` and packages in `src/data/packages.ts`. The quote calculator uses these server-owned values rather than accepting a browser’s price. A `+` means “starting at”; a correction needing consultation does not silently add $0 to a guaranteed total. Row-priced work uses row counts. Extension hair is outside installation labor.
 
-The approved concept is `.lavish/hairnthere-design.html`; decisions live in `design-direction.md`. The original `logo.png` is preserved. The full logo has a cream surround in both themes. Header text uses the compact approved wordmark direction; `public/brand/` also contains light/dark SVG wordmark exports, monogram, social card, and app icons. `src/app/` contains the browser favicon and Apple icon.
+Family Trim is $85 and Little Crew is $70. Mommy & Me is $75 and includes a women’s haircut + blow-dry and one child’s cut. Packages include their stated cuts once; individually added services are additional services, so avoid adding included cuts a second time.
 
-`node scripts/create-brand-assets.mjs` regenerates code-native icon/wordmark/social assets using Sharp. The two inspiration photos are checked-in WebP assets; asset generation does not fetch external photos. Typography is self-hosted at build time through `next/font`, so fonts require network access during builds but no Google request from the visitor’s browser.
+House-call convenience fees are planned at $20/$30/$40/$55/$75 for the supplied time bands, once per household. The $75 band covers 46–60 minutes from the Suncrest base; trips over 60 minutes and neighborhood-day reductions need a custom quote. Final travel pricing is confirmed before an appointment. The $60 service minimum excludes travel and is not an automatic surcharge. Free extension-consultation location and format are confirmed separately. There is no live address-routing integration or invented city-based travel result.
 
-shadcn/ui components use its generated Base UI preset. Brand tokens live in `src/app/globals.css`, business details in `src/data/business.ts`, and service pricing in `src/lib/quote.ts`.
+`src/data/availability.ts` is the shared availability policy. Both the interface and contact endpoint enforce it. Appointment requests for inactive categories are rejected even if someone directly calls the endpoint. The current accepted intents are informational consultation/interest; an inquiry never reserves a time. Opening a category requires a deliberate business decision and a server deployment after its location requirements are confirmed. The illustrated Subaru does not represent an operating vehicle salon.
 
-## Verification performed
+## Inquiry delivery and future messaging
 
-Local lint, TypeScript, and production-build checks pass. HTTP checks covered all five public pages, sitemap/robots/manifest, favicon/Apple/social/image assets, and the 404 route. Contact endpoint checks confirmed invalid-input, missing SMS phone, cross-site, honeypot, and unconfigured-delivery errors. No live Discord message was sent. A browser-based interaction review and real webhook delivery check remain appropriate once a Vercel preview is connected.
+The contact form sends validated service IDs, quantities, optional person labels, package selections, and contact details. The server recomputes the summary, checks intent/category availability, and sends a Discord notification with mentions disabled. It records consent status, a server timestamp, and the disclosure version/source without treating that as marketing permission.
+
+Success is shown only after Discord acknowledges delivery. Errors preserve the form for retry. There is no application database, queue, durable idempotency store, or automatic resend; after an uncertain timeout, the first message may already have arrived. Discord is the current inquiry destination. Avoid logging form contents and webhook URLs.
+
+Text-message opt-in is optional and unchecked. A checked box requires a phone number. No newsletter/marketing permission is collected, and no AI calls/texts are sent by this website. Before activating AgentPhone or another provider, finalize public support details, verify registration requirements, implement STOP/HELP and opt-out enforcement, and retain durable consent records independently of Discord. Policy templates are not evidence of carrier approval.
+
+## Content still to supply
+
+- Approved portfolio photos/captions from [@justbeyou_hair](https://www.instagram.com/justbeyou_hair/), including real before/after pairs if desired. Public fetching was throttled; the gallery links the prior account and keeps temporary images labeled **stock inspiration**, not Elisabeth’s work. Public profile links go to [@hairnthere](https://www.instagram.com/hairnthere/).
+- Elisabeth’s approved biography, experience, certifications, specialties, and public support email.
+- Any approved family-package substitutions beyond the stated inclusions.
+- Private travel origin/routing configuration and neighborhood-day discounts.
+- Confirmation of the requirements for each actual service-location model before appointment acceptance is opened.
+
+Temporary inspiration images: [portrait source](https://images.unsplash.com/photo-1524504388940-b1c1722653e1), [hair source](https://images.unsplash.com/photo-1522337360788-8b13dee7a37e).
+
+## Where things live
+
+- `src/app/`: homepage, services, planner, contact, policies, metadata, and API routes.
+- `src/components/scenic/`: mountain artwork and scroll-driven wagon.
+- `src/components/ui/`: generated shadcn components using Base UI.
+- `src/data/`: service menu, packages, business details, and availability.
+- `src/lib/`: quote rules, input validation, notification delivery, and request limiting.
+- `public/brand/`: original illustration copy, wordmark exports, app icons, and social card.
+- `docs/elisabeth-revision-plan.md`: detailed product/pricing decisions and remaining questions.
+- `AGENTS.md`: instructions for coding agents; this README is for people running the site.
+
+The current logo is `public/brand/logo.png`, used in the header, homepage, footer, and social card. The original root `logo.png` stays intact as an archive. Run `node scripts/create-brand-assets.mjs` to regenerate brand exports. Browser tabs use a simplified vector H/mountain mark rather than shrinking the detailed illustration. Next.js automatically registers `src/app/favicon.ico` (16/32/48px), `src/app/icon.svg`, and `src/app/apple-icon.png` (180px); the manifest references 192/512px app icons. Icon metadata is managed through these file conventions, without duplicate manual declarations. Fonts use `next/font` and are served with the site after build-time download.

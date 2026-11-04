@@ -11,9 +11,9 @@
 
   * Automatic calculation of transportation/convenience fee depending on house-call address.   
     * How do we want to do this?   
-      * \$1 per min of driving required to reach destination from suncrest (one-way or round-trip?)  
+      * \$1 per min of driving required to reach destination from Suncrest (one-way or round-trip?)
       * Some other calculation or flat transportation/convenience fee depending on the county/city that Elisabeth is willing to drive to?  
-    * Probably waive the transportation fee for suncrest clients. Maybe even for draper/highland/lehi as well.
+    * Probably waive the transportation fee for Suncrest clients. Maybe even for draper/highland/lehi as well.
 
   * Maybe after getting a quote, a user can click a button to get in contact with Elisabeth.  
     * This would send a discord webhook to an AI agent or Elisabeth for follow up, similar to sunshineflowerbar.com

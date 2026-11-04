@@ -1,40 +1,47 @@
 "use client";
-
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
 const questions = [
   {
-    question: "Can we book haircuts for the whole family?",
+    question: "Are appointments open yet?",
     answer:
-      "Absolutely—start with the number of haircuts you have in mind. Share any details about your group in the inquiry, and Elisabeth can work through the timing and individual services with you.",
+      "Not yet. House calls and salon services are coming soon, and special-event locations are reviewed individually. You can send a consultation or interest inquiry now; it does not reserve a time or create a booking.",
   },
   {
-    question: "Where do you travel for house calls?",
+    question: "Can I plan haircuts for my whole family?",
     answer:
-      "HairnThere starts in SunCrest and serves surrounding communities by arrangement. Include your city or neighborhood in the inquiry so Elisabeth can confirm travel availability and any convenience fee before you book.",
+      "Yes—use the service wish list to explore individual services or one of the family packages. Package prices cover their listed services, and any future house-call convenience fee is added once per household, not once per person. House-call appointments are not currently open.",
   },
   {
-    question: "Can I request color or extensions?",
+    question: "Which areas are part of your house-call plans?",
     answer:
-      "Yes. These services start with a consultation so Elisabeth can understand your hair, your goals, and the time involved. Select the services you’re interested in and share your ideas in the contact form.",
+      "HairnThere is based in Suncrest, a neighborhood in Draper, Utah. Planned areas include Draper, Highland, Alpine, and surrounding communities. Specific service locations and availability will be confirmed before appointments are offered.",
   },
   {
-    question: "Does sending an inquiry book my appointment?",
+    question: "What does a starting price mean?",
     answer:
-      "Sending an inquiry starts a conversation. Elisabeth will confirm services, availability, location, and final pricing with you before an appointment is booked.",
+      "A price marked + is a starting price, not a guaranteed total. Color and extensions may need a personal quote. Extension hair is priced separately, and installation or move-up services marked per row use the number of rows.",
+  },
+  {
+    question: "How do house-call fees and the minimum work?",
+    answer:
+      "The planned house-call minimum is $60 in services before travel. Travel is a separate convenience fee, added once per household appointment. If your service total is below $60, the planner shows the difference rather than adding a hidden surcharge. Exact travel and consultation arrangements still need confirmation.",
+  },
+  {
+    question: "What about neighborhood haircut days?",
+    answer:
+      "Several households can share their interest in a neighborhood haircut day. Scheduling and any reduced travel arrangement will be discussed individually. The website does not assume a discount or automatically split a travel fee.",
   },
   {
     question: "Do I have to agree to text messages?",
     answer:
-      "No. SMS follow-up is completely optional. You can submit your inquiry with the text-message checkbox unchecked and use email instead.",
+      "No. SMS follow-up is optional and the checkbox starts unchecked. You can send an inquiry without text-message consent and use email instead. The website does not currently send automated calls or texts.",
   },
 ];
-
 export function FrequentlyAskedQuestions() {
   return (
     <Accordion className="w-full">

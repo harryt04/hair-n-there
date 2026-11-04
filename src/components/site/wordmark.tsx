@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -8,16 +8,21 @@ export function Wordmark({ className }: { className?: string }) {
       href="/"
       aria-label="HairnThere home"
       className={cn(
-        "inline-flex shrink-0 items-baseline font-display text-[1.85rem] leading-none font-semibold tracking-[-0.075em] italic",
+        "inline-flex shrink-0 items-center gap-2 font-display text-2xl leading-none font-semibold tracking-[-0.075em] italic sm:gap-2.5 sm:text-[1.85rem]",
         className,
       )}
     >
-      Hair<span className="text-secondary">n</span>There
-      <ArrowUpRight
-        aria-hidden="true"
-        className="ml-1 size-5 self-start text-secondary"
-        strokeWidth={1.6}
+      <Image
+        src="/brand/logo.png"
+        width={600}
+        height={600}
+        sizes="36px"
+        alt=""
+        className="size-8 shrink-0 rounded-full sm:size-9"
       />
+      <span>
+        Hair<span className="text-secondary">n</span>There
+      </span>
     </Link>
   );
 }

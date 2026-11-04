@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: "%s | HairnThere",
   },
   description:
-    "Personal cuts, color, extensions, and styling with Elisabeth. Explore house calls around SunCrest and salon appointment inquiries. Great Hair Travels.",
+    "Beautiful Hair, Wherever You Are. Explore Elisabeth’s service menu and share your interest in HairnThere’s next chapter around Suncrest, Draper, Utah. Appointments are not open yet.",
   applicationName: business.name,
   openGraph: {
     type: "website",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     siteName: business.name,
     title: "HairnThere · Great Hair Travels.",
     description:
-      "A little mountain spirit. A lot of good hair. House calls and salon appointments with Elisabeth.",
+      "Beautiful Hair, Wherever You Are. Service inspiration and consultations with Elisabeth. Appointments are not open yet.",
     images: [
       {
         url: "/brand/social-card.png",
@@ -45,14 +45,6 @@ export const metadata: Metadata = {
     ],
   },
   twitter: { card: "summary_large_image", images: ["/brand/social-card.png"] },
-  icons: {
-    icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "any" },
-    ],
-    apple: "/apple-icon.png",
-  },
-  manifest: "/manifest.webmanifest",
   robots: isPreview
     ? { index: false, follow: false }
     : { index: true, follow: true },

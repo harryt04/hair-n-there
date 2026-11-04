@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Heart, MessageCircle } from "lucide-react";
-import { ContactForm } from "@/components/contact/contact-form";
+import { ContactEntry } from "@/components/contact/contact-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -10,7 +11,7 @@ import { business } from "@/data/business";
 export const metadata: Metadata = {
   title: "Say hello",
   description:
-    "Talk to Elisabeth about your next haircut, color, extensions, salon appointment, or family house call with HairnThere.",
+    "Ask Elisabeth about cuts, color, extensions, future house calls, salon services, or neighborhood haircut days. Consultations and interest only.",
   alternates: { canonical: "/contact" },
 };
 
@@ -28,11 +29,20 @@ export default function ContactPage() {
         </h1>
         <p className="mt-5 max-w-xl text-sm leading-7 text-muted-foreground">
           A fresh cut, a new color, or a family haircut day? Share what you’re
-          thinking. Elisabeth can follow up about the details.
+          thinking. Consultations and interest inquiries are welcome;
+          appointments are not open yet.
         </p>
       </div>
       <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,.8fr)] lg:gap-8">
-        <ContactForm />
+        <Suspense
+          fallback={
+            <p className="text-sm text-muted-foreground" role="status">
+              Getting your inquiry form ready…
+            </p>
+          }
+        >
+          <ContactEntry />
+        </Suspense>
         <aside className="min-w-0 lg:sticky lg:top-28 lg:self-start">
           <Card className="border border-border py-7 shadow-none ring-0">
             <CardContent className="px-5 sm:px-7">
@@ -49,8 +59,9 @@ export default function ContactPage() {
                 Then a great hair day.
               </h2>
               <p className="mt-5 text-sm leading-7 text-muted-foreground">
-                Elisabeth can review your services, location, and preferred
-                date, then confirm your price and availability.
+                Elisabeth can answer your questions and discuss your ideas. A
+                house-call launch or future salon location will be announced
+                when ready.
               </p>
               <Separator className="my-6" />
               <p className="text-xs leading-6 text-muted-foreground">
@@ -62,8 +73,8 @@ export default function ContactPage() {
                   className="mt-1 size-3.5 shrink-0 text-secondary"
                   aria-hidden="true"
                 />
-                Sending an inquiry does not reserve an appointment or commit you
-                to a purchase.
+                This form collects consultations and interest only. It does not
+                request, reserve, or accept an appointment.
               </p>
               {business.supportEmail && (
                 <a
@@ -81,7 +92,7 @@ export default function ContactPage() {
             render={<Link href="/quote" />}
             className="mt-5 h-12 w-full px-4"
           >
-            Plan services for your visit <ArrowUpRight aria-hidden="true" />
+            Build a service wish list <ArrowUpRight aria-hidden="true" />
           </Button>
         </aside>
       </div>

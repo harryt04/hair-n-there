@@ -11,13 +11,19 @@ export function SiteFooter() {
         <div>
           <Wordmark className="text-2xl" />
           <p className="mt-3 text-xs text-muted-foreground">
-            Great Hair Travels. · SunCrest, Utah
+            Great Hair Travels. · Suncrest · Draper, Utah
           </p>
         </div>
         <nav
           aria-label="Footer navigation"
           className="flex flex-wrap gap-x-6 gap-y-4 text-xs text-muted-foreground"
         >
+          <Link
+            href="/services"
+            className="underline-offset-4 hover:text-foreground hover:underline"
+          >
+            Services & prices
+          </Link>
           <Link
             href="/terms"
             className="underline-offset-4 hover:text-foreground hover:underline"

@@ -35,6 +35,12 @@
 }
 :root {
   color-scheme: light;
+  --scenic-sun-opacity: 1;
+  --scenic-moon-opacity: 0;
+  --scenic-stars-opacity: 0;
+  --landscape-sky: #f2e5d5;
+  --mountain-far: #c7af96;
+  --mountain-near: #8b6b56;
   --background: #fbf7f2;
   --foreground: #3b2417;
   --card: #ffffff;
@@ -53,6 +59,12 @@
 }
 .dark {
   color-scheme: dark;
+  --scenic-sun-opacity: 0;
+  --scenic-moon-opacity: 1;
+  --scenic-stars-opacity: 1;
+  --landscape-sky: #30203b;
+  --mountain-far: #594454;
+  --mountain-near: #725867;
   --background: #1f1323;
   --foreground: #f6ede3;
   --card: #2f1f33;
@@ -175,5 +187,14 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 767px) {
+  input,
+  textarea,
+  select,
+  [data-slot="select-trigger"] {
+    font-size: 16px;
   }
 }

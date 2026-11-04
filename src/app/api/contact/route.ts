@@ -1,4 +1,5 @@
 import { business } from "@/data/business";
+import { availability } from "@/data/availability";
 import { contactSchema } from "@/lib/validation";
 import { checkContactRateLimit } from "@/lib/rate-limit";
 import {
@@ -123,6 +124,16 @@ export async function POST(request: Request) {
         "We couldn’t accept this inquiry. Please clear autofilled website details and try again.",
         400,
       );
+    // Availability is authoritative server configuration, never client input.
+    if (
+      parsed.data.intent === "appointment_request" &&
+      !availability[parsed.data.visitType].acceptsAppointments
+    ) {
+      return failure(
+        "Appointments for this setting aren’t open. Please send a consultation or interest inquiry instead.",
+        403,
+      );
+    }
     contactWebhookUrl();
     let sourcePath: "/contact" | "/quote" | "/api/contact" = "/api/contact";
     try {
@@ -140,7 +151,7 @@ export async function POST(request: Request) {
       {
         success: true,
         message:
-          "Your inquiry is with HairnThere. Elisabeth can follow up to confirm the details and availability.",
+          "Your inquiry is with HairnThere. Elisabeth can respond to your questions. No appointment has been requested or reserved.",
       },
       { headers: { "Cache-Control": "no-store" } },
     );
@@ -153,7 +164,7 @@ export async function POST(request: Request) {
       );
     // Never log customer input, webhook URLs, provider response bodies, or credentials.
     return failure(
-      "We couldn’t confirm delivery of your inquiry. Please try again later; your appointment is not yet booked.",
+      "We couldn’t confirm delivery of your inquiry. Please try again later; no appointment has been requested or reserved.",
       503,
     );
   }

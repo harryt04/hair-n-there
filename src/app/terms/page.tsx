@@ -9,7 +9,7 @@ import {
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "Terms for using HairnThere, requesting hair appointments, and opting into inquiry and appointment text messages.",
+    "Terms for exploring HairnThere services, sharing interest, requesting consultations, and optional follow-up text messages.",
   alternates: { canonical: "/terms" },
 };
 
@@ -17,7 +17,7 @@ export default function TermsPage() {
   return (
     <PolicyLayout
       title="Terms of Service"
-      subtitle="A few clear expectations for using this website, sending an inquiry, and staying in touch about your appointment."
+      subtitle="A few clear expectations for using this website, sending an inquiry, and staying in touch about your plans."
       otherHref="/privacy"
       otherLabel="Privacy Policy"
     >
@@ -30,11 +30,24 @@ export default function TermsPage() {
       </PolicySection>
       <PolicySection title="Our services">
         <p>
-          HairnThere offers house-call and salon hair services, including cuts,
-          color, extensions, and styling. This website lets you explore
-          services, describe an appointment, and request information from
-          Elisabeth. Availability and the services suitable for your appointment
-          are confirmed individually.
+          HairnThere is developing a personal hair-service offering including
+          cuts, color, extensions, and styling. This website lets you explore
+          the menu, build a service wish list, and ask Elisabeth questions.
+        </p>
+      </PolicySection>
+      <PolicySection title="Current availability">
+        <p>
+          House-call appointments are not open. Salon services are coming in a
+          future chapter, and a booth location has not been announced.
+          Special-event inquiries are informational; location and service
+          availability must be confirmed individually. The website does not
+          currently accept appointment requests, reservations, deposits, or
+          payments.
+        </p>
+        <p>
+          The illustrated Subaru is part of the brand. It does not represent an
+          available vehicle-based salon. Consultation or interest inquiries do
+          not authorize a particular service location or create an appointment.
         </p>
       </PolicySection>
       <PolicySection title="An inquiry starts a conversation">
@@ -51,13 +64,39 @@ export default function TermsPage() {
           not collect payment through this website.
         </p>
       </PolicySection>
+      <PolicySection title="Prices, packages, and future travel fees">
+        <p>
+          Prices marked + are starting prices. Per-row extension services are
+          charged by row; extension hair is priced separately. Color corrections
+          and other custom work require a consultation. A subtotal may omit
+          unpriced work, pending travel, or unresolved package details and is
+          not a final quote.
+        </p>
+        <p>
+          Family packages include only the listed services and people.
+          Additional services are priced separately. Mommy &amp; Me is $75 and
+          includes one women’s haircut + blow-dry and one child’s haircut (ages
+          0–12). Packages do not automatically include substitutions or
+          upgrades.
+        </p>
+        <p>
+          Future house calls have a $60 service minimum before travel. This is a
+          minimum service requirement, not an automatic surcharge. The published
+          convenience fees are added once per household appointment, not per
+          person; actual travel arrangements are still to be confirmed. The
+          planning example is not an address or route calculation. Longer
+          distances and neighborhood haircut days require an individual quote,
+          and no discount is automatically applied.
+        </p>
+      </PolicySection>
       <PolicySection title="Text messaging and consent">
         <p>
           By providing your phone number and separately opting in on our form,
           you agree to receive HairnThere text messages about your inquiry and
           appointment coordination. This may include automated follow-up when
           our messaging service is activated. Opt-in does not authorize
-          unrelated promotional or marketing messages.
+          unrelated promotional or marketing messages, or enroll you in an
+          ongoing availability-update list.
         </p>
         <p>
           SMS consent is optional, is not a condition of purchase or booking,

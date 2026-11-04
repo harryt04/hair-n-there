@@ -1,5 +1,7 @@
 # HairnThere repository setup plan
 
+Latest planning update: see [Elisabeth revision plan](docs/elisabeth-revision-plan.md) for the newly supplied catalog, family/travel pricing, design options, and inactive paid-booking policy pending location/licensing confirmation. Scenic Journey, the supplied pricing, service planner, and inactive-booking policy are implemented. See README.md for the remaining configuration and content inputs.
+
 Status: approved design implemented in the Next.js app. Local lint, TypeScript, and production-build verification pass. See README.md for development and Vercel setup. Hosting connection, webhook secrets, and domain configuration are still external setup tasks; nothing has been deployed or pushed.
 
 Deployment decision: use Vercel's built-in Git integration. Push directly to main to deploy production; optional branch pushes create previews without pull requests. Use Vercel Pro for this commercial site, plus @vercel/analytics and @vercel/speed-insights. No automated tests, pull request process, GitHub Actions, Docker pipeline, or external CI/CD setup.

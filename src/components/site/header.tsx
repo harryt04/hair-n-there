@@ -14,10 +14,11 @@ import {
 } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 import { Wordmark } from "@/components/site/wordmark";
+import { launchNotice } from "@/data/availability";
 
 const navigation = [
   { href: "/#work", label: "The inspiration" },
-  { href: "/#services", label: "Services" },
+  { href: "/services", label: "Services & prices" },
   { href: "/#about", label: "Meet Elisabeth" },
 ];
 
@@ -44,7 +45,7 @@ export function SiteHeader() {
           </nav>
           <ThemeToggle />
           <Button
-            render={<Link href="/quote" />}
+            render={<Link href="/contact" />}
             nativeButton={false}
             className="hidden h-11 rounded-lg px-5 text-xs sm:inline-flex"
           >
@@ -98,12 +99,20 @@ export function SiteHeader() {
                   nativeButton={false}
                   className="mt-4 h-12"
                 >
-                  Plan your appointment <ArrowUpRight aria-hidden="true" />
+                  Build your service wish list{" "}
+                  <ArrowUpRight aria-hidden="true" />
                 </Button>
               </nav>
             </SheetContent>
           </Sheet>
         </div>
+      </div>
+      <div className="border-t border-border/60 bg-muted/65 px-5 py-2.5 text-center text-[10px] leading-5 text-muted-foreground">
+        <span
+          className="mr-2 inline-block size-1 rounded-full bg-gold align-middle"
+          aria-hidden="true"
+        />
+        {launchNotice}
       </div>
     </header>
   );

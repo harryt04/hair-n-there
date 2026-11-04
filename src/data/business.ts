@@ -8,7 +8,7 @@ export const business = {
     "https://www.instagram.com/hairnthere/",
   portfolioSourceUrl: "https://www.instagram.com/justbeyou_hair/",
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "",
-  serviceArea: "SunCrest & surrounding communities",
+  serviceArea: "Suncrest, Draper · Highland · Alpine & surrounding communities",
 } as const;
 
 export const smsConsentVersion = "2026-11-03";

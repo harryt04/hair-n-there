@@ -1,0 +1,187 @@
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--landscape-sky, #f5e8d9);
+  border-bottom: 1px solid var(--border);
+}
+.landscape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+.heroContent {
+  position: relative;
+  text-align: center;
+  max-width: 960px;
+  margin: auto;
+  padding: 38px 24px 176px;
+}
+.logo {
+  display: block;
+  width: 168px;
+  height: auto;
+  margin: 0 auto 23px;
+  border-radius: 50%;
+  background: transparent;
+  mix-blend-mode: normal;
+}
+.headline {
+  margin: 19px 0 22px;
+  font-size: clamp(3.3rem, 7.4vw, 6.7rem);
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+.headline em {
+  font-weight: 500;
+}
+.heroCopy {
+  max-width: 480px;
+  margin: auto;
+  font-size: 14px;
+  line-height: 1.95;
+  color: var(--muted-foreground);
+}
+.heroActions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 26px;
+}
+.sun {
+  opacity: var(--scenic-sun-opacity, 1);
+}
+.moon {
+  opacity: var(--scenic-moon-opacity, 0);
+}
+.stars {
+  opacity: var(--scenic-stars-opacity, 0);
+}
+.roadBand {
+  position: relative;
+  pointer-events: none;
+  overflow: hidden;
+  background: var(--background);
+}
+.roadCaption {
+  text-align: center;
+  color: var(--secondary);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding-top: 28px;
+}
+.desktopRoad {
+  display: block;
+  width: min(100%, 1400px);
+  height: auto;
+  margin: auto;
+  overflow: visible;
+}
+.mobileRoad {
+  display: none;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.roadShoulder {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 18;
+  stroke-linecap: round;
+}
+.roadDashes {
+  fill: none;
+  stroke: var(--secondary);
+  stroke-opacity: 0.6;
+  stroke-width: 1.7;
+  stroke-dasharray: 5 10;
+}
+.family {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px;
+}
+.familyTitle {
+  max-width: 650px;
+  font-size: clamp(2.3rem, 5vw, 4.4rem);
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+}
+.chapter {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+.chapter::before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  margin-right: 10px;
+  background: currentColor;
+  vertical-align: middle;
+}
+@media (max-width: 767px) {
+  .heroContent {
+    padding: 30px 20px 146px;
+  }
+  .logo {
+    width: 145px;
+    margin-bottom: 20px;
+  }
+  .headline {
+    font-size: clamp(2.9rem, 10.7vw, 4.9rem);
+  }
+  .heroCopy {
+    max-width: 340px;
+    font-size: 12px;
+    line-height: 1.9;
+  }
+  .heroActions {
+    gap: 9px;
+    margin-top: 23px;
+  }
+  .heroActions a {
+    padding-inline: 16px;
+    font-size: 11px;
+  }
+  .desktopRoad {
+    display: none;
+  }
+  .mobileRoad {
+    display: block;
+  }
+  .roadCaption {
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    padding-top: 24px;
+  }
+  .roadShoulder {
+    stroke-width: 12;
+  }
+  .roadDashes {
+    stroke-width: 1;
+    stroke-dasharray: 3 5;
+  }
+  .family {
+    padding: 28px 22px;
+    border-radius: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero *,
+  .roadBand * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

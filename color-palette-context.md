@@ -72,7 +72,7 @@ Borders
 
 I'd pair Playfair Display for elegant headings with Montserrat for navigation, service descriptions, and booking buttons.
 
-For the homepage, I'd use the tagline “Great Hair Travels.” with two prominent booking options: Book a House Call and Book a Salon Appointment. That allows your business to grow beyond SunCrest without needing a rebrand.
+For the homepage, I'd use the tagline “Great Hair Travels.” with two prominent booking options: Book a House Call and Book a Salon Appointment. That allows your business to grow beyond Suncrest without needing a rebrand.
 
 My favorite detail would be a tiny animated Subaru traveling along a winding mountain road as someone scrolls through the website. It would give HairnThere a recognizable, playful signature without making the overall design feel childish.
 
