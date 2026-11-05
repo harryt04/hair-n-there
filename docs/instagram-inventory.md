@@ -42,7 +42,7 @@ Collected without an API key from the public profile and individual post pages. 
 
 ## Landing-page behavior
 
-The gallery keeps Mountain Cinema’s typography and theme tokens. Visitors swipe, use keyboard/native scrolling, or press previous/next to browse the 11 posts. No autoplay or motion is required. Photos use contain sizing to preserve the original composition. Full captions expand below the covers; carousel entries link to their original grouped posts. All content and links render on the server; shadcn’s carousel (Embla) adds swipe and arrow navigation, with native horizontal scrolling before JavaScript loads. Transitions are instant and there is no autoplay. Original captions are historical portfolio context, not current service policy.
+The gallery keeps Mountain Cinema’s typography and theme tokens. Visitors swipe, use keyboard/native scrolling, or press previous/next to browse the 11 posts. No autoplay or motion is required. Photos use contain sizing to preserve the original composition. Full original captions are always visible in prominent text below the covers; carousel entries link to their original grouped posts. All content and links render on the server; shadcn’s carousel (Embla) adds swipe and arrow navigation, with native horizontal scrolling before JavaScript loads. Transitions are instant and there is no autoplay. Original captions are historical portfolio context, not current service policy.
 
 ## Original captions
 

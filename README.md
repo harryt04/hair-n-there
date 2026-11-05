@@ -138,7 +138,7 @@ artwork, assignment policy, accessibility fallbacks, and future seasonal possibi
 The @hairnthere gallery shows 11 real posts from Elisabeth’s previous account in a
 server-rendered, horizontally scrollable carousel. Images are served locally; no API
 key or live Instagram feed is needed. Reel covers link to the original videos, and
-original captions can be expanded. Source captions, ordered carousel photos, review
+original captions appear prominently beneath each image. Source captions, ordered carousel photos, review
 status, and source links are recorded in `src/data/instagram-posts.json`. The follow
 destination remains @hairnthere; source-post links go to @justbeyou_hair.
 The **QR Code** app-bar shortcut opens `/card`; the homepage QR is at the bottom.

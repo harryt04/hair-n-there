@@ -67,15 +67,12 @@ export function InstagramGallery() {
                 <span>{image.label}</span>
                 <ArrowUpRight aria-hidden="true" />
               </figcaption>
+              <p className={styles.caption}>{image.caption}</p>
               <p className={styles.mediaType}>
                 {image.kind === "reel"
                   ? "Reel cover · watch on Instagram"
                   : `${image.photoCount} photos · view original post`}
               </p>
-              <details className={styles.caption}>
-                <summary>Original caption</summary>
-                <p>{image.caption}</p>
-              </details>
             </figure>
           </CarouselItem>
         ))}
