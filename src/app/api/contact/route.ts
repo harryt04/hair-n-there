@@ -135,12 +135,15 @@ export async function POST(request: Request) {
       );
     }
     contactWebhookUrl();
-    let sourcePath: "/contact" | "/quote" | "/api/contact" = "/api/contact";
+    let sourcePath: "/" | "/contact" | "/quote" | "/api/contact" =
+      "/api/contact";
     try {
       const referrer = new URL(request.headers.get("referer") || "");
       if (
         allowedOrigins.has(referrer.origin) &&
-        (referrer.pathname === "/contact" || referrer.pathname === "/quote")
+        (referrer.pathname === "/" ||
+          referrer.pathname === "/contact" ||
+          referrer.pathname === "/quote")
       )
         sourcePath = referrer.pathname;
     } catch {
@@ -151,7 +154,7 @@ export async function POST(request: Request) {
       {
         success: true,
         message:
-          "Your inquiry is with HairnThere. Elisabeth can respond to your questions. No appointment has been requested or reserved.",
+          "Your inquiry is with HairnThere. Elisabeth or a member of her team will be in touch shortly to discuss your plans. Your date, time, and quote will be confirmed together.",
       },
       { headers: { "Cache-Control": "no-store" } },
     );
@@ -164,7 +167,7 @@ export async function POST(request: Request) {
       );
     // Never log customer input, webhook URLs, provider response bodies, or credentials.
     return failure(
-      "We couldn’t confirm delivery of your inquiry. Please try again later; no appointment has been requested or reserved.",
+      "We couldn’t confirm delivery of your inquiry. Please try again later; your visit has not been confirmed.",
       503,
     );
   }

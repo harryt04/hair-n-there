@@ -1,19 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, Camera, QrCode, Scissors } from "lucide-react";
+import { ArrowUpRight, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { ContactSection } from "@/components/contact/contact-section";
 import { FrequentlyAskedQuestions } from "@/components/site/faq";
 import { InstagramLink } from "@/components/site/instagram-link";
-import { WebsiteQr } from "@/components/card/website-qr";
 import { InstagramGallery } from "@/components/site/instagram-gallery";
 import { business } from "@/data/business";
 import { availability, launchNotice } from "@/data/availability";
-import { services } from "@/data/services";
-import { familyPackages } from "@/data/packages";
-import { formatMoney } from "@/lib/quote";
 import styles from "./home.module.css";
 
 export const metadata: Metadata = {
@@ -106,7 +102,6 @@ export default function Home() {
         </div>
         <div className={styles.services}>
           {highlights.map((highlight) => {
-            const service = services.find((item) => item.id === highlight.id);
             return (
               <Card
                 key={highlight.id}
@@ -120,27 +115,14 @@ export default function Home() {
                   <p className="mt-4 mb-7 text-xs leading-7 text-muted-foreground">
                     {highlight.copy}
                   </p>
-                  <div className="mt-auto">
-                    <Separator />
-                    <p className="mt-5 text-[11px] text-muted-foreground">
-                      {service?.name}
-                    </p>
-                    <p className="mt-2 font-display text-2xl text-primary">
-                      {service?.pricingKind === "free_consultation"
-                        ? "Consultation · Free"
-                        : service?.unitPriceCents != null
-                          ? `${formatMoney(service.unitPriceCents)}${service.pricingKind === "from" ? "+" : ""}`
-                          : "Let’s talk"}
-                    </p>
-                  </div>
                 </CardContent>
               </Card>
             );
           })}
         </div>
-        <p className="mt-4 text-[11px] leading-6 text-muted-foreground">
-          Prices marked + are starting prices. The menu helps you plan;
-          appointments aren’t open yet.
+        <p className="mt-4 text-sm leading-7 text-muted-foreground">
+          Every head of hair is different. We’ll talk through your services and
+          a personal quote before you commit.
         </p>
       </section>
 
@@ -164,51 +146,28 @@ export default function Home() {
                 >
                   Your whole family.
                   <br />
-                  One future hair day.
+                  One easier hair day.
                 </h2>
               </div>
               <div className="max-w-sm">
                 <p className="text-xs leading-7 text-muted-foreground">
-                  The family house-call experience we’re working toward. Explore
-                  a package and build a wish list. House-call appointments
-                  aren’t open yet.
+                  Back-to-back haircuts, one familiar space. Tell us how many
+                  people need a cut or color, and we’ll put together a plan for
+                  your household.
                 </p>
                 <Button
                   nativeButton={false}
-                  render={<Link href="/quote?visit=house" />}
+                  render={<Link href="#inquiry" />}
                   variant="outline"
                   className="mt-4 h-11 px-4 text-xs"
                 >
-                  Explore family plans <ArrowUpRight aria-hidden="true" />
+                  Plan your family’s visit <ArrowUpRight aria-hidden="true" />
                 </Button>
               </div>
             </div>
-            <div className="mt-8 grid gap-3 md:grid-cols-3">
-              {familyPackages.map((pack) => (
-                <div
-                  key={pack.id}
-                  className="border-t border-border py-5 md:border md:px-5"
-                >
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <h3 className="text-xl">{pack.name}</h3>
-                    <p className="font-display text-2xl text-primary">
-                      {formatMoney(pack.priceCents)}
-                    </p>
-                  </div>
-                  <p className="mt-3 text-[11px] leading-6 text-muted-foreground">
-                    {pack.inclusions}
-                  </p>
-                  {pack.needsConfirmation && (
-                    <p className="mt-2 text-[10px] text-muted-foreground">
-                      Included women’s haircut type to be confirmed.
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-            <p className="mt-5 text-[11px] leading-6 text-muted-foreground">
-              Travel is separate and added once per household. Neighborhood
-              haircut days need a custom quote.
+            <p className="mt-6 max-w-xl text-sm leading-7 text-muted-foreground">
+              Group pricing and any travel cost are discussed individually. No
+              automatic discounts or separate travel fee for each person.
             </p>
           </CardContent>
         </Card>
@@ -239,10 +198,10 @@ export default function Home() {
               a personal approach to hair.
             </p>
             <p>
-              Based in Suncrest, a neighborhood in Draper, Utah, with future
-              plans for house calls around Draper, Highland, Alpine and
-              surrounding communities. A salon booth is another chapter still to
-              come.
+              Based in Suncrest, a neighborhood in Draper, Utah, with house-call
+              inquiries welcome around Draper, Highland, Alpine, and surrounding
+              communities. We’ll confirm your location and availability
+              together.
             </p>
             <InstagramLink
               href={business.instagramUrl}
@@ -257,129 +216,14 @@ export default function Home() {
       </section>
 
       <section
-        className="border-y border-border bg-card/30"
-        aria-labelledby="availability-heading"
+        className="site-container max-w-2xl pt-8"
+        aria-label="A few helpful details"
       >
-        <div className="site-container py-12 sm:py-16">
-          <p className="eyebrow">What’s next for HairnThere</p>
-          <h2
-            id="availability-heading"
-            className="mt-4 text-3xl tracking-[-.035em] sm:text-4xl"
-          >
-            Good things are taking shape.
-          </h2>
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
-            {(["house", "salon", "event"] as const).map((id) => (
-              <div key={id} className="border-t border-border pt-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <h3 className="font-sans text-sm font-semibold">
-                    {availability[id].label}
-                  </h3>
-                  <Badge variant="outline" className="rounded-full text-[9px]">
-                    {availability[id].status}
-                  </Badge>
-                </div>
-                <p className="mt-4 text-xs leading-7 text-muted-foreground">
-                  {availability[id].message}
-                </p>
-                <Link
-                  href={`/contact?visit=${id}`}
-                  className="mt-4 inline-flex items-center gap-2 text-xs font-medium text-primary hover:underline"
-                >
-                  Share your interest{" "}
-                  <ArrowUpRight className="size-3.5" aria-hidden="true" />
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section
-        className="site-container grid gap-8 py-14 sm:py-20 lg:grid-cols-[minmax(0,.75fr)_minmax(0,1.25fr)] lg:gap-20"
-        aria-labelledby="faq-heading"
-      >
-        <div>
-          <p className="eyebrow">A few helpful details</p>
-          <h2 id="faq-heading" className="mt-4 text-4xl tracking-[-.04em]">
-            Before we say hello.
-          </h2>
-          <p className="mt-5 text-xs leading-7 text-muted-foreground">
-            Something else on your mind?{" "}
-            <Link
-              href="/contact"
-              className="text-primary underline underline-offset-4"
-            >
-              Just ask.
-            </Link>
-          </p>
-        </div>
         <FrequentlyAskedQuestions />
       </section>
-
-      <section className="site-container pb-14 sm:pb-20">
-        <div className={styles.invitation}>
-          <div>
-            <p className="eyebrow">Suncrest · Draper, Utah</p>
-            <h2 className="mt-3 text-3xl tracking-[-.035em]">
-              Let’s talk about your next look.
-            </h2>
-          </div>
-          <Button
-            nativeButton={false}
-            render={<Link href="/contact" />}
-            className="h-12 self-start px-5 text-xs sm:self-auto"
-          >
-            <Scissors aria-hidden="true" /> Say hello to Elisabeth{" "}
-            <ArrowUpRight aria-hidden="true" />
-          </Button>
-        </div>
-      </section>
-      <section
-        id="qr-code"
-        className={`site-container ${styles.qr}`}
-        aria-labelledby="qr-heading"
-      >
-        <div>
-          <p className="eyebrow">Take a little HairnThere with you.</p>
-          <h2 id="qr-heading">
-            A quick hello.
-            <br />
-            <span className="text-primary italic">A lasting connection.</span>
-          </h2>
-          <p>
-            Just met Elisabeth? Scan to explore.
-            <br />
-            Sharing with a neighbor? Show them the code.
-          </p>
-          <Button
-            nativeButton={false}
-            render={<Link href="/card" />}
-            variant="outline"
-            className="mt-6 h-11 gap-2 rounded-sm px-4 text-xs"
-          >
-            <QrCode aria-hidden="true" /> Open large QR code{" "}
-            <ArrowUpRight aria-hidden="true" />
-          </Button>
-        </div>
-        <Card className={`gap-0 py-0 shadow-none ring-0 ${styles.qrCard}`}>
-          <CardContent className="p-5">
-            <Link
-              href="/card"
-              className="block"
-              aria-label="Open HairnThere’s large QR code"
-            >
-              <WebsiteQr className="aspect-square w-full bg-white" />
-            </Link>
-            <p className="mt-4 text-center text-sm font-semibold">
-              {business.cardWebsiteLabel}
-            </p>
-            <p className="mt-2 text-center text-[10px] text-muted-foreground">
-              Great Hair Travels.
-            </p>
-          </CardContent>
-        </Card>
-      </section>
+      <div className="site-container">
+        <ContactSection />
+      </div>
     </main>
   );
 }

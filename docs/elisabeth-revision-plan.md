@@ -1,5 +1,24 @@
 # HairnThere: Elisabeth revision plan
 
+## November 5 contact redesign decision
+
+Harry approved “One less thing on your list” from proposal A with proposal B’s
+three-stage form: people, visit, contact. Keep Playfair Display and Montserrat;
+no replacement font pair was selected. House-call inquiries are now explicitly
+open for manual follow-up by Elisabeth or her team. This supersedes the inactive
+house-call language below; salon and event acceptance remain inactive. No
+appointment is automatically confirmed, and no licensing claim is made.
+
+Public prices and the priced planner are retired in favor of personal quotes;
+`/quote` redirects to `/contact`. Keep catalog, package, minimum, and calculation
+rules internally. The form captures haircut/color counts (a person can be counted
+in both), optional date, flexible/specific time, address, name, email, and an
+optional note. It uses email rather than collecting SMS consent. Visit addresses
+are delivered in the private Discord attachment and excluded from analytics.
+No routing or automated follow-up service is activated.
+
+## Earlier implementation reference
+
 Status: Mountain Cinema / Powder Day supersedes Scenic Journey’s visual treatment; see `docs/mountain-cinema.md`. The full catalog, family planner, server-side inactive-booking gate, and responsive scroll-driven Subaru are implemented. Real address routing, live delivery configuration, portfolio imports, and service-location authorization remain external setup/content tasks. No live deployment is performed by this change.
 
 The latest supplied price list supersedes the earlier “all pricing to be confirmed” plan. The licensing summary is a business launch constraint supplied by Harry; its legal conclusions and cited rules have not been independently verified in this task. Obtain written clarification for the actual operating model before opening paid appointment requests for it.

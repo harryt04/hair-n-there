@@ -1,572 +1,541 @@
 "use client";
 
 import Link from "next/link";
+import { useId, useRef, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
-import { availability } from "@/data/availability";
-import { useRef, useState, type FormEvent } from "react";
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  Check,
-  House,
-  LoaderCircle,
-  Sparkles,
-  PartyPopper,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { business, smsConsentText } from "@/data/business";
-import { contactSchema } from "@/lib/validation";
-import {
-  type ServiceSelection,
-  type PackageSelection,
-  type VisitType,
-} from "@/lib/quote-types";
+import { availability } from "@/data/availability";
+import { business } from "@/data/business";
+import { inquirySchema, type InquiryInput } from "@/lib/inquiry-validation";
+import type { VisitType } from "@/lib/quote-types";
 import { trackEvent } from "@/components/site/telemetry";
 
-export type InquiryContext = {
-  visitType: VisitType;
-  area: string;
-  services: ServiceSelection[];
-  packages: PackageSelection[];
-  intent: "interest" | "consultation";
-};
+const stages = ["Your people", "Your visit", "Stay in touch"];
+const stageFields = [
+  ["haircutCount", "colorCount", "message"],
+  ["preferredDate", "preferredTime", "exactTime", "address"],
+  ["name", "email"],
+];
 type FieldErrors = Record<string, string>;
-
-export function VisitChoice({
-  value,
-  onChange,
-}: {
-  value: VisitType;
-  onChange: (value: VisitType) => void;
-}) {
-  return (
-    <RadioGroup
-      aria-label="Setting you are interested in"
-      value={value}
-      onValueChange={(next) => onChange(next as VisitType)}
-      className="grid grid-cols-3 gap-1 rounded-xl bg-muted p-1.5"
-    >
-      {(
-        [
-          { value: "house", label: "House call", Icon: House },
-          { value: "salon", label: "Salon", Icon: Sparkles },
-          { value: "event", label: "Events", Icon: PartyPopper },
-        ] as const
-      ).map(({ value: option, label, Icon }) => (
-        <Label
-          key={option}
-          className={`relative min-h-12 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-lg px-3 py-3 text-xs transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-background sm:text-sm ${value === option ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-        >
-          <RadioGroupItem value={option} className="sr-only" />
-          <Icon className="size-4 shrink-0" aria-hidden="true" />
-          {label}
-          <span className="text-[9px] font-normal text-muted-foreground">
-            {availability[option].status}
-          </span>
-        </Label>
-      ))}
-    </RadioGroup>
-  );
-}
 
 export function ContactEntry() {
   const search = useSearchParams();
+  const visit = search.get("visit");
+  const visitType = visit === "salon" || visit === "event" ? visit : "house";
   const topic =
     search.get("topic") === "neighborhood" ? "neighborhood" : "general";
-  const requestedVisit = search.get("visit");
-  const visit: VisitType =
-    requestedVisit === "salon" || requestedVisit === "event"
-      ? requestedVisit
-      : "house";
   return (
     <ContactForm
-      key={`${topic}:${visit}`}
-      initialTopic={topic}
-      initialVisit={visit}
+      key={`${visitType}:${topic}`}
+      visitType={visitType}
+      topic={topic}
     />
   );
 }
 
 export function ContactForm({
-  context,
-  onBack,
-  initialTopic = "general",
-  initialVisit = "house",
+  visitType = "house",
+  topic = "general",
 }: {
-  context?: InquiryContext;
-  onBack?: () => void;
-  initialTopic?: "general" | "neighborhood";
-  initialVisit?: VisitType;
+  visitType?: VisitType;
+  topic?: "general" | "neighborhood";
 }) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [intent, setIntent] = useState<"consultation" | "interest">(
-    "consultation",
-  );
-  const [topic, setTopic] = useState<"general" | "neighborhood">(initialTopic);
-  const [households, setHouseholds] = useState(2);
-  const [message, setMessage] = useState("");
-  const [website, setWebsite] = useState("");
-  const [smsConsent, setSmsConsent] = useState(false);
-  const [visitType, setVisitType] = useState<VisitType>(initialVisit);
-  const [area, setArea] = useState("");
+  const prefix = useId();
+  const [step, setStep] = useState(0);
+  const [values, setValues] = useState({
+    haircutCount: "0",
+    colorCount: "0",
+    preferredDate: "",
+    preferredTime: "flexible",
+    exactTime: "",
+    address: "",
+    name: "",
+    email: "",
+    message: "",
+    website: "",
+  });
   const [errors, setErrors] = useState<FieldErrors>({});
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState("");
   const sending = useRef(false);
+  const stageRef = useRef<HTMLHeadingElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
   const successRef = useRef<HTMLDivElement>(null);
+  const house = visitType === "house";
+  const policy = availability[visitType];
+  const intent =
+    house && policy.acceptsAppointments
+      ? "appointment_request"
+      : "consultation";
 
-  function focusError() {
-    requestAnimationFrame(() => errorRef.current?.focus());
+  function update(field: keyof typeof values, value: string) {
+    setValues((current) => ({ ...current, [field]: value }));
   }
-  function fieldProps(field: string) {
+  function props(field: keyof typeof values) {
     return {
+      id: `${prefix}-${field}`,
+      name: field,
+      value: values[field],
+      onChange: (
+        e: React.ChangeEvent<
+          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >,
+      ) => update(field, e.target.value),
       "aria-invalid": !!errors[field],
-      "aria-describedby": errors[field] ? `${field}-error` : undefined,
+      "aria-describedby": errors[field]
+        ? `${prefix}-${field}-error`
+        : undefined,
     };
   }
   function fieldError(field: string) {
     return errors[field] ? (
       <p
-        id={`${field}-error`}
-        className="text-xs leading-relaxed text-destructive"
+        id={`${prefix}-${field}-error`}
+        className="text-sm leading-6 text-destructive"
       >
         {errors[field]}
       </p>
     ) : null;
   }
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (sending.current || success) return;
-    setError("");
-    setErrors({});
-    const selected = context ?? {
+  function payload() {
+    return {
+      ...values,
+      haircutCount:
+        values.haircutCount === "" ? NaN : Number(values.haircutCount),
+      colorCount: values.colorCount === "" ? NaN : Number(values.colorCount),
+      exactTime: values.preferredTime === "specific" ? values.exactTime : "",
       visitType,
-      area,
+      intent,
+      topic,
       services: [],
       packages: [],
-      intent: topic === "neighborhood" ? "interest" : intent,
+      smsConsent: false,
     };
-    const result = contactSchema.safeParse({
-      name,
-      email,
-      phone,
-      topic,
-      ...(topic === "neighborhood"
-        ? { neighborhoodHouseholds: households }
-        : {}),
-      message,
-      smsConsent,
-      website,
-      ...selected,
-    });
-    if (!result.success) {
-      const nextErrors: FieldErrors = {};
-      for (const issue of result.error.issues) {
-        const field = String(issue.path[0] ?? "form");
-        if (!nextErrors[field]) nextErrors[field] = issue.message;
+  }
+  function focusStage(next: number) {
+    setStep(next);
+    requestAnimationFrame(() => stageRef.current?.focus());
+  }
+  function showErrors(
+    nextErrors: FieldErrors,
+    message = "Please check the highlighted details.",
+  ) {
+    setErrors(nextErrors);
+    setError(message);
+    const firstStage = stageFields.findIndex((fields) =>
+      fields.some((field) => nextErrors[field]),
+    );
+    if (firstStage !== -1) setStep(firstStage);
+    requestAnimationFrame(() => errorRef.current?.focus());
+  }
+  function move(next: number) {
+    if (submitting) return;
+    if (next > step) {
+      const parsed = inquirySchema.safeParse(payload());
+      if (!parsed.success) {
+        const relevant = stageFields.slice(0, next).flat();
+        const found: FieldErrors = {};
+        for (const issue of parsed.error.issues) {
+          const field = String(issue.path[0]);
+          if (relevant.includes(field) && !found[field])
+            found[field] = issue.message;
+        }
+        if (Object.keys(found).length) {
+          showErrors(found);
+          return;
+        }
       }
-      setErrors(nextErrors);
-      setError("Please check the details highlighted below.");
-      focusError();
-      return;
     }
+    setErrors({});
+    setError("");
+    focusStage(next);
+  }
+  async function deliver(data: InquiryInput) {
     sending.current = true;
     setSubmitting(true);
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(result.data),
+        body: JSON.stringify(data),
         signal: AbortSignal.timeout(20000),
       });
-      const data = await response.json().catch(() => null);
-      if (!response.ok || data?.success !== true) {
-        if (data?.fieldErrors && typeof data.fieldErrors === "object") {
-          const nextErrors: FieldErrors = {};
-          for (const [key, value] of Object.entries(data.fieldErrors)) {
-            if (typeof value === "string") nextErrors[key] = value;
+      const result = await response.json().catch(() => null);
+      if (!response.ok || result?.success !== true) {
+        const found: FieldErrors = {};
+        if (result?.fieldErrors && typeof result.fieldErrors === "object") {
+          for (const [key, value] of Object.entries(result.fieldErrors)) {
+            if (typeof value === "string") found[key] = value;
             else if (Array.isArray(value) && typeof value[0] === "string")
-              nextErrors[key] = value[0];
+              found[key] = value[0];
           }
-          setErrors(nextErrors);
         }
-        setError(
-          typeof data?.error === "string"
-            ? data.error
+        showErrors(
+          found,
+          typeof result?.error === "string"
+            ? result.error
             : "Your inquiry couldn’t be delivered. Please try again; your details are still here.",
         );
-        focusError();
         return;
       }
       setSuccess(
-        typeof data.message === "string"
-          ? data.message
-          : "Your inquiry has been received. Elisabeth can follow up about the details.",
+        typeof result.message === "string"
+          ? result.message
+          : "Elisabeth or a member of her team will be in touch shortly to discuss your plans.",
       );
       trackEvent("inquiry_submitted");
       requestAnimationFrame(() => successRef.current?.focus());
     } catch {
-      setError(
-        "We couldn’t confirm delivery. Please try again; your details are still here. If you retry after a timeout, the first inquiry may already have arrived.",
+      showErrors(
+        {},
+        "We couldn’t confirm delivery. Your details are still here. If you retry after a timeout, the first inquiry may already have arrived.",
       );
-      focusError();
     } finally {
       sending.current = false;
       setSubmitting(false);
     }
   }
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (sending.current || success) return;
+    if (step < 2) {
+      move(step + 1);
+      return;
+    }
+    setErrors({});
+    setError("");
+    const parsed = inquirySchema.safeParse(payload());
+    if (!parsed.success) {
+      const found: FieldErrors = {};
+      for (const issue of parsed.error.issues) {
+        const field = String(issue.path[0] ?? "form");
+        if (!found[field]) found[field] = issue.message;
+      }
+      showErrors(found);
+      return;
+    }
+    void deliver(parsed.data);
+  }
 
   if (success)
     return (
-      <Card className="border border-border py-8 shadow-none ring-0 sm:py-10">
-        <CardContent>
-          <div
-            ref={successRef}
-            tabIndex={-1}
-            role="status"
-            className="outline-none"
-          >
-            <span className="mb-6 inline-flex size-12 items-center justify-center rounded-full bg-muted text-primary">
-              <Check className="size-5" aria-hidden="true" />
-            </span>
-            <h2 className="font-display text-3xl sm:text-4xl">
-              You’re on your way
-              <br />
-              to a good hair day.
-            </h2>
-            <p className="mt-5 max-w-md text-sm leading-7 text-muted-foreground">
-              {success}
-            </p>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground">
-              This is an informational inquiry. No appointment has been
-              requested, reserved, or accepted.
-            </p>
-            <Button
-              nativeButton={false}
-              render={<Link href="/" />}
-              className="mt-8 h-12 px-6"
-            >
-              Back to HairnThere <ArrowUpRight aria-hidden="true" />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div
+        ref={successRef}
+        tabIndex={-1}
+        role="status"
+        className="rounded-xl border border-border bg-card p-7 outline-none sm:p-10"
+      >
+        <Check className="mb-5 size-6 text-primary" aria-hidden="true" />
+        <h2 className="font-display text-3xl">One less thing on your list.</h2>
+        <p className="mt-4 text-sm leading-7 text-muted-foreground">
+          {success}
+        </p>
+        <p className="mt-3 text-sm leading-7 text-muted-foreground">
+          Your date, time, and quote will be confirmed together.
+        </p>
+        <Link
+          href="/"
+          className="mt-6 inline-block py-3 text-sm text-primary underline underline-offset-4"
+        >
+          Back to HairnThere
+        </Link>
+      </div>
     );
 
   return (
-    <Card className="border border-border py-6 shadow-none ring-0 sm:py-8">
-      <CardContent className="px-5 sm:px-8">
-        <form
-          onSubmit={submit}
-          noValidate
-          aria-label="Consultation or interest inquiry"
-          aria-busy={submitting}
-        >
-          <h2 className="font-display text-2xl sm:text-3xl">Your details</h2>
+    <div className="rounded-xl border border-border bg-card p-5 sm:p-8">
+      <form
+        onSubmit={submit}
+        noValidate
+        aria-label="House-call or service inquiry"
+        aria-busy={submitting}
+      >
+        <fieldset disabled={submitting} className="min-w-0">
+          <legend className="sr-only">Tell Elisabeth about your plans</legend>
+          <nav
+            aria-label="Inquiry steps"
+            className="mb-7 grid grid-cols-3 gap-2"
+          >
+            {stages.map((label, index) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => move(index)}
+                aria-current={step === index ? "step" : undefined}
+                className={`min-h-14 border-b-2 px-1 pb-3 text-left text-xs leading-5 sm:text-sm ${step === index ? "border-primary font-medium text-foreground" : "border-border text-muted-foreground"}`}
+              >
+                <span className="block text-[11px] text-muted-foreground">
+                  0{index + 1}
+                </span>
+                {label}
+              </button>
+            ))}
+          </nav>
           <div
             ref={errorRef}
             tabIndex={-1}
             role="alert"
             hidden={!error}
-            className="mt-5 rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm leading-6 text-destructive outline-none"
+            className="mb-6 rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm leading-6 text-destructive outline-none"
           >
             {error}
-            {!business.supportEmail && business.instagramUrl && (
-              <span className="mt-2 block">
-                You can also{" "}
-                <a
-                  href={business.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-4"
-                >
-                  message Elisabeth on Instagram
-                </a>
-                .
-              </span>
-            )}
-            {business.supportEmail && (
-              <span className="mt-2 block">
-                You can also{" "}
-                <a
-                  href={`mailto:${business.supportEmail}`}
-                  className="underline underline-offset-4"
-                >
-                  email Elisabeth
-                </a>
-                .
-              </span>
-            )}
+            <a
+              href={
+                business.supportEmail
+                  ? `mailto:${business.supportEmail}`
+                  : business.instagramUrl
+              }
+              className="mt-2 block underline underline-offset-4"
+            >
+              {business.supportEmail
+                ? "You can also email HairnThere."
+                : "You can also message HairnThere on Instagram."}
+            </a>
           </div>
-          <fieldset disabled={submitting} className="min-w-0">
-            {!context && (
-              <div className="mt-6">
-                <VisitChoice value={visitType} onChange={setVisitType} />
-              </div>
-            )}
-            <p className="mt-4 rounded-lg bg-muted p-4 text-xs leading-6 text-muted-foreground">
-              {availability[context?.visitType ?? visitType].message}
+          <h2
+            ref={stageRef}
+            tabIndex={-1}
+            className="mb-5 font-display text-2xl outline-none sm:text-3xl"
+          >
+            {stages[step]}
+          </h2>
+          <div hidden={step !== 0}>
+            <p className="mb-5 text-sm leading-7 text-muted-foreground">
+              A whole family or just you. How many people would like each
+              service?
             </p>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-5 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="inquiry-purpose">
-                  What would you like to discuss?
-                </Label>
-                <select
-                  id="inquiry-purpose"
-                  className="h-12 w-full rounded-lg border border-input bg-background px-3 text-sm"
-                  value={topic}
-                  onChange={(e) =>
-                    setTopic(e.target.value as "general" | "neighborhood")
-                  }
-                >
-                  <option value="general">A service or consultation</option>
-                  <option value="neighborhood">Neighborhood haircut day</option>
-                </select>
-              </div>
-              {topic === "neighborhood" ? (
-                <div className="space-y-2">
-                  <Label htmlFor="households">
-                    Interested households · estimate
-                  </Label>
-                  <Input
-                    id="households"
-                    type="number"
-                    min={1}
-                    max={100}
-                    value={households}
-                    onChange={(e) => setHouseholds(Number(e.target.value))}
-                    className="h-12"
-                    {...fieldProps("neighborhoodHouseholds")}
-                  />
-                  {fieldError("neighborhoodHouseholds")}
-                </div>
-              ) : !context ? (
-                <div className="space-y-2">
-                  <Label htmlFor="inquiry-intent">Inquiry type</Label>
-                  <select
-                    id="inquiry-intent"
-                    className="h-12 w-full rounded-lg border border-input bg-background px-3 text-sm"
-                    value={intent}
-                    onChange={(e) =>
-                      setIntent(e.target.value as "interest" | "consultation")
-                    }
-                  >
-                    <option value="consultation">Ask for a consultation</option>
-                    <option value="interest">
-                      Share interest / ask about availability
-                    </option>
-                  </select>
-                </div>
-              ) : null}
-            </div>
-            {topic === "neighborhood" && (
-              <p className="mt-3 text-xs leading-6 text-muted-foreground">
-                Tell us the neighborhood and your idea below. Reduced travel
-                fees are arranged individually; no group appointment or discount
-                is confirmed here.
-              </p>
-            )}
-            <div className="mt-6 grid gap-5 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="name">
-                  Your name <span className="sr-only">(required)</span>
+                <Label htmlFor={`${prefix}-haircutCount`}>
+                  People wanting haircuts
                 </Label>
                 <Input
-                  id="name"
-                  name="name"
+                  {...props("haircutCount")}
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  max={50}
+                  step={1}
+                  required
+                  className="h-12 text-base"
+                />
+                {fieldError("haircutCount")}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor={`${prefix}-colorCount`}>
+                  People wanting color
+                </Label>
+                <Input
+                  {...props("colorCount")}
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  max={50}
+                  step={1}
+                  required
+                  className="h-12 text-base"
+                />
+                {fieldError("colorCount")}
+              </div>
+            </div>
+            <p className="mt-3 text-xs leading-6 text-muted-foreground">
+              Getting both? Include that person in both counts.
+            </p>
+            <details open={!!errors.message} className="mt-4 text-sm">
+              <summary className="cursor-pointer py-3 text-muted-foreground">
+                Anything else? · Optional
+              </summary>
+              <div className="mt-2 space-y-2">
+                <Label htmlFor={`${prefix}-message`}>
+                  A little more about your plans
+                </Label>
+                <Textarea
+                  {...props("message")}
+                  maxLength={1500}
+                  rows={3}
+                  placeholder="A color idea, styling or extensions, or a neighborhood haircut day…"
+                  className="min-h-24 p-3 text-base"
+                />
+                {fieldError("message")}
+              </div>
+            </details>
+          </div>
+          <div hidden={step !== 1}>
+            {!house && (
+              <p className="mb-5 text-sm leading-7 text-muted-foreground">
+                {policy.message}
+              </p>
+            )}
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor={`${prefix}-preferredDate`}>
+                  Preferred date · optional
+                </Label>
+                <Input
+                  {...props("preferredDate")}
+                  type="date"
+                  className="h-12 text-base"
+                />
+                {fieldError("preferredDate")}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor={`${prefix}-preferredTime`}>
+                  Preferred time
+                </Label>
+                <select
+                  {...props("preferredTime")}
+                  className="h-12 w-full rounded-lg border border-input bg-card px-3 text-base"
+                >
+                  <option value="flexible">Flexible</option>
+                  <option value="morning">Morning</option>
+                  <option value="afternoon">Afternoon</option>
+                  <option value="evening">Evening</option>
+                  <option value="specific">A specific time</option>
+                </select>
+                {fieldError("preferredTime")}
+              </div>
+              {values.preferredTime === "specific" && (
+                <div className="space-y-2 sm:col-span-2">
+                  <Label htmlFor={`${prefix}-exactTime`}>
+                    Time you have in mind · Mountain Time
+                  </Label>
+                  <Input
+                    {...props("exactTime")}
+                    type="time"
+                    required
+                    className="h-12 text-base"
+                  />
+                  {fieldError("exactTime")}
+                </div>
+              )}
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor={`${prefix}-address`}>
+                  {house ? "Visit address" : "City or venue · optional"}
+                </Label>
+                <Input
+                  {...props("address")}
+                  autoComplete={house ? "street-address" : "off"}
+                  required={house}
+                  maxLength={400}
+                  placeholder={
+                    house
+                      ? "Street address, city & ZIP"
+                      : "Where do you have in mind?"
+                  }
+                  className="h-12 text-base"
+                />
+                {fieldError("address")}
+              </div>
+            </div>
+            <p className="mt-4 text-xs leading-6 text-muted-foreground">
+              No date in mind yet? Leave it blank. Times are local to Utah;
+              availability and travel will be discussed together.
+            </p>
+          </div>
+          <div hidden={step !== 2}>
+            <p className="mb-5 text-sm leading-7 text-muted-foreground">
+              Elisabeth or a member of her team will follow up by email to talk
+              through your visit and a personal quote.
+            </p>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor={`${prefix}-name`}>Your name</Label>
+                <Input
+                  {...props("name")}
                   autoComplete="name"
                   required
                   maxLength={100}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="First and last name"
-                  className="h-12"
-                  {...fieldProps("name")}
+                  className="h-12 text-base"
                 />
                 {fieldError("name")}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">
-                  Email address <span className="sr-only">(required)</span>
-                </Label>
+                <Label htmlFor={`${prefix}-email`}>Email</Label>
                 <Input
-                  id="email"
-                  name="email"
+                  {...props("email")}
                   type="email"
                   autoComplete="email"
                   required
                   maxLength={254}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="h-12"
-                  {...fieldProps("email")}
+                  className="h-12 text-base"
                 />
                 {fieldError("email")}
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone">
-                  Phone number{" "}
-                  <span className="font-normal text-muted-foreground">
-                    {smsConsent ? "· for texts" : "· optional"}
-                  </span>
-                </Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  autoComplete="tel"
-                  required={smsConsent}
-                  maxLength={30}
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="(555) 000-0000"
-                  className="h-12"
-                  {...fieldProps("phone")}
-                />
-                {fieldError("phone")}
-              </div>
             </div>
-            {!context && visitType === "house" && (
-              <div className="mt-5 space-y-2">
-                <Label htmlFor="contact-area">
-                  City or neighborhood{" "}
-                  <span className="font-normal text-muted-foreground">
-                    · optional
-                  </span>
-                </Label>
-                <Input
-                  id="contact-area"
-                  name="area"
-                  value={area}
-                  maxLength={120}
-                  onChange={(e) => setArea(e.target.value)}
-                  placeholder="e.g. Suncrest"
-                  className="h-12"
-                  {...fieldProps("area")}
-                />
-                {fieldError("area")}
-                <p className="text-xs leading-6 text-muted-foreground">
-                  No street address needed yet.
-                </p>
-              </div>
+            <p className="mt-5 text-xs leading-6 text-muted-foreground">
+              {house
+                ? "Your preferred date and time aren’t reserved until we confirm with you."
+                : "This is a consultation inquiry, not an appointment reservation."}
+            </p>
+          </div>
+          <div
+            className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden"
+            aria-hidden="true"
+          >
+            <label htmlFor={`${prefix}-website`}>Leave this field empty</label>
+            <input
+              {...props("website")}
+              autoComplete="off"
+              tabIndex={-1}
+              maxLength={200}
+            />
+          </div>
+          <div className="mt-7 flex gap-3">
+            {step > 0 && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => move(step - 1)}
+                className="h-12 px-4"
+              >
+                <ArrowLeft aria-hidden="true" />
+                <span>Back</span>
+              </Button>
             )}
-            <div className="mt-5 space-y-2">
-              <Label htmlFor="message">
-                What do you have in mind?{" "}
-                <span className="font-normal text-muted-foreground">
-                  · optional
-                </span>
-              </Label>
-              <Textarea
-                id="message"
-                name="message"
-                rows={4}
-                maxLength={1500}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="A fresh cut, a color idea, or a family haircut day…"
-                className="min-h-32 resize-y p-3"
-                {...fieldProps("message")}
-              />
-              {fieldError("message")}
-            </div>
-            <div
-              className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden"
-              aria-hidden="true"
-            >
-              <label htmlFor="website">Leave this field empty</label>
-              <input
-                id="website"
-                name="website"
-                autoComplete="off"
-                tabIndex={-1}
-                value={website}
-                onChange={(e) => setWebsite(e.target.value)}
-              />
-            </div>
-            <div className="mt-6 flex items-start gap-3">
-              <Checkbox
-                id="smsConsent"
-                name="smsConsent"
-                checked={smsConsent}
-                onCheckedChange={(checked) => setSmsConsent(checked === true)}
-                className="mt-1 shrink-0"
-                {...fieldProps("smsConsent")}
-              />
-              <div>
-                <Label
-                  htmlFor="smsConsent"
-                  className="block cursor-pointer text-xs font-normal leading-6 text-muted-foreground"
-                >
-                  {smsConsentText}
-                </Label>
-                <p className="text-xs leading-6 text-muted-foreground">
-                  See our{" "}
-                  <Link href="/terms" className="underline underline-offset-4">
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link
-                    href="/privacy"
-                    className="underline underline-offset-4"
-                  >
-                    Privacy Policy
-                  </Link>
-                  .
-                </p>
-                {fieldError("smsConsent")}
-              </div>
-            </div>
             <Button
               type="submit"
               disabled={submitting}
-              className="mt-7 h-12 w-full px-6"
+              className="h-12 flex-1 px-5"
             >
               {submitting ? (
                 <>
                   <LoaderCircle
                     className="animate-spin motion-reduce:animate-none"
                     aria-hidden="true"
-                  />{" "}
-                  Sending your inquiry…
+                  />
+                  Sending…
+                </>
+              ) : step < 2 ? (
+                <>
+                  Continue <ArrowRight aria-hidden="true" />
                 </>
               ) : (
                 <>
-                  Send my inquiry <ArrowUpRight aria-hidden="true" />
+                  Send my inquiry <ArrowRight aria-hidden="true" />
                 </>
               )}
             </Button>
-          </fieldset>
-          <p className="mt-3 text-center text-xs leading-6 text-muted-foreground">
-            A conversation only. No appointment, payment, or ongoing
-            mailing-list subscription.
+          </div>
+        </fieldset>
+        {step === 2 && (
+          <p className="mt-4 text-xs leading-6 text-muted-foreground">
+            By sending, you agree to our{" "}
+            <Link href="/terms" className="underline underline-offset-4">
+              Terms
+            </Link>
+            . See how we handle your details in our{" "}
+            <Link href="/privacy" className="underline underline-offset-4">
+              Privacy Policy
+            </Link>
+            .
           </p>
-          {onBack && (
-            <Button
-              type="button"
-              variant="ghost"
-              disabled={submitting}
-              onClick={onBack}
-              className="mt-4 h-11 w-full"
-            >
-              <ArrowLeft aria-hidden="true" /> Back to your services
-            </Button>
-          )}
-        </form>
-      </CardContent>
-    </Card>
+        )}
+      </form>
+    </div>
   );
 }

@@ -40,7 +40,7 @@ const clipped = (value: string, limit = 900) =>
 
 export async function sendContactInquiry(
   input: ContactInput,
-  sourcePath: "/contact" | "/quote" | "/api/contact" = "/api/contact",
+  sourcePath: "/" | "/contact" | "/quote" | "/api/contact" = "/api/contact",
 ) {
   const url = contactWebhookUrl();
   const quote = calculateQuote(
@@ -50,17 +50,20 @@ export async function sendContactInquiry(
     input.packages,
   );
   const timestamp = new Date().toISOString();
-  const serviceText =
-    [
-      ...quote.items.map(
-        (item) =>
-          `${item.member ? `${item.member}: ` : ""}${item.name} × ${item.quantity}${item.unit === "row" ? " rows" : ""}: ${item.subtotalCents === null ? "consultation / price pending" : `${item.pricingKind === "from" ? "from " : ""}${formatMoney(item.subtotalCents)}`}`,
-      ),
-      ...quote.packageItems.map(
-        (item) =>
-          `${item.name} × ${item.quantity}: ${formatMoney(item.subtotalCents)} — ${item.inclusions}${item.needsConfirmation ? " (inclusions need confirmation)" : ""}`,
-      ),
-    ].join("\n") || "General inquiry; services to discuss";
+  const simple =
+    input.haircutCount !== undefined || input.colorCount !== undefined;
+  const serviceText = simple
+    ? `People wanting haircuts: ${input.haircutCount ?? 0}\nPeople wanting color: ${input.colorCount ?? 0}\nA person receiving both appears in both counts. Services and personal quote to discuss.`
+    : [
+        ...quote.items.map(
+          (item) =>
+            `${item.member ? `${item.member}: ` : ""}${item.name} × ${item.quantity}${item.unit === "row" ? " rows" : ""}: ${item.subtotalCents === null ? "consultation / price pending" : `${item.pricingKind === "from" ? "from " : ""}${formatMoney(item.subtotalCents)}`}`,
+        ),
+        ...quote.packageItems.map(
+          (item) =>
+            `${item.name} × ${item.quantity}: ${formatMoney(item.subtotalCents)} — ${item.inclusions}${item.needsConfirmation ? " (inclusions need confirmation)" : ""}`,
+        ),
+      ].join("\n") || "General inquiry; services to discuss";
   const status =
     input.intent === "consultation"
       ? "Consultation inquiry"
@@ -69,12 +72,14 @@ export async function sendContactInquiry(
         : "Appointment request";
   const format =
     input.visitType === "house"
-      ? "Future house call"
+      ? "House call"
       : input.visitType === "salon"
         ? "Future salon booth"
         : "Special event / location to discuss";
-  const totals = `${quote.hasStartingPrices ? "Starting service subtotal" : "Known service subtotal"}: ${formatMoney(quote.knownSubtotalCents)}\nTravel: ${quote.travelFeeCents === null ? "to be confirmed" : "not applicable"}\n${quote.hasUnpricedServices ? "Consultation-only services excluded from numeric subtotal.\n" : ""}${quote.hasUnresolvedPackage ? "Mommy & Me women’s cut variant needs confirmation.\n" : ""}${quote.extensionHairExcluded ? "Extension hair is priced separately.\n" : ""}Minimum status: ${quote.minimum.status}\nCatalog version: ${quote.catalogVersion}\nThis is a planning estimate, not an accepted booking.`;
-  const consent = `${input.smsConsent ? "YES — inquiry follow-up only" : "NO — do not send texts; reply by email"}\nRecorded: ${timestamp}\nDisclosure version: ${smsConsentVersion}\nSource: ${business.url}${sourcePath}\nMarketing permission: none`;
+  const totals = simple
+    ? "Personal quote to discuss. No price or travel fee has been calculated. Date, time, location, and pricing must be confirmed with the customer."
+    : `${quote.hasStartingPrices ? "Starting service subtotal" : "Known service subtotal"}: ${formatMoney(quote.knownSubtotalCents)}\nTravel: ${quote.travelFeeCents === null ? "to be confirmed" : "not applicable"}\n${quote.hasUnpricedServices ? "Consultation-only services excluded from numeric subtotal.\n" : ""}${quote.hasUnresolvedPackage ? "Mommy & Me women’s cut variant needs confirmation.\n" : ""}${quote.extensionHairExcluded ? "Extension hair is priced separately.\n" : ""}Minimum status: ${quote.minimum.status}\nCatalog version: ${quote.catalogVersion}\nThis is a planning estimate, not an accepted booking.`;
+  const consent = `${input.smsConsent ? "YES — inquiry follow-up only" : "NO — do not send texts; reply by email"}\nRecorded: ${timestamp}\nDisclosure version: ${simple && !input.smsConsent ? "not shown (email-only form)" : smsConsentVersion}\nSource: ${business.url}${sourcePath}\nMarketing permission: none`;
   const fullDetails = [
     `${status} — NOT a confirmed appointment`,
     `Received: ${timestamp}`,
@@ -90,6 +95,8 @@ export async function sendContactInquiry(
     ...(input.preferredDate
       ? [`Date preference only, not reserved: ${input.preferredDate}`]
       : []),
+    `Preferred time (Mountain Time): ${input.preferredTime === "specific" ? input.exactTime : input.preferredTime}`,
+    `Visit address / venue: ${input.address || "To discuss"}`,
     "",
     "CUSTOMER SERVICE WISH LIST",
     serviceText,
@@ -101,8 +108,7 @@ export async function sendContactInquiry(
     "",
     "SMS CONSENT",
     consent,
-    "Disclosure shown:",
-    smsConsentText,
+    ...(input.smsConsent ? ["Disclosure shown:", smsConsentText] : []),
   ].join("\n");
   const fields = [
     {
@@ -130,15 +136,25 @@ export async function sendContactInquiry(
       ),
     },
     {
+      name: "Visit preferences",
+      value: escapeDiscord(
+        `Date: ${input.preferredDate || "Flexible"}\nTime (Mountain Time): ${input.preferredTime === "specific" ? input.exactTime : input.preferredTime}\nAddress / venue: see private attachment`,
+      ),
+    },
+    {
       name: "Service wish list",
       value: clipped(escapeDiscord(serviceText), 900),
     },
     { name: "Planning summary", value: clipped(escapeDiscord(totals), 800) },
     { name: "SMS consent", value: clipped(escapeDiscord(consent), 800) },
-    {
-      name: "Consent disclosure shown",
-      value: clipped(escapeDiscord(smsConsentText), 800),
-    },
+    ...(input.smsConsent
+      ? [
+          {
+            name: "Consent disclosure shown",
+            value: clipped(escapeDiscord(smsConsentText), 800),
+          },
+        ]
+      : []),
   ];
   const payload = {
     content: `New HairnThere ${status.toLowerCase()}. Customer-provided content is attached. No appointment is reserved or accepted by this notification.`,
@@ -154,7 +170,9 @@ export async function sendContactInquiry(
         timestamp,
         color: 0x4b2e4f,
         footer: {
-          text: "Complete details in the attached text file. Service prices recalculated by the server.",
+          text: simple
+            ? "Complete details and address in the private attachment. Follow up with the customer to confirm the visit and quote."
+            : "Complete details in the attached text file. Service prices recalculated by the server.",
         },
       },
     ],

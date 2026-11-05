@@ -17,7 +17,7 @@ import { Wordmark } from "@/components/site/wordmark";
 
 const navigation = [
   { href: "/#instagram", label: "Instagram gallery" },
-  { href: "/services", label: "Services & prices" },
+  { href: "/services", label: "Services" },
   { href: "/#about", label: "Meet Elisabeth" },
 ];
 
@@ -92,12 +92,13 @@ export function SiteHeader() {
                   </Link>
                 ))}
                 <Button
-                  render={<Link href="/quote" onClick={() => setOpen(false)} />}
+                  render={
+                    <Link href="/contact" onClick={() => setOpen(false)} />
+                  }
                   nativeButton={false}
                   className="mt-4 h-12 rounded-sm"
                 >
-                  Build your service wish list{" "}
-                  <ArrowUpRight aria-hidden="true" />
+                  Plan your visit <ArrowUpRight aria-hidden="true" />
                 </Button>
               </nav>
             </SheetContent>

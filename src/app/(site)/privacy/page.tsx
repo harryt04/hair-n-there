@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   PolicyContact,
   PolicyLayout,
@@ -9,7 +8,7 @@ import {
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "How HairnThere handles appointment inquiries, optional SMS consent, website analytics, and your privacy choices.",
+    "How HairnThere handles house-call inquiries, visit addresses, email follow-up, website analytics, and your privacy choices.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -23,37 +22,32 @@ export default function PrivacyPage() {
     >
       <PolicySection title="Who we are">
         <p>
-          HairnThere is Elisabeth’s developing hair-service brand in Suncrest,
-          Draper, Utah. Current forms collect consultation and interest
-          inquiries, not appointment requests. This policy applies to
-          information collected through the HairnThere website and appointment
-          inquiry form.
+          HairnThere is Elisabeth’s hair-service brand in Suncrest, Draper,
+          Utah. We accept house-call inquiries and informational consultations
+          for other settings. This policy applies to information collected
+          through the HairnThere website and appointment inquiry form.
         </p>
       </PolicySection>
       <PolicySection title="Information you choose to share">
         <p>
-          When you send an inquiry, we collect your name and email address,
-          together with the details you provide about your appointment type,
-          services, quantities, family packages, generic person labels, and city
-          or neighborhood. You may also provide a phone number and a message.
-          Neighborhood-day inquiries can include an estimated number of
-          interested households. Please use generic labels for family members
-          rather than children’s full names or dates of birth.
+          When you send an inquiry, we collect your name and email, the number
+          of people wanting haircuts or color, your preferred date and time, the
+          visit address or venue, and any optional note. One person may appear
+          in both service counts. We do not need family members’ names, dates of
+          birth, payment details, or health records.
         </p>
         <p>
-          We record whether you chose to receive inquiry and appointment texts,
-          the submission time, and the version and source of the consent
-          disclosure. Please do not send payment-card information, passwords,
-          health records, or other sensitive information through the form.
+          The current form uses email follow-up and does not ask for a phone
+          number or text-message consent. Previously submitted consent records
+          may remain with the original inquiry; they do not authorize marketing.
         </p>
       </PolicySection>
       <PolicySection title="How we use your information">
         <p>
-          We use inquiry information to respond to you, discuss your requested
-          services, confirm pricing and availability, and coordinate an future
-          plans. Appointments are not open and no inquiry creates a reservation.
-          If you opt in, we may also use your number for related text-message
-          follow-up when our messaging service is activated.
+          Elisabeth or authorized team members use your details to respond by
+          email, discuss services and a personal quote, check the visit location
+          and availability, and coordinate your visit. Sending an inquiry does
+          not automatically reserve a date or confirm an appointment.
         </p>
         <p>
           Our form does not enroll you in a newsletter or authorize unrelated
@@ -61,49 +55,25 @@ export default function PrivacyPage() {
           do not sell your personal information.
         </p>
       </PolicySection>
-      <PolicySection title="Optional text messages">
+      <PolicySection title="Phone and text messages">
         <p>
-          SMS consent is separate and optional. You can submit the form without
-          agreeing to receive texts, and consent is not a condition of purchase
-          or booking. Inquiry and appointment message frequency varies; message
-          and data rates may apply.
-        </p>
-        <p>
-          When messaging is active, reply STOP to stop texts or HELP for
-          assistance. You can also withdraw consent or request help through{" "}
-          <PolicyContact />. Our{" "}
-          <Link
-            className="underline underline-offset-4 hover:text-primary"
-            href="/terms"
-          >
-            Terms of Service
-          </Link>{" "}
-          include the messaging program terms.
-        </p>
-        <p>
-          Mobile information, SMS opt-in data, and consent are not sold or
-          shared with third parties or affiliates for their marketing or
-          promotional purposes. We may provide the information necessary to
-          service providers that deliver messages or support your inquiry on our
-          behalf.
-        </p>
-        <p>
-          Automated calling and texting are not currently activated through this
-          website. Before enabling an AI-assisted response or phone service, we
-          will configure the service, its consent and opt-out handling, and any
-          required registration. The policy will be updated to reflect material
-          changes in how information is used.
+          The website does not send automated calls or texts and the current
+          form does not collect SMS consent. Any future messaging service will
+          need its own opt-in, opt-out handling, and updated disclosures before
+          it is activated. To ask about a previous consent record, contact us
+          through <PolicyContact />.
         </p>
       </PolicySection>
       <PolicySection title="Inquiry delivery and service providers">
         <p>
           Submitted inquiries are sent to a private Discord destination used to
           manage HairnThere inquiries. The notification includes the information
-          you submitted, service selections, any calculated estimate, and
-          consent details. Complete inquiry details are included in a text
-          attachment with the notification; the service list shown in the
-          preview can be shortened. Discord and the people authorized to manage
-          that destination process the information to support your inquiry.
+          you submitted, including service counts and date/time preferences.
+          Your visit address is included in the private text attachment rather
+          than the notification preview. Older inquiries may also include
+          service selections, planning estimates, or consent details. Discord
+          and the people authorized to manage that destination process the
+          information to support your inquiry.
         </p>
         <p>
           Vercel hosts the website and runs the contact endpoint. Hosting and
@@ -124,11 +94,10 @@ export default function PrivacyPage() {
       </PolicySection>
       <PolicySection title="Travel planning">
         <p>
-          Current inquiries ask only for a city or neighborhood, not a street
-          address. Published travel bands and the drive-time example are
-          informational. No live address lookup or routing service is currently
-          used, and example driving minutes are not treated as a verified travel
-          fee.
+          House-call inquiries ask for a street address, city, and ZIP so the
+          team can discuss the visit location and any travel cost with you. No
+          live address lookup, geocoding, or routing service is used. An address
+          does not generate an automatic travel quote.
         </p>
         <p>
           If address-based estimates are introduced, this policy will describe
@@ -201,9 +170,10 @@ export default function PrivacyPage() {
           security, or consent and opt-out records.
         </p>
         <p>
-          You can decline optional fields and SMS consent. If you withdraw
-          messaging consent, we may still respond by another permitted contact
-          method about an inquiry you initiated.
+          You can leave the preferred date and optional note blank. If you would
+          rather discuss an address before submitting it, contact HairnThere
+          directly through the linked Instagram profile. You can request that we
+          stop follow-up through <PolicyContact />.
         </p>
       </PolicySection>
       <PolicySection title="Children and family appointments">

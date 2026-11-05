@@ -9,7 +9,7 @@ import {
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "Terms for exploring HairnThere services, sharing interest, requesting consultations, and optional follow-up text messages.",
+    "Terms for exploring HairnThere services, sending house-call inquiries, receiving personal quotes, and coordinating visits.",
   alternates: { canonical: "/terms" },
 };
 
@@ -32,16 +32,16 @@ export default function TermsPage() {
         <p>
           HairnThere is developing a personal hair-service offering including
           cuts, color, extensions, and styling. This website lets you explore
-          the menu, build a service wish list, and ask Elisabeth questions.
+          the menu and send visit details for Elisabeth or her team to discuss.
         </p>
       </PolicySection>
       <PolicySection title="Current availability">
         <p>
-          House-call appointments are not open. Salon services are coming in a
-          future chapter, and a booth location has not been announced.
-          Special-event inquiries are informational; location and service
-          availability must be confirmed individually. The website does not
-          currently accept appointment requests, reservations, deposits, or
+          House-call inquiries are open. Elisabeth or a member of her team will
+          follow up to discuss pricing, timing, and the visit location. Salon
+          services remain a future plan; special-event inquiries are
+          informational until location and services are confirmed. The website
+          does not automatically reserve appointments or collect deposits or
           payments.
         </p>
         <p>
@@ -64,65 +64,28 @@ export default function TermsPage() {
           not collect payment through this website.
         </p>
       </PolicySection>
-      <PolicySection title="Prices, packages, and future travel fees">
+      <PolicySection title="Personal quotes and travel">
         <p>
-          Prices marked + are starting prices. Per-row extension services are
-          charged by row; extension hair is priced separately. Color corrections
-          and other custom work require a consultation. A subtotal may omit
-          unpriced work, pending travel, or unresolved package details and is
-          not a final quote.
+          Public service descriptions are not fixed-price offers. We discuss a
+          personal quote based on your services, group, location, and the work
+          involved. Any family or neighborhood-day discount must be agreed
+          individually; no discount is automatically applied. Extension hair is
+          priced separately from installation and maintenance.
         </p>
         <p>
-          Family packages include only the listed services and people.
-          Additional services are priced separately. Mommy &amp; Me is $75 and
-          includes one women’s haircut + blow-dry and one child’s haircut (ages
-          0–12). Packages do not automatically include substitutions or
-          upgrades.
-        </p>
-        <p>
-          Future house calls have a $60 service minimum before travel. This is a
-          minimum service requirement, not an automatic surcharge. The published
-          convenience fees are added once per household appointment, not per
-          person; actual travel arrangements are still to be confirmed. The
-          planning example is not an address or route calculation. Longer
-          distances and neighborhood haircut days require an individual quote,
-          and no discount is automatically applied.
+          A house-call service minimum may apply and will be discussed before
+          confirmation. A minimum is a service requirement, not an automatic
+          surcharge. Any travel fee applies once per household visit rather than
+          per person. There is no automated route-based quote on this site.
         </p>
       </PolicySection>
-      <PolicySection title="Text messaging and consent">
+      <PolicySection title="Email follow-up and messaging">
         <p>
-          By providing your phone number and separately opting in on our form,
-          you agree to receive HairnThere text messages about your inquiry and
-          appointment coordination. This may include automated follow-up when
-          our messaging service is activated. Opt-in does not authorize
-          unrelated promotional or marketing messages, or enroll you in an
-          ongoing availability-update list.
-        </p>
-        <p>
-          SMS consent is optional, is not a condition of purchase or booking,
-          and is not required to submit an inquiry. If you do not opt in, we can
-          use the email address you provide to respond.
-        </p>
-        <p>
-          Message frequency varies with your inquiry and appointment. Message
-          and data rates may apply, depending on your mobile plan.
-        </p>
-        <p>
-          When messaging is active, reply STOP to opt out of text messages at
-          any time. Reply HELP for assistance, or contact us through{" "}
-          <PolicyContact />. After opting out, you may receive a confirmation of
-          your request; further messages require a new opt-in where applicable.
-        </p>
-        <p>
-          Carriers are not liable for delayed or undelivered messages. Delivery
-          is subject to your carrier and device availability. Do not use this
-          service for urgent or emergency communications.
-        </p>
-        <p>
-          Automated calling and texting are not currently activated through this
-          website. We will complete the applicable phone-number registration and
-          messaging setup before enabling them. Providing SMS consent does not
-          itself start an automated conversation.
+          We use the email you provide to respond to your inquiry. Submitting
+          the form does not subscribe you to marketing. The current form does
+          not collect phone numbers or SMS consent, and this website does not
+          send automated calls or texts. Any future text-messaging service will
+          require separate consent and updated terms before activation.
         </p>
       </PolicySection>
       <PolicySection title="Accurate information and acceptable use">
@@ -176,7 +139,7 @@ export default function TermsPage() {
             Privacy Policy
           </Link>{" "}
           explains the information we collect, our use of service providers,
-          optional SMS consent, and your choices.
+          email follow-up, and your choices.
         </p>
       </PolicySection>
       <PolicySection title="Changes, governing law, and contact">

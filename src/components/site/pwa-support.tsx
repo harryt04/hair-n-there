@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Download } from "lucide-react";
+import { Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type InstallPromptEvent = Event & {
@@ -99,58 +99,50 @@ export function PwaSupport() {
 
   return (
     <aside
-      aria-labelledby="install-title"
-      className="pwa-install border-t border-border bg-muted/40"
+      aria-label="Save HairnThere"
+      className="pwa-install border-t border-border"
     >
-      <div className="site-container flex flex-col gap-5 py-8 sm:flex-row sm:items-center sm:justify-between">
-        <div className="max-w-xl">
-          <h2 id="install-title" className="font-display text-xl">
-            A little closer to great hair.
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Add HairnThere to your home screen for an easy way back to
-            Elisabeth’s services and your family planner. An internet connection
-            is needed to use the site.
-          </p>
-          {!canInstall && (
-            <details className="mt-3 text-sm text-muted-foreground">
-              <summary className="cursor-pointer py-2 underline underline-offset-4">
-                How to install
-              </summary>
-              <p className="mt-2 leading-6">
-                On Android, open Chrome’s menu, choose “Add to home screen” and
-                then “Install” if offered. On iPhone, open this site in Safari,
-                tap Share, then “Add to Home Screen”. Available options depend
-                on your browser.
-              </p>
-            </details>
-          )}
-          <p role="status" className="mt-2 text-sm text-muted-foreground">
-            {message}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          {canInstall && (
-            <Button
-              type="button"
-              size="lg"
-              className="min-h-11"
-              onClick={install}
-            >
-              <Download aria-hidden="true" /> Install HairnThere
-            </Button>
-          )}
+      <div className="site-container flex items-start justify-between gap-4 py-3">
+        {canInstall ? (
           <Button
             type="button"
             variant="ghost"
-            size="lg"
-            className="min-h-11"
-            onClick={dismiss}
+            onClick={install}
+            className="h-11 px-0 text-xs"
           >
-            Not now
+            <Download aria-hidden="true" /> Add HairnThere to your home screen
           </Button>
-        </div>
+        ) : (
+          <details className="max-w-lg text-xs text-muted-foreground">
+            <summary className="cursor-pointer py-3">
+              Save HairnThere to your home screen
+            </summary>
+            <p className="pb-3 leading-6">
+              On Android, use your browser’s “Add to home screen” menu. On
+              iPhone, open this site in Safari, tap Share, then “Add to Home
+              Screen”. An internet connection is needed to send inquiries.
+            </p>
+          </details>
+        )}
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={dismiss}
+          className="size-11 shrink-0"
+          aria-label="Dismiss home-screen suggestion"
+        >
+          <X aria-hidden="true" />
+        </Button>
       </div>
+      {message && (
+        <p
+          role="status"
+          className="site-container pb-3 text-xs text-muted-foreground"
+        >
+          {message}
+        </p>
+      )}
     </aside>
   );
 }

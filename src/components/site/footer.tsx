@@ -7,7 +7,7 @@ import { Wordmark } from "@/components/site/wordmark";
 export function SiteFooter() {
   return (
     <footer className="border-t border-border">
-      <div className="site-container flex flex-col gap-8 py-10 md:flex-row md:items-center md:justify-between">
+      <div className="site-container flex flex-col gap-5 py-7 md:flex-row md:items-center md:justify-between">
         <div>
           <Wordmark className="text-2xl" />
           <p className="mt-3 text-xs text-muted-foreground">
@@ -22,7 +22,7 @@ export function SiteFooter() {
             href="/services"
             className="underline-offset-4 hover:text-foreground hover:underline"
           >
-            Services & prices
+            Services
           </Link>
           <Link
             href="/card"

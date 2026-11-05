@@ -6,10 +6,10 @@ export const availability = {
   house: {
     label: "House calls",
     model: "client_home",
-    status: "Coming soon",
-    acceptsAppointments: false,
+    status: "Taking inquiries",
+    acceptsAppointments: true,
     message:
-      "House-call appointments aren’t open yet. You’re welcome to ask a question or share your interest.",
+      "House-call inquiries are open. Elisabeth or her team will follow up to discuss your visit, pricing, and availability. Your time is confirmed together.",
   },
   salon: {
     label: "Salon services",
@@ -38,4 +38,4 @@ export const availability = {
   }
 >;
 export const launchNotice =
-  "Consultations & interest inquiries are welcome. Appointments aren’t open yet.";
+  "House-call inquiries are open. Let’s find a good hair day for you.";

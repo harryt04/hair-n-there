@@ -16,11 +16,11 @@ Harry explicitly chose **no automated test suites, test runners, pull request pr
 
 ## Business rules that must survive changes
 
-- `src/data/availability.ts` owns service-location availability. UI and the contact endpoint consume the same policy. All appointment acceptance is inactive; current forms collect consultations/interest only. Reject forged appointment requests on the server. A design approval is not approval to activate house-call, booth, event, or vehicle-salon services.
+- `src/data/availability.ts` owns service-location availability. UI and the contact endpoint consume the same policy. Harry explicitly opened house-call inquiries in the November 5 contact redesign review. The three-stage form collects counts, date/time preferences, address, and email for manual follow-up; it never confirms a booking or price. Salon/event appointment acceptance remains inactive; reject forged requests for those settings on the server. Other service launches require a separate business decision.
 - Keep client homes, salon booths, off-site events, and an equipped vehicle salon distinct. The Subaru is brand artwork, not an offered vehicle-based salon. Location/licensing confirmation is an external business prerequisite; do not invent legal conclusions or credentials.
-- `src/data/services.ts`, `src/data/packages.ts`, and `src/lib/quote.ts` own prices and calculation. Preserve integer cents, starting-price markers, per-row units, consultation exclusions, and extension hair priced separately. Recompute on the server from validated IDs/quantities; browser totals and availability are untrusted.
+- `src/data/services.ts`, `src/data/packages.ts`, and `src/lib/quote.ts` own prices and calculation. Prices and calculation remain internal; public pages use personal quotes and `/quote` redirects to `/contact`. Preserve integer cents, starting-price markers, per-row units, consultation exclusions, and extension hair priced separately. Recompute on the server from validated IDs/quantities; browser totals and availability are untrusted.
 - Family packages are charged once; their included cuts are not inserted as additional charged lines. Additional services are explicitly additional. Mommy & Me includes the women’s haircut + blow-dry and one child’s cut, as confirmed by Harry.
-- The house-call minimum is $60 in services before travel. Show the shortfall; do not create a minimum surcharge. Convenience fees apply once per household, not per person. Neighborhood-day reductions need a custom quote.
+- The house-call minimum is $60 in services before travel. Keep the internal shortfall calculation; do not create a minimum surcharge. Convenience fees apply once per household, not per person. Neighborhood-day reductions need a custom quote.
 - Travel bands are planning information. Without approved routing/origin configuration, actual travel stays pending. Keep a private origin and provider credentials server-only; never infer driving time from a city label or straight-line distance.
 
 ## UI and content
@@ -33,7 +33,7 @@ Keep all service-menu content server rendered. Preserve semantic headings, keybo
 
 ## Data handling
 
-Preserve the contact endpoint’s bounded input, rate limiting, consent validation, escaped Discord content, disabled mentions, and acknowledgement-before-success behavior. Preview deployments use their own webhook; never fall back to the production destination. SMS opt-in is optional and unchecked; future SMS needs durable consent/opt-out handling and provider setup. No AI calls/texts are active.
+Preserve the contact endpoint’s bounded input, rate limiting, consent validation, escaped Discord content, disabled mentions, and acknowledgement-before-success behavior. Preview deployments use their own webhook; never fall back to the production destination. The current form collects no phone number or SMS opt-in; preserve validation for legacy consent records. Future SMS needs durable consent/opt-out handling and provider setup. No AI calls/texts are active.
 
 Keep secrets in environment configuration and values out of logs/chat. Analytics receive broad action names, not messages, member labels, addresses, consent records, or contact details. Update Terms/Privacy when actual data handling changes. See the human-facing `README.md` and `.env.example` for configuration and deployment.
 

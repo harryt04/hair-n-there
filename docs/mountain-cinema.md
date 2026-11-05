@@ -54,8 +54,9 @@ works with storage disabled. Keep the reserved height and anchor scroll offset i
 ## Landing page and gallery
 
 Use the approved gallery-led composition: compact introduction, prominent @hairnthere
-heading and photographic carousel, then services, family plans, story, availability,
-FAQ, consultation invitation, and QR sharing just above the legal footer. Keep **QR Code**
+heading and photographic carousel, then unpriced services, family visits, story, two compact FAQ disclosures,
+and the three-stage house-call inquiry. The large QR presentation lives at `/card`,
+linked from the app bar and slim footer. Keep **QR Code**
 visible in the app bar on mobile and desktop; it opens `/card`. The existing QR assets
 and `https://www.hairnthere.com/` destination remain unchanged.
 
@@ -68,5 +69,6 @@ previews, with playback on Instagram. This is a partial collection, not a live f
 see [the inventory](instagram-inventory.md) for original captions, grouping, and gaps.
 
 Business rules remain in `docs/elisabeth-revision-plan.md` and the existing catalog,
-quote, and availability modules. Consultations/interest stay open; appointments stay
-inactive. There are no new payments, routing, automated messages, or service launches.
+quote, and availability modules. Harry opened house-call inquiries in the November 5 contact redesign;
+salon/event appointment acceptance stays inactive. Visits and personal quotes are
+confirmed manually. There are no new payments, routing, or automated messages.
