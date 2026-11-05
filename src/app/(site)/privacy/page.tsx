@@ -8,7 +8,7 @@ import {
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "How HairnThere handles house-call inquiries, visit addresses, email follow-up, website analytics, and your privacy choices.",
+    "How HairnThere handles house-call inquiries, visit addresses, appointment calls/texts and email follow-up, website analytics, and your privacy choices.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -30,24 +30,26 @@ export default function PrivacyPage() {
       </PolicySection>
       <PolicySection title="Information you choose to share">
         <p>
-          When you send an inquiry, we collect your name and email, the number
-          of people wanting haircuts or color, your preferred date and time, the
-          visit address or venue, and any optional note. One person may appear
-          in both service counts. We do not need family members’ names, dates of
-          birth, payment details, or health records.
+          When you send an inquiry, we collect your name, phone number and/or
+          email, the number of people wanting haircuts or color, your preferred
+          date and time, the visit address or venue, and any optional note. One
+          person may appear in both service counts. We do not need family
+          members’ names, dates of birth, payment details, or health records.
         </p>
         <p>
-          The current form uses email follow-up and does not ask for a phone
-          number or text-message consent. Previously submitted consent records
-          may remain with the original inquiry; they do not authorize marketing.
+          Provide a phone number or email so we can reach you. Providing a phone
+          number means you prefer personal calls or texts about your appointment
+          inquiry and appointment confirmations, now or for future appointments.
+          If you leave phone blank, an email address is required.
         </p>
       </PolicySection>
       <PolicySection title="How we use your information">
         <p>
           Elisabeth or authorized team members use your details to respond by
-          email, discuss services and a personal quote, check the visit location
-          and availability, and coordinate your visit. Sending an inquiry does
-          not automatically reserve a date or confirm an appointment.
+          your preferred contact method, discuss services and a personal quote,
+          check the visit location and availability, and coordinate your visit.
+          Sending an inquiry does not automatically reserve a date or confirm an
+          appointment.
         </p>
         <p>
           Our form does not enroll you in a newsletter or authorize unrelated
@@ -57,11 +59,23 @@ export default function PrivacyPage() {
       </PolicySection>
       <PolicySection title="Phone and text messages">
         <p>
-          The website does not send automated calls or texts and the current
-          form does not collect SMS consent. Any future messaging service will
-          need its own opt-in, opt-out handling, and updated disclosures before
-          it is activated. To ask about a previous consent record, contact us
-          through <PolicyContact />.
+          Calls and texts from Elisabeth or her team are limited to your
+          appointment inquiry and appointment confirmations. They may be
+          one-time or ongoing for your appointments, never for marketing or
+          unrelated purposes. We never sell your contact information. You may
+          ask Elisabeth or her team to stop calling or texting at any time,
+          including by replying to a personal text. Message and data rates may
+          apply. You can choose email instead by leaving your phone number
+          blank.
+        </p>
+        <p>
+          We record your phone contact preference, the disclosure shown, its
+          version, submission time, and source with the inquiry in Discord.
+          Previously submitted SMS consent records remain separate and do not
+          authorize marketing. This website does not send automated calls or
+          texts. Any future automated messaging service needs separate consent,
+          opt-out handling, and updated disclosures before activation. To ask
+          about a contact preference or previous record, use <PolicyContact />.
         </p>
       </PolicySection>
       <PolicySection title="Inquiry delivery and service providers">

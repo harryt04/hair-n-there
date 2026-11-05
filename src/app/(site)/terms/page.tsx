@@ -79,13 +79,21 @@ export default function TermsPage() {
           per person. There is no automated route-based quote on this site.
         </p>
       </PolicySection>
-      <PolicySection title="Email follow-up and messaging">
+      <PolicySection title="Appointment follow-up and messaging">
         <p>
-          We use the email you provide to respond to your inquiry. Submitting
-          the form does not subscribe you to marketing. The current form does
-          not collect phone numbers or SMS consent, and this website does not
-          send automated calls or texts. Any future text-messaging service will
-          require separate consent and updated terms before activation.
+          Provide a phone number or email so we can respond. By providing a
+          phone number, you choose personal calls or texts from Elisabeth or her
+          team about your appointment inquiry and appointment confirmations, now
+          or for future appointments. These contacts may be one-time or ongoing
+          for appointments only, never for marketing or unrelated messages. We
+          never sell your contact information. You can ask us to stop calling or
+          texting at any time. Message and data rates may apply. If you prefer
+          email, leave phone blank and provide an email address.
+        </p>
+        <p>
+          This website does not send automated calls or texts. Any future
+          automated messaging service will require separate consent, opt-out
+          handling, and updated terms before activation.
         </p>
       </PolicySection>
       <PolicySection title="Accurate information and acceptable use">
@@ -139,7 +147,7 @@ export default function TermsPage() {
             Privacy Policy
           </Link>{" "}
           explains the information we collect, our use of service providers,
-          email follow-up, and your choices.
+          appointment follow-up, and your choices.
         </p>
       </PolicySection>
       <PolicySection title="Changes, governing law, and contact">

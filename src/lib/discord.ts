@@ -1,4 +1,10 @@
-import { business, smsConsentText, smsConsentVersion } from "@/data/business";
+import {
+  business,
+  smsConsentText,
+  smsConsentVersion,
+  phoneContactConsentText,
+  phoneContactConsentVersion,
+} from "@/data/business";
 import { calculateQuote, formatMoney } from "@/lib/quote";
 import type { ContactInput } from "@/lib/validation";
 
@@ -79,12 +85,19 @@ export async function sendContactInquiry(
   const totals = simple
     ? "Personal quote to discuss. No price or travel fee has been calculated. Date, time, location, and pricing must be confirmed with the customer."
     : `${quote.hasStartingPrices ? "Starting service subtotal" : "Known service subtotal"}: ${formatMoney(quote.knownSubtotalCents)}\nTravel: ${quote.travelFeeCents === null ? "to be confirmed" : "not applicable"}\n${quote.hasUnpricedServices ? "Consultation-only services excluded from numeric subtotal.\n" : ""}${quote.hasUnresolvedPackage ? "Mommy & Me women’s cut variant needs confirmation.\n" : ""}${quote.extensionHairExcluded ? "Extension hair is priced separately.\n" : ""}Minimum status: ${quote.minimum.status}\nCatalog version: ${quote.catalogVersion}\nThis is a planning estimate, not an accepted booking.`;
-  const consent = `${input.smsConsent ? "YES — inquiry follow-up only" : "NO — do not send texts; reply by email"}\nRecorded: ${timestamp}\nDisclosure version: ${simple && !input.smsConsent ? "not shown (email-only form)" : smsConsentVersion}\nSource: ${business.url}${sourcePath}\nMarketing permission: none`;
+  const consent = `${input.smsConsent ? "YES — inquiry follow-up only" : "NO — no legacy automated SMS opt-in"}\nRecorded: ${timestamp}\nDisclosure version: ${!input.smsConsent ? "not applicable" : smsConsentVersion}\nSource: ${business.url}${sourcePath}\nMarketing permission: none`;
+  const phonePreference = input.phoneContactConsent
+    ? `Phone preferred — personal appointment calls/texts only; no marketing.\nRecorded: ${timestamp}\nDisclosure version: ${phoneContactConsentVersion}\nSource: ${business.url}${sourcePath}\nDisclosure shown: ${phoneContactConsentText}`
+    : input.smsConsent
+      ? "Legacy SMS opt-in; see consent record."
+      : input.email
+        ? "Reply by email. No appointment call/text preference recorded."
+        : "Phone supplied without appointment call/text preference; no text permission recorded.";
   const fullDetails = [
     `${status} — NOT a confirmed appointment`,
     `Received: ${timestamp}`,
     `Name: ${input.name}`,
-    `Email: ${input.email}`,
+    `Email: ${input.email || "Not supplied"}`,
     `Phone: ${input.phone || "Not supplied"}`,
     `Format: ${format}`,
     `Topic: ${input.topic}`,
@@ -106,7 +119,10 @@ export async function sendContactInquiry(
     "CUSTOMER MESSAGE",
     input.message || "Not supplied",
     "",
-    "SMS CONSENT",
+    "APPOINTMENT CONTACT PREFERENCE",
+    phonePreference,
+    "",
+    "LEGACY SMS CONSENT",
     consent,
     ...(input.smsConsent ? ["Disclosure shown:", smsConsentText] : []),
   ].join("\n");
@@ -118,7 +134,7 @@ export async function sendContactInquiry(
     },
     {
       name: "Email",
-      value: clipped(escapeDiscord(input.email), 600),
+      value: clipped(escapeDiscord(input.email || "Not supplied"), 600),
       inline: true,
     },
     {
@@ -146,7 +162,13 @@ export async function sendContactInquiry(
       value: clipped(escapeDiscord(serviceText), 900),
     },
     { name: "Planning summary", value: clipped(escapeDiscord(totals), 800) },
-    { name: "SMS consent", value: clipped(escapeDiscord(consent), 800) },
+    {
+      name: "Appointment contact preference",
+      value: input.phoneContactConsent
+        ? `Phone preferred — personal appointment calls/texts only; no marketing. Disclosure version: ${phoneContactConsentVersion}. Full record in the private attachment.`
+        : escapeDiscord(phonePreference),
+    },
+    { name: "Legacy SMS consent", value: clipped(escapeDiscord(consent), 800) },
     ...(input.smsConsent
       ? [
           {

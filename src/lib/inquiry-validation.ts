@@ -20,13 +20,17 @@ export const inquirySchema = z
     email: z
       .string()
       .trim()
-      .email("Please enter a valid email address.")
-      .max(254),
+      .max(254)
+      .refine(
+        (value) => !value || z.email().safeParse(value).success,
+        "Please enter a valid email address.",
+      )
+      .optional(),
     phone: optionalText(40).refine(
       (value) =>
         !value ||
         (/^[+\d\s().-]+$/.test(value) &&
-          phoneDigits(value).length >= 7 &&
+          phoneDigits(value).length >= 10 &&
           phoneDigits(value).length <= 15),
       "Please enter a valid phone number.",
     ),
@@ -56,6 +60,7 @@ export const inquirySchema = z
     address: optionalText(400),
     message: optionalText(1500),
     smsConsent: z.boolean().default(false),
+    phoneContactConsent: z.boolean().default(false),
     visitType: z.enum(["house", "salon", "event"]),
     intent: z
       .enum(["consultation", "interest", "appointment_request"])
@@ -100,6 +105,24 @@ export const inquirySchema = z
   })
   .strict()
   .superRefine((value, context) => {
+    if (!value.email && !value.phone) {
+      for (const field of ["email", "phone"]) {
+        context.addIssue({
+          code: "custom",
+          path: [field],
+          message:
+            "Please provide a phone number or email so we can reach you.",
+        });
+      }
+    }
+    if (value.phoneContactConsent && !value.phone) {
+      context.addIssue({
+        code: "custom",
+        path: ["phone"],
+        message:
+          "Please provide a phone number for appointment calls or texts.",
+      });
+    }
     if (value.preferredTime === "specific" && !value.exactTime) {
       context.addIssue({
         code: "custom",

@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { availability } from "@/data/availability";
-import { business } from "@/data/business";
+import { business, phoneContactConsentText } from "@/data/business";
 import { inquirySchema, type InquiryInput } from "@/lib/inquiry-validation";
 import type { VisitType } from "@/lib/quote-types";
 import { trackEvent } from "@/components/site/telemetry";
@@ -18,7 +18,7 @@ const stages = ["Your people", "Your visit", "Stay in touch"];
 const stageFields = [
   ["haircutCount", "colorCount", "message"],
   ["preferredDate", "preferredTime", "exactTime", "address"],
-  ["name", "email"],
+  ["name", "phone", "email"],
 ];
 type FieldErrors = Record<string, string>;
 
@@ -55,6 +55,7 @@ export function ContactForm({
     address: "",
     name: "",
     email: "",
+    phone: "",
     message: "",
     website: "",
   });
@@ -127,6 +128,7 @@ export function ContactForm({
       services: [],
       packages: [],
       smsConsent: false,
+      phoneContactConsent: !!values.phone.trim(),
     };
   }
   function focusStage(next: number) {
@@ -452,8 +454,9 @@ export function ContactForm({
           </div>
           <div hidden={step !== 2}>
             <p className="mb-5 text-sm leading-7 text-muted-foreground">
-              Elisabeth or a member of her team will follow up by email to talk
-              through your visit and a personal quote.
+              Leave a phone number or email so Elisabeth or her team can discuss
+              your visit and a personal quote. If you provide a phone number,
+              we’ll use calls or texts for appointment follow-up.
             </p>
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="space-y-2">
@@ -468,18 +471,41 @@ export function ContactForm({
                 {fieldError("name")}
               </div>
               <div className="space-y-2">
-                <Label htmlFor={`${prefix}-email`}>Email</Label>
+                <Label htmlFor={`${prefix}-phone`}>
+                  Phone · optional if you provide email
+                </Label>
+                <Input
+                  {...props("phone")}
+                  type="tel"
+                  autoComplete="tel"
+                  required={!values.email.trim()}
+                  maxLength={40}
+                  aria-describedby={`${prefix}-phone-disclosure${errors.phone ? ` ${prefix}-phone-error` : ""}`}
+                  className="h-12 text-base"
+                />
+                {fieldError("phone")}
+              </div>
+              <div className="space-y-2 sm:col-span-2">
+                <Label htmlFor={`${prefix}-email`}>
+                  Email · required if you leave phone blank
+                </Label>
                 <Input
                   {...props("email")}
                   type="email"
                   autoComplete="email"
-                  required
+                  required={!values.phone.trim()}
                   maxLength={254}
                   className="h-12 text-base"
                 />
                 {fieldError("email")}
               </div>
             </div>
+            <p
+              id={`${prefix}-phone-disclosure`}
+              className="mt-5 text-xs leading-6 text-muted-foreground"
+            >
+              {phoneContactConsentText}
+            </p>
             <p className="mt-5 text-xs leading-6 text-muted-foreground">
               {house
                 ? "Your preferred date and time aren’t reserved until we confirm with you."
