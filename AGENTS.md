@@ -2,7 +2,7 @@
 
 ## Product decisions
 
-Build **Mountain Cinema / Powder Day**, the approved gallery-led direction in `docs/mountain-cinema.md`. Preserve all three black 2020 Outback variants with one random assignment per tab visit. This supersedes Scenic Journey’s sidebar; `docs/elisabeth-revision-plan.md` remains the business-rule reference. Local `.lavish/` review artifacts are optional and ignored by Git. Use `public/brand/logo.png` as the current logo; preserve the original root `logo.png` as an archive. Keep brand tokens in `src/app/globals.css`, Playfair Display headings, Montserrat body type, and light/dark themes. Spell the neighborhood **Suncrest**, in Draper, Utah.
+Build **Mountain Cinema / Powder Day**, the approved gallery-led direction in `docs/mountain-cinema.md`. Preserve all three black 2020 Outback variants with a fresh random assignment on every full page load, including refresh; client navigation keeps the current assignment. This supersedes Scenic Journey’s sidebar; `docs/elisabeth-revision-plan.md` remains the business-rule reference. Local `.lavish/` review artifacts are optional and ignored by Git. Use `public/brand/logo.png` as the current logo; preserve the original root `logo.png` as an archive. Keep brand tokens in `src/app/globals.css`, Playfair Display headings, Montserrat body type, and light/dark themes. Spell the neighborhood **Suncrest**, in Draper, Utah.
 
 Use `docs/elisabeth-revision-plan.md` when changing the catalog, family planner, travel policy, service availability, or Subaru motion. It records supplied business rules and unresolved decisions; implemented data files are the authority for current application behavior. Earlier concepts in `setup-plan.md` and `design-direction.md` are historical where superseded.
 

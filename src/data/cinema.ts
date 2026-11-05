@@ -1,4 +1,4 @@
-/** Approved artwork is preserved independently of the visit-assignment policy. */
+/** Approved artwork is preserved independently of the page-load assignment policy. */
 export const cinemaVariants = [
   "alpine-local",
   "powder-day",
@@ -7,8 +7,3 @@ export const cinemaVariants = [
 export type CinemaVariant = (typeof cinemaVariants)[number];
 
 export const defaultCinemaVariant: CinemaVariant = "powder-day";
-export const cinemaSessionKey = "hairnthere-cinema-v1";
-
-export function isCinemaVariant(value: unknown): value is CinemaVariant {
-  return cinemaVariants.some((variant) => variant === value);
-}

@@ -1,7 +1,7 @@
 # Mountain Cinema
 
 Harry approved Powder Day as the starting website direction, with all three Mountain
-Cinema banners retained and randomly assigned to visitors. This supersedes the older
+Cinema banners retained and randomly assigned on each full page load. This supersedes the older
 Scenic Journey sidebar. The new art and layout were approved through the Mountain
 Cinema Lavish review; the review files are optional local artifacts, not build inputs.
 
@@ -18,13 +18,17 @@ snowboarder persona through Harry; this does not imply the car is an operating s
 
 ## Assignment
 
-`src/data/cinema.ts` owns the variant IDs and Powder Day fallback. The client chooses
-one of the three with equal probability after hydration, stores only the variant ID
-under `hairnthere-cinema-v1` in sessionStorage, and keeps it across reloads and client
-navigation in that tab. Closing the tab ordinarily ends that visit; a duplicated tab
-can inherit its session storage. If storage is blocked, the in-memory choice lasts
-until a full reload. Invalid stored IDs are replaced. Server rendering and no-JavaScript
-views consistently use Powder Day, avoiding random server/client hydration mismatches.
+`src/data/cinema.ts` owns the variant IDs and Powder Day fallback. After hydration,
+the client draws one of the three with equal probability once per full page load,
+including refresh. The in-memory choice stays stable through client navigation; it is
+not read from or written to browser storage. Each reload makes an independent draw,
+so consecutive loads can legitimately show the same banner. This makes refresh useful
+for reviewing the approaches without adding an experiment or visitor identifier.
+
+Server rendering and no-JavaScript views consistently use Powder Day, avoiding random
+server/client hydration mismatches. The browser-only draw happens when the store is
+first subscribed to, not during render. An old `hairnthere-cinema-v1` session preference
+from an earlier release is ignored and naturally expires with its tab session.
 
 This is decorative variation, not an A/B test: no experiment IDs, retention events,
 visitor identifiers, or assignment analytics are sent. Future seasonal/holiday rules or

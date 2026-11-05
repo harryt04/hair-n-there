@@ -142,7 +142,7 @@ House calls require **$60 in services before travel fees**. For a $35 haircut, s
 
 ## 5. Subaru scroll animation
 
-Harry approved **Mountain Cinema / Powder Day** as the website direction and requested all three black 2020 Outback banners be retained with random assignment per visit. See [Mountain Cinema](mountain-cinema.md) for the current motion, artwork, and assignment rules. This supersedes the continuous scenic margin and older chapter-divider studies.
+Harry approved **Mountain Cinema / Powder Day** as the website direction and requested all three black 2020 Outback banners be retained with a fresh random assignment on each full page load, including refresh. See [Mountain Cinema](mountain-cinema.md) for the current motion, artwork, and assignment rules. This supersedes the continuous scenic margin and older chapter-divider studies.
 
 The production treatment is a dedicated horizontal ribbon below navigation, with a snowboard-equipped black Outback, neighborhood houses, and layered mountains. Preserve normal scrolling, reverse travel, endpoint parking, static reduced-motion/no-JavaScript views, and cleanup. The Outback is transport/brand artwork, not a vehicle salon. This design approval leaves service-location acceptance inactive.
 
@@ -181,7 +181,7 @@ Use Vercel’s optional branch preview for visual review if requested; productio
 
 ## Open decisions
 
-1. Resolved: Mountain Cinema / Powder Day replaces the Scenic Journey margin; preserve all three approved banners with visit-level random assignment. See `docs/mountain-cinema.md`.
+1. Resolved: Mountain Cinema / Powder Day replaces the Scenic Journey margin; preserve all three approved banners with fresh random assignment per full page load (including refresh). See `docs/mountain-cinema.md`.
 2. Written requirements/authorization for each exact service location model; salon venue and off-site event arrangements remain unconfirmed. Who will provide the decision and when?
 3. Continue manual confirmation/interest inquiries for this release, or integrate real-time scheduling later? No live scheduling provider has been chosen.
 4. Resolved: Mommy & Me includes the women’s haircut + blow-dry. Any substitutions or upgrades still need explicit pricing.
