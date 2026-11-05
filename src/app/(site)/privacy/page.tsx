@@ -139,9 +139,12 @@ export default function PrivacyPage() {
         <p>
           The decorative mountain banner is chosen randomly on each full page
           load, including refresh. It stays consistent during navigation within
-          that page session. This choice is kept only in memory, is not stored
-          in browser storage, and is not sent to analytics or used for retention
-          testing.
+          that page session. We save only the last banner ID in this tab’s
+          session storage so the next full load chooses a different banner. This
+          preference lasts for the tab session and can be cleared through your
+          browser’s site-data settings. If storage is blocked or cleared,
+          banners may repeat. The choice is not sent to analytics or used for
+          retention testing.
         </p>
         <p>
           You can install HairnThere on a supported device. A service worker

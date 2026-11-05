@@ -8,9 +8,25 @@ export type CinemaVariant = (typeof cinemaVariants)[number];
 
 export const defaultCinemaVariant: CinemaVariant = "powder-day";
 
-/** One uniform sample in [0, 1): winter 75%, each alternative 12.5%. */
-export function selectCinemaVariant(sample: number): CinemaVariant {
-  if (sample < 0.75) return "powder-day";
-  if (sample < 0.875) return "alpine-local";
-  return "night-shift";
+const weightedVariants = [
+  { variant: "powder-day", weight: 6 },
+  { variant: "alpine-local", weight: 1 },
+  { variant: "night-shift", weight: 1 },
+] as const;
+
+/** Uniform sample in [0, 1); exclude the previous scene, retaining relative weights. */
+export function selectCinemaVariant(
+  sample: number,
+  previous?: CinemaVariant,
+): CinemaVariant {
+  const candidates = weightedVariants.filter(
+    ({ variant }) => variant !== previous,
+  );
+  let remaining =
+    sample * candidates.reduce((sum, { weight }) => sum + weight, 0);
+  for (const { variant, weight } of candidates) {
+    remaining -= weight;
+    if (remaining < 0) return variant;
+  }
+  return candidates[candidates.length - 1].variant;
 }

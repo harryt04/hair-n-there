@@ -19,21 +19,29 @@ snowboarder persona through Harry; this does not imply the car is an operating s
 ## Assignment
 
 `src/data/cinema.ts` owns the variant IDs, seasonal weights, and Powder Day fallback.
-After hydration, the client draws once per full page load: **Powder Day 75%**,
-**Alpine Local 12.5%**, and **Night Shift 12.5%**. Every full refresh, including mobile
-pull-to-refresh, makes a fresh draw. The in-memory choice stays stable through client navigation; it is
-not read from or written to browser storage. Each reload makes an independent draw,
-so consecutive loads can legitimately show the same banner. The 75% winter weight is a probability per load, not a quota or a guarantee of
-seeing a different banner on refresh.
+After hydration, the client draws once per full page load. The first draw uses
+**Powder Day 75%**, **Alpine Local 12.5%**, and **Night Shift 12.5%**. Each later
+full load, including refresh and mobile pull-to-refresh, excludes the previous
+banner in that tab. The remaining choices retain their relative weights: after
+Powder Day, each alternative has a 50% chance; after either alternative, Powder
+Day has a 6/7 chance and the other alternative has a 1/7 chance. The original
+75% weight is therefore only the first-draw probability, not the overall frequency.
+Client navigation keeps the in-memory choice.
+
+The last banner ID is saved in tab-scoped `sessionStorage` under
+`hairnthere-cinema-last-v2`, so other tabs do not overwrite the current tab's choice.
+Restoring a page from the back/forward cache records its displayed banner again.
+Unknown saved values are ignored. If browser storage is blocked or cleared, the
+next load uses the first-draw probabilities and cannot guarantee a different banner.
+The old `hairnthere-cinema-v1` preference is ignored.
 
 Server rendering and no-JavaScript views consistently use Powder Day, avoiding random
 server/client hydration mismatches. The browser-only draw happens when the store is
-first subscribed to, not during render. An old `hairnthere-cinema-v1` session preference
-from an earlier release is ignored and naturally expires with its tab session.
+first subscribed to, not during render.
 
 This is decorative variation, not an A/B test: no experiment IDs, retention events,
-visitor identifiers, or assignment analytics are sent. Changes to seasonal/holiday weights or experimentation need a separate decision;
-preserve the three artwork variants.
+visitor identifiers, or assignment analytics are sent. Changes to seasonal/holiday
+weights or experimentation need a separate decision; preserve the three artwork variants.
 
 ## Motion and space
 
