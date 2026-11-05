@@ -61,7 +61,7 @@ export function CardActions() {
               <WebsiteQr className={styles.qr} />
             </div>
             <p className="text-center text-xs font-medium">
-              hairnthere.com · Great Hair Travels.
+              {business.cardWebsiteLabel} · Great Hair Travels.
             </p>
           </SheetContent>
         </Sheet>

@@ -5,6 +5,7 @@ import { Wordmark } from "@/components/site/wordmark";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 import { CardActions } from "@/components/card/card-actions";
 import { WebsiteQr } from "@/components/card/website-qr";
+import { business } from "@/data/business";
 import styles from "@/components/card/card.module.css";
 
 export const metadata: Metadata = {
@@ -38,7 +39,7 @@ export default function DigitalCardPage() {
           href="/"
           className="inline-flex items-center gap-1.5 text-sm font-semibold underline-offset-4 hover:underline"
         >
-          hairnthere.com{" "}
+          {business.cardWebsiteLabel}{" "}
           <ArrowUpRight className="size-3.5" aria-hidden="true" />
         </Link>
         <p className="mt-1 text-[10px] leading-5 text-muted-foreground">

@@ -135,7 +135,7 @@ export default function Home() {
                   Scan. Explore. Say hello.
                 </h2>
                 <p className="mt-1 text-[10px] leading-5 text-muted-foreground">
-                  hairnthere.com
+                  {business.cardWebsiteLabel}
                 </p>
               </div>
               <Button
