@@ -18,12 +18,13 @@ snowboarder persona through Harry; this does not imply the car is an operating s
 
 ## Assignment
 
-`src/data/cinema.ts` owns the variant IDs and Powder Day fallback. After hydration,
-the client draws one of the three with equal probability once per full page load,
-including refresh. The in-memory choice stays stable through client navigation; it is
+`src/data/cinema.ts` owns the variant IDs, seasonal weights, and Powder Day fallback.
+After hydration, the client draws once per full page load: **Powder Day 75%**,
+**Alpine Local 12.5%**, and **Night Shift 12.5%**. Every full refresh, including mobile
+pull-to-refresh, makes a fresh draw. The in-memory choice stays stable through client navigation; it is
 not read from or written to browser storage. Each reload makes an independent draw,
-so consecutive loads can legitimately show the same banner. This makes refresh useful
-for reviewing the approaches without adding an experiment or visitor identifier.
+so consecutive loads can legitimately show the same banner. The 75% winter weight is a probability per load, not a quota or a guarantee of
+seeing a different banner on refresh.
 
 Server rendering and no-JavaScript views consistently use Powder Day, avoiding random
 server/client hydration mismatches. The browser-only draw happens when the store is
@@ -31,8 +32,8 @@ first subscribed to, not during render. An old `hairnthere-cinema-v1` session pr
 from an earlier release is ignored and naturally expires with its tab session.
 
 This is decorative variation, not an A/B test: no experiment IDs, retention events,
-visitor identifiers, or assignment analytics are sent. Future seasonal/holiday rules or
-experimentation need a separate decision; preserve the three artwork variants.
+visitor identifiers, or assignment analytics are sent. Changes to seasonal/holiday weights or experimentation need a separate decision;
+preserve the three artwork variants.
 
 ## Motion and space
 

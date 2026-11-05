@@ -129,8 +129,10 @@ See [the PWA plan and device acceptance checklist](docs/pwa-plan.md) for release
 ## Mountain Cinema and gallery
 
 The current design is **Mountain Cinema / Powder Day**. All three black 2020 Outback
-banner variants are preserved and freshly randomized on every full page load, including
-refresh; client navigation keeps the current choice. Independent draws can repeat.
+banner variants are preserved: Powder Day appears with 75% probability, and Alpine Local
+and Night Shift each appear with 12.5% probability. Every full page load or refresh,
+including mobile pull-to-refresh, makes a fresh draw; client navigation keeps the current
+choice. Independent draws can repeat.
 The default/no-JavaScript view is Powder Day. Banner assignment uses no browser storage
 and is not an A/B test or analytics event. See [the design and motion notes](docs/mountain-cinema.md) for the
 artwork, assignment policy, accessibility fallbacks, and future seasonal possibilities.

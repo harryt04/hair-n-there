@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import {
-  cinemaVariants,
+  selectCinemaVariant,
   defaultCinemaVariant,
   type CinemaVariant,
 } from "@/data/cinema";
@@ -15,7 +15,7 @@ function initializePageLoad() {
   if (initialized) return;
   initialized = true;
   const sample = crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
-  current = cinemaVariants[Math.floor(sample * cinemaVariants.length)];
+  current = selectCinemaVariant(sample);
   listeners.forEach((listener) => listener());
 }
 
