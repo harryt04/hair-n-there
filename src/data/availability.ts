@@ -9,7 +9,7 @@ export const availability = {
     status: "Taking inquiries",
     acceptsAppointments: true,
     message:
-      "House-call inquiries are open. Elisabeth or her team will follow up to discuss your visit, pricing, and availability. Your time is confirmed together.",
+      "House-call inquiries are open. Appointments are coming soon, pending licensing approval. Elisabeth or her team will follow up to discuss your plans and a personal quote.",
   },
   salon: {
     label: "Salon services",
@@ -38,4 +38,4 @@ export const availability = {
   }
 >;
 export const launchNotice =
-  "House-call inquiries are open. Let’s find a good hair day for you.";
+  "House-call appointments are coming soon, pending licensing approval. Inquiries are welcome!";

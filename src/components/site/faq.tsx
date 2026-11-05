@@ -1,8 +1,18 @@
 import Link from "next/link";
+import { launchNotice } from "@/data/availability";
 
 export function FrequentlyAskedQuestions() {
   return (
     <div className="divide-y divide-border border-y border-border">
+      <details className="py-1">
+        <summary className="cursor-pointer py-4 text-sm font-medium">
+          Can I book a house call yet?
+        </summary>
+        <p className="pb-5 text-sm leading-7 text-muted-foreground">
+          {launchNotice} Send an inquiry to start a conversation with Elisabeth
+          or her team. Submitting the form does not reserve an appointment.
+        </p>
+      </details>
       <details className="py-1">
         <summary className="cursor-pointer py-4 text-sm font-medium">
           How will pricing work?

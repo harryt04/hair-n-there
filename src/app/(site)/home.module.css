@@ -8,7 +8,7 @@
 }
 .title {
   margin-top: 14px;
-  font-size: clamp(2.1rem, 3.5vw, 2.5rem);
+  font-size: clamp(1.9rem, 3.5vw, 2.5rem);
   line-height: 1.08;
   letter-spacing: -0.045em;
 }
@@ -141,6 +141,7 @@
   padding-bottom: 28px;
 }
 .galleryAction p {
+  max-width: 43rem;
   font-size: 13px;
   line-height: 1.9;
   color: var(--muted-foreground);
@@ -154,5 +155,42 @@
   }
   .galleryAction p {
     font-size: 12px;
+  }
+}
+
+.welcome,
+.about {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 3rem;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 3rem;
+}
+.welcome {
+  padding-bottom: 1.5rem;
+}
+.portraits {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.65fr);
+  align-items: end;
+  gap: 0.75rem;
+}
+.portrait,
+.sundance {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
+}
+.portrait {
+  margin-bottom: 2rem;
+}
+@media (max-width: 767px) {
+  .welcome,
+  .about {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    padding-top: 2rem;
   }
 }

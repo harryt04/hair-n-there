@@ -1,3 +1,4 @@
+import { launchNotice } from "@/data/availability";
 import { business } from "@/data/business";
 import { Suspense } from "react";
 import { ContactEntry, ContactForm } from "@/components/contact/contact-form";
@@ -28,6 +29,9 @@ export function ContactSection({
           Tell us about your people and what works for you. Elisabeth or a
           member of her team will be in touch shortly to discuss your visit and
           a personal quote.
+        </p>
+        <p className="mt-3 max-w-lg text-xs leading-6 text-muted-foreground">
+          {launchNotice}
         </p>
       </div>
       {standalone ? (

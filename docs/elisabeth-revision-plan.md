@@ -1,5 +1,26 @@
 # HairnThere: Elisabeth revision plan
 
+## November 5 Elisabeth copy and portrait update
+
+Use Elisabeth’s supplied first-person biography and neighborhood voice: “Good
+Hair. Good Vibes. Right in Your Neighborhood.” leads the homepage; “Great Hair
+Travels.” remains the brand tagline. She confirmed over ten years of experience.
+Keep the Mountain Cinema gallery-led structure, with a welcome section, Fresh
+Cuts, Color Magic, Extensions & Styling, Family Hair Days, and Meet Elisabeth.
+Use both supplied portraits in `public/Elisabeth/` in the biography section;
+these are personal photos, separate from the portfolio gallery.
+
+Public wording states that house-call appointments are coming soon, pending
+licensing approval. House-call inquiries remain open for manual follow-up under
+the existing server policy; this copy change does not activate services or
+confirm appointments. Keep the neighborhood spelling Suncrest.
+
+Adapt the proposed “Join the HairnThere Launch List” CTA to “Say hello before
+launch,” linking to the existing inquiry form. No mailing-list subscription is
+created or implied. A future ongoing launch list needs its own explicit opt-in,
+storage/delivery decision, and matching privacy/terms copy. Existing inquiry
+validation, delivery, pricing, and service-location gates remain unchanged.
+
 ## November 5 contact redesign decision
 
 Harry approved “One less thing on your list” from proposal A with proposal B’s
@@ -206,7 +227,7 @@ Use Vercel’s optional branch preview for visual review if requested; productio
 4. Resolved: Mommy & Me includes the women’s haircut + blow-dry. Any substitutions or upgrades still need explicit pricing.
 5. Is travel one-way from the Suncrest base, and are city names illustrative? Confirm private origin, rounding/traffic policy, free-consultation location/minimum treatment, and the routing provider before live estimates.
 6. What reduction applies to neighborhood haircut days? Use manual quotes until supplied.
-7. Approved About Me biography, experience, certifications, specialties, support contact, and portfolio export/before-and-after pairs are still needed. Do not fill these with invented copy.
+7. Biography, over ten years of experience, and two personal portraits were supplied in the November 5 copy update. Certifications, further specialties, support contact, and portfolio export/before-and-after pairs still need approval. Do not fill these with invented copy.
 
 This revision plan supersedes the earlier pending-prices launch assumption and proposed active house-call/salon CTAs. It is not proof of licensing permission, a live booking system, or a completed Instagram migration.
 

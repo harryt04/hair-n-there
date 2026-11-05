@@ -54,7 +54,8 @@ works with storage disabled. Keep the reserved height and anchor scroll offset i
 ## Landing page and gallery
 
 Use the approved gallery-led composition: compact introduction, prominent @hairnthere
-heading and photographic carousel, then unpriced services, family visits, story, two compact FAQ disclosures,
+heading and photographic carousel, then a neighborhood welcome, unpriced services, family visits, the supplied
+first-person biography and both Elisabeth portraits, compact FAQ disclosures,
 and the three-stage house-call inquiry. The large QR presentation lives at `/card`,
 linked from the app bar and slim footer. Keep **QR Code**
 visible in the app bar on mobile and desktop; it opens `/card`. The existing QR assets

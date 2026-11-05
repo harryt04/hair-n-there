@@ -20,10 +20,13 @@ export default function ServicesPage() {
   return (
     <main id="main-content" className="site-container py-12 sm:py-20">
       <div className="max-w-2xl">
-        <p className="eyebrow">Your hair. Your kind of beautiful.</p>
+        <p className="eyebrow">
+          A Little Hair. A Little There. A Lot of Happy.
+        </p>
         <h1 className="heading-display mt-5 text-5xl sm:text-6xl">
-          A fresh cut.
-          <br />A little more ease.
+          Fresh hair.
+          <br />
+          Good vibes.
         </h1>
         <p className="mt-6 text-sm leading-8 text-muted-foreground">
           Explore the possibilities, then tell us about your people. Elisabeth
@@ -80,7 +83,7 @@ export default function ServicesPage() {
         aria-labelledby="family-heading"
       >
         <h2 id="family-heading" className="text-3xl">
-          Your whole family. One thoughtful plan.
+          Family Hair Days. One happy household.
         </h2>
         <p className="mt-4 text-sm leading-7 text-muted-foreground">
           Whether it’s one person or a full household, share how many people

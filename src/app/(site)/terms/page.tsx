@@ -37,12 +37,12 @@ export default function TermsPage() {
       </PolicySection>
       <PolicySection title="Current availability">
         <p>
-          House-call inquiries are open. Elisabeth or a member of her team will
-          follow up to discuss pricing, timing, and the visit location. Salon
-          services remain a future plan; special-event inquiries are
-          informational until location and services are confirmed. The website
-          does not automatically reserve appointments or collect deposits or
-          payments.
+          House-call appointments are coming soon, pending licensing approval.
+          Inquiries are open. Elisabeth or a member of her team will follow up
+          to discuss pricing, timing, and the visit location. Salon services
+          remain a future plan; special-event inquiries are informational until
+          location and services are confirmed. The website does not
+          automatically reserve appointments or collect deposits or payments.
         </p>
         <p>
           The illustrated Subaru is part of the brand. It does not represent an
