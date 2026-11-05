@@ -3,6 +3,8 @@ import { ArrowUpRight, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InstagramLink } from "@/components/site/instagram-link";
 import { business } from "@/data/business";
+import { CarouselItem } from "@/components/ui/carousel";
+import { PortfolioCarousel } from "./portfolio-carousel";
 import { gallery } from "@/data/gallery";
 import styles from "./instagram-gallery.module.css";
 
@@ -35,41 +37,49 @@ export function InstagramGallery() {
         </Button>
       </div>
       <p className={styles.notice}>
-        Follow Elisabeth’s next chapter. These images are stock inspiration, not
-        her work; approved portfolio photos are still to come.
+        Hair by Elisabeth, from her @justbeyou_hair portfolio. Follow her next
+        chapter at @hairnthere. Swipe or use the arrows to explore.
       </p>
-      <div className={styles.grid}>
+      <PortfolioCarousel count={gallery.length}>
         {gallery.map((image, index) => (
-          <figure
+          <CarouselItem
             key={image.id}
-            className={index === 0 ? styles.featured : undefined}
+            className={styles.slide}
+            aria-label={`${index + 1} of ${gallery.length}: ${image.label}`}
           >
-            <InstagramLink
-              href={business.instagramUrl}
-              className={styles.photo}
-              aria-label={`Visit @hairnthere on Instagram. ${image.label}: stock inspiration, not Elisabeth’s work.`}
-            >
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                sizes={
-                  index === 0
-                    ? "(max-width: 767px) calc(100vw - 40px), (max-width: 1279px) 58vw, 690px"
-                    : "(max-width: 767px) calc(50vw - 26px), (max-width: 1279px) 38vw, 450px"
-                }
-                loading={index === 0 ? "eager" : "lazy"}
-                className={styles.image}
-              />
-            </InstagramLink>
-            <figcaption>
-              <span>0{index + 1}</span>
-              <span>Stock inspiration</span>
-              <ArrowUpRight aria-hidden="true" />
-            </figcaption>
-          </figure>
+            <figure>
+              <InstagramLink
+                href={image.sourceUrl}
+                className={styles.photo}
+                aria-label={`View ${image.label} on Elisabeth’s original Instagram post${image.kind === "reel" ? " (reel)" : ""}.`}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  sizes="(max-width: 767px) 82vw, (max-width: 1279px) 42vw, 380px"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  className={styles.image}
+                />
+              </InstagramLink>
+              <figcaption>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <span>{image.label}</span>
+                <ArrowUpRight aria-hidden="true" />
+              </figcaption>
+              <p className={styles.mediaType}>
+                {image.kind === "reel"
+                  ? "Reel cover · watch on Instagram"
+                  : `${image.photoCount} photos · view original post`}
+              </p>
+              <details className={styles.caption}>
+                <summary>Original caption</summary>
+                <p>{image.caption}</p>
+              </details>
+            </figure>
+          </CarouselItem>
         ))}
-      </div>
+      </PortfolioCarousel>
       <div className={styles.footer}>
         <p>Mountain roots. Your kind of beautiful.</p>
         <InstagramLink

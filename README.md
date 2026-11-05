@@ -93,7 +93,7 @@ Text-message opt-in is optional and unchecked. A checked box requires a phone nu
 
 ## Content still to supply
 
-- Approved portfolio photos/captions from [@justbeyou_hair](https://www.instagram.com/justbeyou_hair/), including real before/after pairs if desired. Public fetching was throttled; the gallery links the prior account and keeps temporary images labeled **stock inspiration**, not Elisabeth’s work. Public profile links go to [@hairnthere](https://www.instagram.com/hairnthere/).
+- The first public portfolio collection contains 12 posts from [@justbeyou_hair](https://www.instagram.com/justbeyou_hair/). Eleven appear in the website carousel; an expired appointment promotion is excluded. Older-post discovery and reel video recovery remain incomplete. See [the collection inventory](docs/instagram-inventory.md). Follow links go to [@hairnthere](https://www.instagram.com/hairnthere/).
 - Elisabeth’s approved biography, experience, certifications, specialties, and public support email.
 - Any approved family-package substitutions beyond the stated inclusions.
 - Private travel origin/routing configuration and neighborhood-day discounts.
@@ -135,7 +135,10 @@ The default/no-JavaScript view is Powder Day. Banner assignment uses no browser 
 and is not an A/B test or analytics event. See [the design and motion notes](docs/mountain-cinema.md) for the
 artwork, assignment policy, accessibility fallbacks, and future seasonal possibilities.
 
-The prominent @hairnthere gallery currently uses clearly labeled stock inspiration.
-It is server-rendered with local images, not a connected live Instagram feed. Replace
-`src/data/gallery.ts` entries with approved media before labeling it Elisabeth’s work.
+The @hairnthere gallery shows 11 real posts from Elisabeth’s previous account in a
+server-rendered, horizontally scrollable carousel. Images are served locally; no API
+key or live Instagram feed is needed. Reel covers link to the original videos, and
+original captions can be expanded. Source captions, ordered carousel photos, review
+status, and source links are recorded in `src/data/instagram-posts.json`. The follow
+destination remains @hairnthere; source-post links go to @justbeyou_hair.
 The **QR Code** app-bar shortcut opens `/card`; the homepage QR is at the bottom.

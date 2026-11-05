@@ -53,16 +53,18 @@ works with storage disabled. Keep the reserved height and anchor scroll offset i
 ## Landing page and gallery
 
 Use the approved gallery-led composition: compact introduction, prominent @hairnthere
-heading and photographic contact sheet, then services, family plans, story, availability,
+heading and photographic carousel, then services, family plans, story, availability,
 FAQ, consultation invitation, and QR sharing just above the legal footer. Keep **QR Code**
 visible in the app bar on mobile and desktop; it opens `/card`. The existing QR assets
 and `https://www.hairnthere.com/` destination remain unchanged.
 
-The gallery is server-rendered and links to @hairnthere, with first-party images that
-stay visible without Instagram embeds, trackers, or JavaScript. Current images are
-explicitly **stock inspiration, not Elisabeth’s work**. Approved posts/export from
-@justbeyou_hair remain an external content task; no live-feed integration is claimed.
-`src/data/gallery.ts` owns those entries; local source credits accompany new assets.
+The gallery uses shadcn’s carousel with 11 real portfolio posts collected from
+@justbeyou_hair without an API key. Content is server-rendered with local images;
+native scrolling works before JavaScript initializes. Follow links go to @hairnthere;
+individual covers link to the original posts. Reel covers are labeled as still
+previews, with playback on Instagram. This is a partial collection, not a live feed.
+`src/data/gallery.ts` derives selected entries from `src/data/instagram-posts.json`;
+see [the inventory](instagram-inventory.md) for original captions, grouping, and gaps.
 
 Business rules remain in `docs/elisabeth-revision-plan.md` and the existing catalog,
 quote, and availability modules. Consultations/interest stay open; appointments stay

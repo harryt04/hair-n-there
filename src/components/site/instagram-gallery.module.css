@@ -32,50 +32,70 @@
   line-height: 1.9;
   color: var(--muted-foreground);
 }
-.grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  gap: 18px;
-}
-.grid figure {
+.controls {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.controls > span {
+  margin-right: auto;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.track {
+  display: flex;
+  gap: 18px;
+  margin-left: 0;
+  padding-bottom: 14px;
+}
+.track:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+.slide {
+  flex: 0 0 min(380px, 42vw);
   min-width: 0;
   margin: 0;
-}
-.featured {
-  grid-row: span 2;
+  padding-left: 0;
 }
 .photo {
   position: relative;
   display: block;
-  flex: 1;
-  aspect-ratio: 1.6;
-  min-height: 0;
+  aspect-ratio: 4/5;
   background: var(--muted);
 }
-.featured .photo {
-  aspect-ratio: auto;
-}
 .image {
-  object-fit: cover;
+  object-fit: contain;
 }
-.grid figcaption {
+.slide figcaption {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 10px;
   padding: 12px 0;
   border-bottom: 1px solid var(--border);
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.5;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--muted-foreground);
 }
-.grid figcaption svg {
+.slide figcaption svg {
   width: 12px;
   height: 12px;
+  margin-left: auto;
+}
+.mediaType,
+.caption {
+  margin-top: 10px;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--muted-foreground);
+}
+.caption summary {
+  cursor: pointer;
+}
+.caption p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 .footer {
   display: flex;
@@ -111,25 +131,8 @@
     line-height: 1.8;
     margin-bottom: 14px;
   }
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-  }
-  .featured {
-    grid-column: 1/-1;
-    grid-row: auto;
-  }
-  .featured .photo {
-    aspect-ratio: 1.4;
-  }
-  .photo {
-    aspect-ratio: 4/5;
-  }
-  .grid figcaption {
-    padding: 9px 0;
-    font-size: 7px;
-    letter-spacing: 0.025em;
-    gap: 6px;
+  .slide {
+    flex-basis: 82vw;
   }
   .footer {
     flex-direction: column;
@@ -138,4 +141,18 @@
     font-size: 11px;
     padding: 18px 0;
   }
+}
+
+.slide figure {
+  margin: 0;
+}
+.carousel:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+.carousel[data-ready="false"] :global([data-slot="carousel-content"]) {
+  overflow-x: auto;
+}
+.carousel[data-ready="false"] .controls button {
+  visibility: hidden;
 }

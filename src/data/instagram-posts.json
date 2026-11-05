@@ -1,0 +1,311 @@
+{
+  "sourceAccount": "justbeyou_hair",
+  "destinationAccount": "hairnthere",
+  "collectedAt": "2026-11-05T06:08:35.804Z",
+  "coverage": "12 publicly exposed posts; older posts require sign-in. Reel cover images recovered; video files not recovered.",
+  "posts": [
+    {
+      "id": "Ccb6RAnOH0Q",
+      "sourceUrl": "https://www.instagram.com/justbeyou_hair/p/Ccb6RAnOH0Q/",
+      "postedAt": "2022-04-17T02:53:08.000Z",
+      "originalCaption": "More pictures! Good examples of a balayage with and without the money piece!",
+      "label": "Balayage & money pieces",
+      "alt": "Long brunette waves with warm balayage highlights.",
+      "kind": "carousel",
+      "websiteSelected": true,
+      "repostStatus": "needs-review",
+      "assets": [
+        {
+          "position": 1,
+          "sourceMediaId": "Ccb6Q79uB66",
+          "src": "/images/portfolio/Ccb6RAnOH0Q-1.webp",
+          "kind": "photo",
+          "videoRecovered": false
+        },
+        {
+          "position": 2,
+          "sourceMediaId": "Ccb6Q8ButoH",
+          "src": "/images/portfolio/Ccb6RAnOH0Q-2.webp",
+          "kind": "photo",
+          "videoRecovered": false
+        },
+        {
+          "position": 3,
+          "sourceMediaId": "Ccb6Q7_u_oC",
+          "src": "/images/portfolio/Ccb6RAnOH0Q-3.webp",
+          "kind": "photo",
+          "videoRecovered": false
+        },
+        {
+          "position": 4,
+          "sourceMediaId": "Ccb6Q7-uQ2z",
+          "src": "/images/portfolio/Ccb6RAnOH0Q-4.webp",
+          "kind": "photo",
+          "videoRecovered": false
+        },
+        {
+          "position": 5,
+          "sourceMediaId": "Ccb6Q7_uQ3R",
+          "src": "/images/portfolio/Ccb6RAnOH0Q-5.webp",
+          "kind": "photo",
+          "videoRecovered": false
+        },
+        {
+          "position": 6,
+          "sourceMediaId": "Ccb6Q8EOcue",
+          "src": "/images/portfolio/Ccb6RAnOH0Q-6.webp",
+          "kind": "photo",
+          "videoRecovered": false
+        },
+        {
+          "position": 7,
+          "sourceMediaId": "Ccb6Q79uKlr",
+          "src": "/images/portfolio/Ccb6RAnOH0Q-7.webp",
+          "kind": "photo",
+          "videoRecovered": false
+        }
+      ]
+    },
+    {
+      "id": "CdkUbpDgEe5",
+      "sourceUrl": "https://www.instagram.com/justbeyou_hair/reel/CdkUbpDgEe5/",
+      "postedAt": "2022-05-15T05:48:07.000Z",
+      "originalCaption": "Growing out grey can be tolerable with highlights!",
+      "label": "Grey blending",
+      "alt": "Close-up of light highlights blending into grey hair.",
+      "kind": "reel",
+      "websiteSelected": true,
+      "repostStatus": "needs-review",
+      "assets": [
+        {
+          "position": 1,
+          "sourceMediaId": "CdkUbpDgEe5",
+          "src": "/images/portfolio/CdkUbpDgEe5-1.webp",
+          "kind": "reel-cover",
+          "videoRecovered": false
+        }
+      ]
+    },
+    {
+      "id": "CdkTadlAFRn",
+      "sourceUrl": "https://www.instagram.com/justbeyou_hair/reel/CdkTadlAFRn/",
+      "postedAt": "2022-05-15T05:38:57.000Z",
+      "originalCaption": "❤️‍🔥",
+      "label": "Brunette dimension",
+      "alt": "Shoulder-length brunette hair with softly curled ends.",
+      "kind": "reel",
+      "websiteSelected": true,
+      "repostStatus": "needs-review",
+      "assets": [
+        {
+          "position": 1,
+          "sourceMediaId": "CdkTadlAFRn",
+          "src": "/images/portfolio/CdkTadlAFRn-1.webp",
+          "kind": "reel-cover",
+          "videoRecovered": false
+        }
+      ]
+    },
+    {
+      "id": "CdkS1ZrAlTa",
+      "sourceUrl": "https://www.instagram.com/justbeyou_hair/reel/CdkS1ZrAlTa/",
+      "postedAt": "2022-05-15T05:34:17.000Z",
+      "originalCaption": "Another day another slay, period 💁‍♀️",
+      "label": "Bright blonde",
+      "alt": "Light blonde waves with dimensional roots.",
+      "kind": "reel",
+      "websiteSelected": true,
+      "repostStatus": "needs-review",
+      "assets": [
+        {
+          "position": 1,
+          "sourceMediaId": "CdkS1ZrAlTa",
+          "src": "/images/portfolio/CdkS1ZrAlTa-1.webp",
+          "kind": "reel-cover",
+          "videoRecovered": false
+        }
+      ]
+    },
+    {
+      "id": "Ccb5TfYjRBb",
+      "sourceUrl": "https://www.instagram.com/justbeyou_hair/reel/Ccb5TfYjRBb/",
+      "postedAt": "2022-04-17T02:46:20.000Z",
+      "originalCaption": "Two best friends getting their hair done at the same time! So much fun 🤩 literally the prettiest hair 😍 @shay.payton @abi_gabrielaa",
+      "label": "Hair day together",
+      "alt": "Long brunette waves with face-framing highlights.",
+      "kind": "reel",
+      "websiteSelected": true,
+      "repostStatus": "needs-review",
+      "assets": [
+        {
+          "position": 1,
+          "sourceMediaId": "Ccb5TfYjRBb",
+          "src": "/images/portfolio/Ccb5TfYjRBb-1.webp",
+          "kind": "reel-cover",
+          "videoRecovered": false
+        }
+      ]
+    },
+    {
+      "id": "CbRhxO7g085",
+      "sourceUrl": "https://www.instagram.com/justbeyou_hair/reel/CbRhxO7g085/",
+      "postedAt": "2022-03-19T05:36:46.000Z",
+      "originalCaption": "Check it out 💁‍♀️ little sun kissed highlights ☀️",
+      "label": "Sun-kissed highlights",
+      "alt": "Warm highlighted waves on long brunette hair.",
+      "kind": "reel",
+      "websiteSelected": true,
+      "repostStatus": "needs-review",
+      "assets": [
+        {
+          "position": 1,
+          "sourceMediaId": "CbRhxO7g085",
+          "src": "/images/portfolio/CbRhxO7g085-1.webp",
+          "kind": "reel-cover",
+          "videoRecovered": false
+        }
+      ]
+    },
+    {
+      "id": "CbPES0HAGdt",
+      "sourceUrl": "https://www.instagram.com/justbeyou_hair/reel/CbPES0HAGdt/",
+      "postedAt": "2022-03-18T06:40:14.000Z",
+      "originalCaption": "Abra cadabra 🪄",
+      "label": "Blonde waves",
+      "alt": "Soft blonde waves viewed from behind.",
+      "kind": "reel",
+      "websiteSelected": true,
+      "repostStatus": "needs-review",
+      "assets": [
+        {
+          "position": 1,
+          "sourceMediaId": "CbPES0HAGdt",
+          "src": "/images/portfolio/CbPES0HAGdt-1.webp",
+          "kind": "reel-cover",
+          "videoRecovered": false
+        }
+      ]
+    },
+    {
+      "id": "CbLCNyND7V3",
+      "sourceUrl": "https://www.instagram.com/justbeyou_hair/reel/CbLCNyND7V3/",
+      "postedAt": "2022-03-16T17:05:53.000Z",
+      "originalCaption": "Add a little color to brighten your day 🤩",
+      "label": "A little color",
+      "alt": "Straight hair with burgundy and violet tones.",
+      "kind": "reel",
+      "websiteSelected": true,
+      "repostStatus": "needs-review",
+      "assets": [
+        {
+          "position": 1,
+          "sourceMediaId": "CbLCNyND7V3",
+          "src": "/images/portfolio/CbLCNyND7V3-1.webp",
+          "kind": "reel-cover",
+          "videoRecovered": false
+        }
+      ]
+    },
+    {
+      "id": "CavlJeLAVoX",
+      "sourceUrl": "https://www.instagram.com/justbeyou_hair/reel/CavlJeLAVoX/",
+      "postedAt": "2022-03-06T01:12:28.000Z",
+      "originalCaption": "Pretty in pink 💅",
+      "label": "Pretty in pink",
+      "alt": "Blonde waves with bright pink ends.",
+      "kind": "reel",
+      "websiteSelected": true,
+      "repostStatus": "needs-review",
+      "assets": [
+        {
+          "position": 1,
+          "sourceMediaId": "CavlJeLAVoX",
+          "src": "/images/portfolio/CavlJeLAVoX-1.webp",
+          "kind": "reel-cover",
+          "videoRecovered": false
+        }
+      ]
+    },
+    {
+      "id": "CaJD4enA-4a",
+      "sourceUrl": "https://www.instagram.com/justbeyou_hair/reel/CaJD4enA-4a/",
+      "postedAt": "2022-02-19T02:10:11.000Z",
+      "originalCaption": "Hey now you’re a rock star 🌟 \nGet the show on \nGet paid 💁‍♀️",
+      "label": "Golden waves",
+      "alt": "Golden blonde curls viewed from behind.",
+      "kind": "reel",
+      "websiteSelected": true,
+      "repostStatus": "needs-review",
+      "assets": [
+        {
+          "position": 1,
+          "sourceMediaId": "CaJD4enA-4a",
+          "src": "/images/portfolio/CaJD4enA-4a-1.webp",
+          "kind": "reel-cover",
+          "videoRecovered": false
+        }
+      ]
+    },
+    {
+      "id": "CaG1Vu0geif",
+      "sourceUrl": "https://www.instagram.com/justbeyou_hair/p/CaG1Vu0geif/",
+      "postedAt": "2022-02-18T05:23:15.000Z",
+      "originalCaption": "🦕✨🖤💙",
+      "label": "Blue dimension",
+      "alt": "Dark waves with blue highlights, viewed from behind.",
+      "kind": "carousel",
+      "websiteSelected": true,
+      "repostStatus": "needs-review",
+      "assets": [
+        {
+          "position": 1,
+          "sourceMediaId": "CaG1VqlAK83",
+          "src": "/images/portfolio/CaG1Vu0geif-1.webp",
+          "kind": "photo",
+          "videoRecovered": false
+        },
+        {
+          "position": 2,
+          "sourceMediaId": "CaG1Vqmgzva",
+          "src": "/images/portfolio/CaG1Vu0geif-2.webp",
+          "kind": "photo",
+          "videoRecovered": false
+        },
+        {
+          "position": 3,
+          "sourceMediaId": "CaG1ItoA6H6",
+          "src": "/images/portfolio/CaG1Vu0geif-3.webp",
+          "kind": "reel-cover",
+          "videoRecovered": false
+        },
+        {
+          "position": 4,
+          "sourceMediaId": "CaG1VqmArvT",
+          "src": "/images/portfolio/CaG1Vu0geif-4.webp",
+          "kind": "photo",
+          "videoRecovered": false
+        }
+      ]
+    },
+    {
+      "id": "CZhtcWvOech",
+      "sourceUrl": "https://www.instagram.com/justbeyou_hair/p/CZhtcWvOech/",
+      "postedAt": "2022-02-03T19:22:21.000Z",
+      "originalCaption": "I’ve got openings today, tomorrow and Saturday! Let me know if you need your color or cuts done! Xoxo 😘 💋",
+      "label": "Archived promotion",
+      "alt": "Archived appointment availability graphic.",
+      "kind": "photo",
+      "websiteSelected": false,
+      "repostStatus": "needs-review",
+      "assets": [
+        {
+          "position": 1,
+          "sourceMediaId": "CZhtcWvOech",
+          "src": null,
+          "kind": "photo",
+          "videoRecovered": false
+        }
+      ]
+    }
+  ]
+}
