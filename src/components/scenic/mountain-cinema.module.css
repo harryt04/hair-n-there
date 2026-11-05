@@ -1,0 +1,83 @@
+.banner {
+  --cinema-sky: var(--landscape-sky);
+  --cinema-snow: var(--cinema-snow-color);
+  --cinema-road: var(--cinema-road-color);
+  --cinema-stripe: var(--cinema-stripe-color);
+  --pine: var(--cinema-pine-color);
+  position: sticky;
+  top: var(--site-header-height);
+  z-index: 30;
+  height: var(--cinema-banner-height);
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  background: var(--landscape-sky);
+  pointer-events: none;
+  contain: paint;
+}
+.banner[data-cinema-variant="powder-day"] {
+  --cinema-sky: var(--powder-sky);
+  --cinema-road: var(--powder-road);
+  --cinema-stripe: var(--powder-stripe);
+  --pine: var(--powder-pine);
+}
+.banner[data-cinema-variant="night-shift"] {
+  --cinema-road: var(--night-road);
+  --cinema-stripe: var(--night-stripe);
+}
+.landscape {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.car {
+  position: absolute;
+  left: 18%;
+  top: calc(84.667% - 31px);
+  width: 174px;
+  height: 116px;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+}
+.banner[data-measured] .car {
+  left: 0;
+  top: 0;
+}
+.caption {
+  position: absolute;
+  left: 20px;
+  bottom: 8px;
+  font-size: 8px;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--foreground);
+}
+.banner[data-cinema-variant="powder-day"] .caption {
+  color: var(--powder-caption);
+}
+.banner[data-cinema-variant="night-shift"] .caption {
+  color: var(--night-caption);
+}
+@media (max-width: 767px) {
+  .car {
+    width: 132px;
+    height: 88px;
+    top: calc(84.667% - 23.5px);
+  }
+  .banner[data-measured] .car {
+    top: 0;
+  }
+  .caption {
+    left: 12px;
+    bottom: 6px;
+    font-size: 6px;
+    letter-spacing: 0.1em;
+  }
+}
+@media print {
+  .banner {
+    position: relative;
+    top: 0;
+  }
+}

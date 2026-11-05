@@ -1,10 +1,12 @@
 # HairnThere: Elisabeth revision plan
 
-Status: Scenic Journey (B) selected and implemented. The full catalog, family planner, server-side inactive-booking gate, and responsive scroll-driven Subaru are implemented. Real address routing, live delivery configuration, portfolio imports, and service-location authorization remain external setup/content tasks. No live deployment is performed by this change.
+Status: Mountain Cinema / Powder Day supersedes Scenic Journey’s visual treatment; see `docs/mountain-cinema.md`. The full catalog, family planner, server-side inactive-booking gate, and responsive scroll-driven Subaru are implemented. Real address routing, live delivery configuration, portfolio imports, and service-location authorization remain external setup/content tasks. No live deployment is performed by this change.
 
 The latest supplied price list supersedes the earlier “all pricing to be confirmed” plan. The licensing summary is a business launch constraint supplied by Harry; its legal conclusions and cited rules have not been independently verified in this task. Obtain written clarification for the actual operating model before opening paid appointment requests for it.
 
-## Product direction and three design choices
+## Historical product direction and three design choices
+
+The current visual approval is [Mountain Cinema / Powder Day](mountain-cinema.md); the earlier concepts below explain the business-rule revision, not the current banner layout.
 
 Keep HairnThere / “Great Hair Travels.”, the original illustrated logo, the supplied light/dark palette, Playfair Display headings, and Montserrat body text. The primary headline becomes “Beautiful Hair, Wherever You Are.” The family section uses “Your Whole Family. One Appointment. Zero Salon Trips.” as future house-call positioning; accompany it with a clear coming-soon status while house-call acceptance is inactive.
 
@@ -140,18 +142,9 @@ House calls require **$60 in services before travel fees**. For a $35 haircut, s
 
 ## 5. Subaru scroll animation
 
-November 2026 revision: replace isolated chapter dividers with one continuous scenic margin around the site content and footer. One Subaru accompanies normal scrolling across the entire page, retraces the route on upward scroll, and parks at the endpoint. Reserve 48px on mobile, 80px on tablet, 140–180px on laptop, and 250px on wide desktop. The site header stays full width. The shared site layout carries the journey on informational, service, planner, and contact pages, keeping every control outside its decorative lane. Reduced-motion and no-JavaScript views park the car near the start. This supersedes the divider-based motion described in the original concept selection.
+Harry approved **Mountain Cinema / Powder Day** as the website direction and requested all three black 2020 Outback banners be retained with random assignment per visit. See [Mountain Cinema](mountain-cinema.md) for the current motion, artwork, and assignment rules. This supersedes the continuous scenic margin and older chapter-divider studies.
 
-
-Create approved code-native SVG vehicle artwork inspired by the supplied Subaru illustration, plus a separate SVG route. Keep the original complete logo unchanged. Maintain separate car orientation/art transforms from its route-position transform; pivot and rotation should follow the path without flipping text or tools unnaturally.
-
-- Desktop/laptop: reserve a narrow outer column. Move the vehicle along the chosen route using normalized page/section scroll progress; do not position it over copy, prices, form inputs, navigation, or calls to action.
-- Tablet/mobile: use a dedicated slim story rail in the content flow with a smaller car. It responds to touch scrolling the same way; do not require hover, dragging, wheel events, or precision pointer input. Do not put the desktop route over a cramped mobile layout; reserve its own space and simplify its path.
-- Use one passive scroll handler and one requestAnimationFrame scheduler, SVG path length/point sampling, and transforms only for the car. Measure route geometry on resize, not repeatedly on every scroll event. Recompute geometry after responsive layout changes and clean up listeners.
-- Clamp progress at the route endpoints. Scrolling upward reverses progress naturally. Preserve the browser’s normal scroll speed and navigation; no scroll hijacking, pinning that traps content, autoplay travel, sound, or spinning interface decorations.
-- Mark route/car `aria-hidden`, `pointer-events: none`, and nonfocusable. Keep all important information independent of the animation.
-- `prefers-reduced-motion`: park the car and show a static decorative route; do not replace the scroll effect with another animation. With JavaScript unavailable, keep a complete readable static page and a parked illustration.
-- Support both themes with a legible road and restrained blush/gold accents. Pause updates when the decorative section is not visible where appropriate. Do not add a heavyweight animation package unless the selected design actually needs it.
+The production treatment is a dedicated horizontal ribbon below navigation, with a snowboard-equipped black Outback, neighborhood houses, and layered mountains. Preserve normal scrolling, reverse travel, endpoint parking, static reduced-motion/no-JavaScript views, and cleanup. The Outback is transport/brand artwork, not a vehicle salon. This design approval leaves service-location acceptance inactive.
 
 ## 6. Page and component changes
 
@@ -188,7 +181,7 @@ Use Vercel’s optional branch preview for visual review if requested; productio
 
 ## Open decisions
 
-1. Resolved: Scenic Journey (B), revised to a continuous scenic margin and one scroll-driven Subaru.
+1. Resolved: Mountain Cinema / Powder Day replaces the Scenic Journey margin; preserve all three approved banners with visit-level random assignment. See `docs/mountain-cinema.md`.
 2. Written requirements/authorization for each exact service location model; salon venue and off-site event arrangements remain unconfirmed. Who will provide the decision and when?
 3. Continue manual confirmation/interest inquiries for this release, or integrate real-time scheduling later? No live scheduling provider has been chosen.
 4. Resolved: Mommy & Me includes the women’s haircut + blow-dry. Any substitutions or upgrades still need explicit pricing.

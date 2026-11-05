@@ -1,4 +1,4 @@
-import { JourneyRoads } from "@/components/scenic/journey-roads";
+import { MountainCinema } from "@/components/scenic/mountain-cinema";
 import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
 
@@ -10,10 +10,11 @@ export default function SiteLayout({
   return (
     <>
       <SiteHeader />
-      <JourneyRoads>
+      <MountainCinema />
+      <div>
         {children}
         <SiteFooter />
-      </JourneyRoads>
+      </div>
     </>
   );
 }

@@ -156,7 +156,16 @@ export default function PrivacyPage() {
           policies.
         </p>
       </PolicySection>
-      <PolicySection title="Home-screen installation and local storage">
+      <PolicySection title="Browser preferences and home-screen installation">
+        <p>
+          The decorative mountain banner is chosen randomly once per browser-tab
+          visit. We store only its artwork name in session storage so it stays
+          consistent as you navigate or reload that tab. This preference
+          contains no personal information, is not used for retention testing or
+          sent to analytics, and can be cleared through your browser’s site-data
+          settings. If storage is unavailable, the choice lasts for the current
+          page session.
+        </p>
         <p>
           You can install HairnThere on a supported device. A service worker
           stores a public offline information page in your browser. It does not

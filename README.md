@@ -125,3 +125,16 @@ The service worker runs in production builds, including `pnpm build && pnpm star
 When changing the offline page, bump `OFFLINE_CACHE` in `public/sw.js`. Worker updates wait until existing app windows/tabs close, avoiding forced reloads of forms. `/sw.js` is served with revalidation/no-store headers. To remove local PWA state during development, unregister the worker and clear its cache in browser developer tools; opening the same origin in development does not remove a previously installed worker.
 
 See [the PWA plan and device acceptance checklist](docs/pwa-plan.md) for release verification and future booking/payment work. Actual Android home-screen installation must be checked on the deployed HTTPS site with a physical phone.
+
+## Mountain Cinema and gallery
+
+The current design is **Mountain Cinema / Powder Day**. All three black 2020 Outback
+banner variants are preserved and chosen once per tab visit; the default/no-JavaScript
+view is Powder Day. The choice is a local session preference, not an A/B test or an
+analytics event. See [the design and motion notes](docs/mountain-cinema.md) for the
+artwork, assignment policy, accessibility fallbacks, and future seasonal possibilities.
+
+The prominent @hairnthere gallery currently uses clearly labeled stock inspiration.
+It is server-rendered with local images, not a connected live Instagram feed. Replace
+`src/data/gallery.ts` entries with approved media before labeling it Elisabeth’s work.
+The **QR Code** app-bar shortcut opens `/card`; the homepage QR is at the bottom.

@@ -1,14 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Camera,
-  MapPin,
-  QrCode,
-  Scissors,
-} from "lucide-react";
+import { ArrowUpRight, Camera, QrCode, Scissors } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { FrequentlyAskedQuestions } from "@/components/site/faq";
 import { InstagramLink } from "@/components/site/instagram-link";
 import { WebsiteQr } from "@/components/card/website-qr";
-import { MountainLandscape } from "@/components/scenic/landscape";
+import { InstagramGallery } from "@/components/site/instagram-gallery";
 import { business } from "@/data/business";
 import { availability, launchNotice } from "@/data/availability";
 import { services } from "@/data/services";
@@ -56,117 +48,42 @@ export default function Home() {
   return (
     <main id="main-content">
       <section
-        className="site-container grid items-center gap-12 py-12 sm:py-20 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,.8fr)] lg:gap-20"
+        className={`site-container ${styles.intro}`}
         aria-labelledby="hero-heading"
       >
-        <div className="min-w-0">
-          <Badge
-            variant="outline"
-            className="mb-6 gap-2 rounded-full px-3 py-1.5 text-[10px] font-medium text-muted-foreground"
-          >
-            <span
-              className="size-1.5 rounded-full bg-gold"
-              aria-hidden="true"
-            />
-            Suncrest · Draper, Utah
-          </Badge>
-          <p className="eyebrow">HairnThere · Great Hair Travels.</p>
-          <h1
-            id="hero-heading"
-            className="mt-5 font-display text-[clamp(2.9rem,5.8vw,5.5rem)] leading-[1.06] tracking-[-.055em]"
-          >
+        <div>
+          <p className="eyebrow">HairnThere / Suncrest, Draper, Utah</p>
+          <h1 id="hero-heading" className={styles.title}>
             Beautiful Hair,
             <br />
             <span className="text-primary italic">Wherever You Are.</span>
           </h1>
-          <p className="mt-6 max-w-lg text-sm leading-8 text-muted-foreground sm:text-base">
-            Cuts, color, extensions &amp; styling with Elisabeth. A personal
-            approach to hair, with a little mountain spirit.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button
-              nativeButton={false}
-              render={<Link href="/contact" />}
-              className="h-12 px-5 text-xs"
-            >
-              Let’s talk hair <ArrowUpRight aria-hidden="true" />
-            </Button>
-            <Button
-              nativeButton={false}
-              render={<Link href="/services" />}
-              variant="outline"
-              className="h-12 px-5 text-xs"
-            >
-              Services &amp; prices <ArrowRight aria-hidden="true" />
-            </Button>
-          </div>
-          <p className="mt-5 max-w-md text-[11px] leading-6 text-muted-foreground">
-            {launchNotice}
-          </p>
         </div>
-        <Card className="mx-auto w-full max-w-sm gap-0 rounded-2xl border border-border bg-card py-0 shadow-none ring-0">
-          <CardContent className="p-5 sm:p-6">
-            <div className="mb-5 flex items-center gap-3">
-              <Image
-                src="/brand/logo.png"
-                width={600}
-                height={600}
-                sizes="44px"
-                alt=""
-                className="size-11 rounded-full"
-              />
-              <div>
-                <p className="text-xs font-semibold">A little introduction.</p>
-                <p className="mt-1 text-[10px] text-muted-foreground">
-                  A great hair day could follow.
-                </p>
-              </div>
-            </div>
-            <Link
-              href="/card"
-              className="group block rounded-xl focus-visible:outline-offset-4"
-              aria-label="Open HairnThere’s large digital business card"
-            >
-              <WebsiteQr className="aspect-square w-full rounded-xl bg-white ring-1 ring-border" />
-            </Link>
-            <div className="mt-5 flex items-center justify-between gap-3">
-              <div>
-                <h2 className="font-sans text-sm font-semibold">
-                  Scan. Explore. Say hello.
-                </h2>
-                <p className="mt-1 text-[10px] leading-5 text-muted-foreground">
-                  {business.cardWebsiteLabel}
-                </p>
-              </div>
-              <Button
-                nativeButton={false}
-                render={<Link href="/card" />}
-                variant="outline"
-                size="icon"
-                className="size-10"
-                aria-label="Open digital card"
-              >
-                <QrCode aria-hidden="true" />
-              </Button>
-            </div>
-          </CardContent>
-          <Link
-            href="/card"
-            className="flex items-center justify-between gap-3 border-t border-border bg-muted/35 px-5 py-4 text-xs font-medium transition-colors hover:bg-muted sm:px-6"
-          >
-            Open digital business card{" "}
-            <ArrowUpRight className="size-4" aria-hidden="true" />
-          </Link>
-        </Card>
+        <div className={styles.stamp} aria-hidden="true">
+          Great
+          <br />
+          Hair
+          <br />
+          Travels.
+        </div>
+        <p className={styles.launch}>{launchNotice}</p>
       </section>
 
-      <div className={styles.scenery} aria-hidden="true">
-        <MountainLandscape />
+      <InstagramGallery />
+      <div className={`site-container ${styles.galleryAction}`}>
+        <p>Cuts, color, extensions &amp; styling with Elisabeth.</p>
+        <Button
+          nativeButton={false}
+          render={<Link href="/contact" />}
+          className="h-11 gap-2 rounded-sm px-4 text-xs"
+        >
+          Let’s talk hair <ArrowUpRight aria-hidden="true" />
+        </Button>
       </div>
 
       <section
         id="services"
-        className="site-container py-10 sm:py-16"
+        className={`site-container ${styles.section}`}
         aria-labelledby="services-heading"
       >
         <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
@@ -187,15 +104,15 @@ export default function Home() {
             <ArrowUpRight className="size-4" aria-hidden="true" />
           </Link>
         </div>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className={styles.services}>
           {highlights.map((highlight) => {
             const service = services.find((item) => item.id === highlight.id);
             return (
               <Card
                 key={highlight.id}
-                className="gap-0 rounded-xl border border-border py-0 shadow-none ring-0"
+                className={`gap-0 py-0 shadow-none ring-0 ${styles.serviceCard}`}
               >
-                <CardContent className="flex h-full flex-col p-6">
+                <CardContent className="flex h-full flex-col px-0 py-6 md:px-6">
                   <p className="eyebrow">{highlight.label}</p>
                   <h3 className="mt-4 text-3xl tracking-[-.035em]">
                     {highlight.title}
@@ -228,52 +145,11 @@ export default function Home() {
       </section>
 
       <section
-        id="about"
-        className="site-container py-12 sm:py-20"
-        aria-labelledby="about-heading"
-      >
-        <div className="grid gap-8 border-t border-border pt-12 md:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)] md:gap-16">
-          <div>
-            <p className="eyebrow">Meet Elisabeth</p>
-            <h2
-              id="about-heading"
-              className="mt-4 text-4xl leading-tight tracking-[-.04em] sm:text-5xl"
-            >
-              Personal hair.
-              <br />
-              <span className="text-primary italic">A familiar face.</span>
-            </h2>
-          </div>
-          <div className="space-y-5 text-sm leading-8 text-muted-foreground">
-            <p>
-              HairnThere is Elisabeth’s next chapter in hair: a playful mountain
-              spirit, a thoughtful approach, and services shaped around the
-              person in the chair.
-            </p>
-            <p>
-              Based in Suncrest, a neighborhood in Draper, Utah, with future
-              plans for house calls around Draper, Highland, Alpine and
-              surrounding communities. A salon booth is another chapter still to
-              come.
-            </p>
-            <InstagramLink
-              href={business.instagramUrl}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:underline"
-            >
-              <Camera className="size-4" aria-hidden="true" /> Follow
-              @hairnthere{" "}
-              <ArrowUpRight className="size-3.5" aria-hidden="true" />
-            </InstagramLink>
-          </div>
-        </div>
-      </section>
-
-      <section
         className="site-container pb-14 sm:pb-20"
         aria-labelledby="family-heading"
       >
-        <Card className="gap-0 rounded-2xl border border-border bg-muted/50 py-0 shadow-none ring-0">
-          <CardContent className="p-6 sm:p-10">
+        <Card className={`gap-0 py-0 shadow-none ring-0 ${styles.familyCard}`}>
+          <CardContent className="px-0 py-8 sm:py-10">
             <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
               <div>
                 <Badge
@@ -311,7 +187,7 @@ export default function Home() {
               {familyPackages.map((pack) => (
                 <div
                   key={pack.id}
-                  className="rounded-xl border border-border bg-background p-5"
+                  className="border-t border-border py-5 md:border md:px-5"
                 >
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <h3 className="text-xl">{pack.name}</h3>
@@ -336,6 +212,48 @@ export default function Home() {
             </p>
           </CardContent>
         </Card>
+      </section>
+
+      <section
+        id="about"
+        className="site-container py-12 sm:py-20"
+        aria-labelledby="about-heading"
+      >
+        <div className="grid gap-8 border-t border-border pt-12 md:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)] md:gap-16">
+          <div>
+            <p className="eyebrow">Meet Elisabeth</p>
+            <h2
+              id="about-heading"
+              className="mt-4 text-4xl leading-tight tracking-[-.04em] sm:text-5xl"
+            >
+              Personal hair.
+              <br />
+              <span className="text-primary italic">A familiar face.</span>
+            </h2>
+          </div>
+          <div className="space-y-5 text-sm leading-8 text-muted-foreground">
+            <p>
+              HairnThere is Elisabeth’s next chapter in hair: a playful mountain
+              spirit, a thoughtful approach, and services shaped around the
+              person in the chair. Mountain roots, a snowboard on the roof, and
+              a personal approach to hair.
+            </p>
+            <p>
+              Based in Suncrest, a neighborhood in Draper, Utah, with future
+              plans for house calls around Draper, Highland, Alpine and
+              surrounding communities. A salon booth is another chapter still to
+              come.
+            </p>
+            <InstagramLink
+              href={business.instagramUrl}
+              className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:underline"
+            >
+              <Camera className="size-4" aria-hidden="true" /> Follow
+              @hairnthere{" "}
+              <ArrowUpRight className="size-3.5" aria-hidden="true" />
+            </InstagramLink>
+          </div>
+        </div>
       </section>
 
       <section
@@ -400,12 +318,9 @@ export default function Home() {
       </section>
 
       <section className="site-container pb-14 sm:pb-20">
-        <div className="flex flex-col justify-between gap-6 rounded-2xl border border-border bg-muted/40 p-6 sm:flex-row sm:items-center sm:p-8">
+        <div className={styles.invitation}>
           <div>
-            <p className="flex items-center gap-2 text-[10px] text-muted-foreground">
-              <MapPin className="size-3.5" aria-hidden="true" /> Suncrest ·
-              Draper, Utah
-            </p>
+            <p className="eyebrow">Suncrest · Draper, Utah</p>
             <h2 className="mt-3 text-3xl tracking-[-.035em]">
               Let’s talk about your next look.
             </h2>
@@ -419,6 +334,51 @@ export default function Home() {
             <ArrowUpRight aria-hidden="true" />
           </Button>
         </div>
+      </section>
+      <section
+        id="qr-code"
+        className={`site-container ${styles.qr}`}
+        aria-labelledby="qr-heading"
+      >
+        <div>
+          <p className="eyebrow">Take a little HairnThere with you.</p>
+          <h2 id="qr-heading">
+            A quick hello.
+            <br />
+            <span className="text-primary italic">A lasting connection.</span>
+          </h2>
+          <p>
+            Just met Elisabeth? Scan to explore.
+            <br />
+            Sharing with a neighbor? Show them the code.
+          </p>
+          <Button
+            nativeButton={false}
+            render={<Link href="/card" />}
+            variant="outline"
+            className="mt-6 h-11 gap-2 rounded-sm px-4 text-xs"
+          >
+            <QrCode aria-hidden="true" /> Open large QR code{" "}
+            <ArrowUpRight aria-hidden="true" />
+          </Button>
+        </div>
+        <Card className={`gap-0 py-0 shadow-none ring-0 ${styles.qrCard}`}>
+          <CardContent className="p-5">
+            <Link
+              href="/card"
+              className="block"
+              aria-label="Open HairnThere’s large QR code"
+            >
+              <WebsiteQr className="aspect-square w-full bg-white" />
+            </Link>
+            <p className="mt-4 text-center text-sm font-semibold">
+              {business.cardWebsiteLabel}
+            </p>
+            <p className="mt-2 text-center text-[10px] text-muted-foreground">
+              Great Hair Travels.
+            </p>
+          </CardContent>
+        </Card>
       </section>
     </main>
   );

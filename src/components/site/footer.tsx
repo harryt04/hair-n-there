@@ -28,7 +28,7 @@ export function SiteFooter() {
             href="/card"
             className="underline-offset-4 hover:text-foreground hover:underline"
           >
-            Digital card
+            QR Code
           </Link>
           <Link
             href="/terms"

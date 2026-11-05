@@ -1,7 +1,158 @@
-.scenery {
-  position: relative;
-  isolation: isolate;
-  height: clamp(110px, 17vw, 220px);
-  overflow: hidden;
+.intro {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px 30px;
+  padding-block: 24px 18px;
+}
+.title {
+  margin-top: 14px;
+  font-size: clamp(2.1rem, 3.5vw, 2.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+.stamp {
+  padding-left: 16px;
+  border-left: 3px solid var(--primary);
+  color: var(--primary);
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+}
+.launch {
+  flex-basis: 100%;
+  font-size: 10px;
+  line-height: 1.8;
+  color: var(--muted-foreground);
+}
+.section {
+  padding-block: 48px 60px;
+}
+.services {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.serviceCard {
+  border-radius: 0;
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  background: transparent;
+}
+.serviceCard:last-child {
+  border-right: 0;
+}
+.familyCard {
+  border-radius: 0;
   border-block: 1px solid var(--border);
+  background: transparent;
+}
+.invitation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-block: 35px;
+  border-block: 1px solid var(--border);
+}
+.qr {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.65fr);
+  align-items: center;
+  gap: 70px;
+  padding-block: 30px 64px;
+}
+.qr h2 {
+  margin-top: 16px;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  line-height: 1.14;
+  letter-spacing: -0.04em;
+}
+.qr > div > p:not(:first-child) {
+  margin-top: 20px;
+  font-size: 13px;
+  line-height: 2;
+  color: var(--muted-foreground);
+}
+.qrCard {
+  width: 100%;
+  max-width: 300px;
+  justify-self: end;
+  border: 1px solid var(--border);
+  border-radius: 0;
+}
+@media (max-width: 767px) {
+  .intro {
+    gap: 14px;
+    padding-block: 22px 17px;
+  }
+  .intro > div:first-child {
+    flex: 1;
+  }
+  .intro :global(.eyebrow) {
+    font-size: 8px;
+    letter-spacing: 0.12em;
+  }
+  .title {
+    font-size: clamp(1.65rem, 7.2vw, 2.6rem);
+    margin-top: 10px;
+  }
+  .stamp {
+    font-size: 12px;
+    padding-left: 9px;
+    border-left-width: 2px;
+  }
+  .launch {
+    font-size: 9px;
+  }
+  .section {
+    padding-block: 30px 42px;
+  }
+  .services {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .serviceCard {
+    border-right: 0;
+  }
+  .invitation {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .qr {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+    padding-block: 10px 45px;
+  }
+  .qrCard {
+    justify-self: center;
+  }
+  .qr > div > p:not(:first-child) {
+    font-size: 12px;
+  }
+}
+
+.galleryAction {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding-bottom: 28px;
+}
+.galleryAction p {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--muted-foreground);
+}
+@media (max-width: 767px) {
+  .galleryAction {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding-bottom: 18px;
+  }
+  .galleryAction p {
+    font-size: 12px;
+  }
 }

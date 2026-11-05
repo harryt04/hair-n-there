@@ -2,7 +2,7 @@
 
 ## Product decisions
 
-Build **Scenic Journey**: the approved mountain-led design specified in `docs/elisabeth-revision-plan.md`, supported by `docs/inspiration.png`. Local `.lavish/` review artifacts are optional and ignored by Git. Use `public/brand/logo.png` as the current logo; preserve the original root `logo.png` as an archive. Keep brand tokens in `src/app/globals.css`, Playfair Display headings, Montserrat body type, and light/dark themes. Spell the neighborhood **Suncrest**, in Draper, Utah.
+Build **Mountain Cinema / Powder Day**, the approved gallery-led direction in `docs/mountain-cinema.md`. Preserve all three black 2020 Outback variants with one random assignment per tab visit. This supersedes Scenic Journey’s sidebar; `docs/elisabeth-revision-plan.md` remains the business-rule reference. Local `.lavish/` review artifacts are optional and ignored by Git. Use `public/brand/logo.png` as the current logo; preserve the original root `logo.png` as an archive. Keep brand tokens in `src/app/globals.css`, Playfair Display headings, Montserrat body type, and light/dark themes. Spell the neighborhood **Suncrest**, in Draper, Utah.
 
 Use `docs/elisabeth-revision-plan.md` when changing the catalog, family planner, travel policy, service availability, or Subaru motion. It records supplied business rules and unresolved decisions; implemented data files are the authority for current application behavior. Earlier concepts in `setup-plan.md` and `design-direction.md` are historical where superseded.
 
@@ -27,7 +27,7 @@ Harry explicitly chose **no automated test suites, test runners, pull request pr
 
 Use existing shadcn components and inspect their generated APIs: this preset uses **Base UI**, with `render` and `nativeButton={false}` for button-styled links, not `asChild`.
 
-Keep the Subaru decorative, in a reserved continuous scenic margin, driven by normal scroll with passive listeners/requestAnimationFrame and cleanup. Reduced motion and no-JavaScript states leave a parked car; forms and reading never depend on animation. Avoid scroll hijacking and overlays across controls.
+Keep the Subaru decorative in Mountain Cinema’s reserved horizontal ribbon below the app bar, driven by normal scroll with passive listeners/requestAnimationFrame and cleanup. Use `src/components/scenic/mountain-cinema.tsx` and `src/data/cinema.ts` when changing motion or assignment. Reduced motion and no-JavaScript states leave a parked car; forms and reading never depend on animation. Avoid scroll hijacking and overlays across controls.
 
 Keep all service-menu content server rendered. Preserve semantic headings, keyboard access, associated form errors, mobile layouts, and consent links. Use approved biography/portfolio details only; temporary stock is labeled inspiration, never Elisabeth’s work or a before/after pair. Public Instagram is `@hairnthere`; import source is `@justbeyou_hair`.
 

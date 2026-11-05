@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Menu } from "lucide-react";
+import { ArrowUpRight, Menu, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -14,10 +14,9 @@ import {
 } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 import { Wordmark } from "@/components/site/wordmark";
-import { launchNotice } from "@/data/availability";
 
 const navigation = [
-  { href: "/card", label: "Digital card" },
+  { href: "/#instagram", label: "Instagram gallery" },
   { href: "/services", label: "Services & prices" },
   { href: "/#about", label: "Meet Elisabeth" },
 ];
@@ -25,10 +24,10 @@ const navigation = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="border-b border-border/80">
-      <div className="site-container flex h-18 items-center justify-between gap-4 md:h-20">
-        <Wordmark />
-        <div className="flex items-center gap-2 md:gap-6">
+    <header className="sticky top-0 z-40 border-b border-border bg-background">
+      <div className="site-container flex h-16 items-center justify-between gap-2">
+        <Wordmark className="text-xl [&>img]:hidden sm:text-2xl sm:[&>img]:block" />
+        <div className="flex items-center gap-1 sm:gap-3 lg:gap-5">
           <nav
             aria-label="Main navigation"
             className="hidden items-center gap-6 lg:flex"
@@ -43,21 +42,22 @@ export function SiteHeader() {
               </Link>
             ))}
           </nav>
-          <ThemeToggle />
           <Button
-            render={<Link href="/contact" />}
+            render={<Link href="/card" />}
             nativeButton={false}
-            className="hidden h-11 rounded-lg px-5 text-xs sm:inline-flex"
+            variant="outline"
+            className="h-10 gap-1.5 rounded-sm px-2.5 text-[10px] sm:px-3 sm:text-xs"
           >
-            Let’s talk hair <ArrowUpRight aria-hidden="true" />
+            <QrCode aria-hidden="true" /> QR Code
           </Button>
+          <ThemeToggle />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
               render={
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="icon"
-                  className="size-10 lg:hidden"
+                  className="size-9 lg:hidden"
                 />
               }
               aria-label="Open navigation"
@@ -77,27 +77,24 @@ export function SiteHeader() {
                 aria-label="Mobile navigation"
                 className="mt-6 flex flex-col gap-2"
               >
-                {navigation.map(({ href, label }) => (
+                {[
+                  ...navigation,
+                  { href: "/card", label: "QR Code" },
+                  { href: "/contact", label: "Say hello" },
+                ].map(({ href, label }) => (
                   <Link
                     key={href}
                     href={href}
                     onClick={() => setOpen(false)}
-                    className="rounded-lg px-3 py-4 text-sm font-medium hover:bg-muted"
+                    className="rounded-sm px-3 py-4 text-sm font-medium hover:bg-muted"
                   >
                     {label}
                   </Link>
                 ))}
-                <Link
-                  href="/contact"
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-4 text-sm font-medium hover:bg-muted"
-                >
-                  Say hello
-                </Link>
                 <Button
                   render={<Link href="/quote" onClick={() => setOpen(false)} />}
                   nativeButton={false}
-                  className="mt-4 h-12"
+                  className="mt-4 h-12 rounded-sm"
                 >
                   Build your service wish list{" "}
                   <ArrowUpRight aria-hidden="true" />
@@ -106,13 +103,6 @@ export function SiteHeader() {
             </SheetContent>
           </Sheet>
         </div>
-      </div>
-      <div className="border-t border-border/60 bg-muted/65 px-5 py-2.5 text-center text-[10px] leading-5 text-muted-foreground">
-        <span
-          className="mr-2 inline-block size-1 rounded-full bg-gold align-middle"
-          aria-hidden="true"
-        />
-        {launchNotice}
       </div>
     </header>
   );

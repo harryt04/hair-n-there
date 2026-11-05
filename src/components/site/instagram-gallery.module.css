@@ -1,0 +1,141 @@
+.gallery {
+  padding-bottom: 44px;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 0 16px;
+  border-top: 1px solid var(--border);
+}
+.heading h2 {
+  margin-top: 10px;
+  font-size: clamp(3rem, 7.1vw, 5.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.065em;
+}
+.heading h2 a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.heading h2 svg {
+  width: 24px;
+  height: 24px;
+}
+.notice {
+  max-width: 700px;
+  margin-bottom: 20px;
+  font-size: 11px;
+  line-height: 1.9;
+  color: var(--muted-foreground);
+}
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 18px;
+}
+.grid figure {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+}
+.featured {
+  grid-row: span 2;
+}
+.photo {
+  position: relative;
+  display: block;
+  flex: 1;
+  aspect-ratio: 1.6;
+  min-height: 0;
+  background: var(--muted);
+}
+.featured .photo {
+  aspect-ratio: auto;
+}
+.image {
+  object-fit: cover;
+}
+.grid figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 9px;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.grid figcaption svg {
+  width: 12px;
+  height: 12px;
+}
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 21px 0;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted-foreground);
+}
+@media (max-width: 767px) {
+  .gallery {
+    padding-bottom: 22px;
+  }
+  .heading {
+    padding: 18px 0 12px;
+    gap: 12px;
+  }
+  .heading h2 {
+    font-size: clamp(2.4rem, 10.5vw, 4rem);
+    margin-top: 8px;
+  }
+  .heading h2 svg {
+    width: 17px;
+    height: 17px;
+  }
+  .heading h2 a {
+    gap: 6px;
+  }
+  .notice {
+    font-size: 10px;
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .featured {
+    grid-column: 1/-1;
+    grid-row: auto;
+  }
+  .featured .photo {
+    aspect-ratio: 1.4;
+  }
+  .photo {
+    aspect-ratio: 4/5;
+  }
+  .grid figcaption {
+    padding: 9px 0;
+    font-size: 7px;
+    letter-spacing: 0.025em;
+    gap: 6px;
+  }
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 11px;
+    padding: 18px 0;
+  }
+}
