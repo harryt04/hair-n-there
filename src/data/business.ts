@@ -3,6 +3,7 @@ export const business = {
   tagline: "Great Hair Travels.",
   owner: "Elisabeth",
   url: "https://hairnthere.com",
+  cardDestination: "https://www.hairnthere.com/",
   instagramUrl:
     process.env.NEXT_PUBLIC_INSTAGRAM_URL ||
     "https://www.instagram.com/hairnthere/",

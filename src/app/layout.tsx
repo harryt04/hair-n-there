@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat, Playfair_Display } from "next/font/google";
 import { Providers } from "@/components/site/providers";
-import { SiteHeader } from "@/components/site/header";
-import { SiteFooter } from "@/components/site/footer";
 import { Telemetry } from "@/components/site/telemetry";
 import { business } from "@/data/business";
 import "./globals.css";
@@ -72,9 +70,7 @@ export default function RootLayout({
           >
             Skip to content
           </a>
-          <SiteHeader />
           {children}
-          <SiteFooter />
           <Telemetry />
         </Providers>
       </body>

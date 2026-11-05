@@ -25,6 +25,12 @@ export function SiteFooter() {
             Services & prices
           </Link>
           <Link
+            href="/card"
+            className="underline-offset-4 hover:text-foreground hover:underline"
+          >
+            Digital card
+          </Link>
+          <Link
             href="/terms"
             className="underline-offset-4 hover:text-foreground hover:underline"
           >

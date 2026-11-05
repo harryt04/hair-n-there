@@ -1,0 +1,80 @@
+.page {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 16px;
+  height: 100svh;
+  min-height: 620px;
+  padding: max(16px, env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom))
+    max(20px, env(safe-area-inset-left));
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  max-width: 1400px;
+  margin-inline: auto;
+}
+.intro,
+.footer {
+  text-align: center;
+}
+.stage {
+  container-type: size;
+  min-height: 0;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+}
+.qr {
+  display: block;
+  width: min(100cqw, 100cqh);
+  height: min(100cqw, 100cqh);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px var(--border);
+}
+.presenter {
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px !important;
+  padding: max(12px, env(safe-area-inset-top))
+    max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom))
+    max(12px, env(safe-area-inset-left));
+}
+@media (max-height: 600px) and (min-width: 600px) {
+  .page {
+    min-height: 340px;
+    gap: 8px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    grid-template-rows: auto 1fr auto;
+  }
+  .header {
+    grid-column: 1;
+  }
+  .intro {
+    grid-column: 1;
+    align-self: center;
+  }
+  .footer {
+    grid-column: 1;
+  }
+  .stage {
+    grid-column: 2;
+    grid-row: 1 / -1;
+  }
+  .intro h1 {
+    font-size: 24px;
+  }
+  .intro p:last-child {
+    display: none;
+  }
+}
+@media (min-height: 900px) {
+  .page {
+    gap: 24px;
+    padding-block: 24px;
+  }
+}

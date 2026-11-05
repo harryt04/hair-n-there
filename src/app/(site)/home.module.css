@@ -1,0 +1,7 @@
+.scenery {
+  position: relative;
+  isolation: isolate;
+  height: clamp(110px, 17vw, 220px);
+  overflow: hidden;
+  border-block: 1px solid var(--border);
+}

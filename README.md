@@ -9,6 +9,7 @@ The site currently welcomes **consultations and interest inquiries**. House-call
 ## What’s included
 
 - Responsive mountain-led homepage with light/dark themes, Playfair Display and Montserrat typography, the new circular H/mountain logo, and compact logo/icon assets.
+- A QR-first digital business card at `/card`, with a viewport-filling presentation view, copyable website link and downloadable QR image. No Apple/Google Wallet integration or membership enrollment.
 - A scroll-driven wagon in dedicated scenic bands. It responds to normal mouse, trackpad, keyboard, and touch scrolling; reduced-motion preferences park the car.
 - The supplied 32-service menu, with fixed prices, starting prices, per-row extension labor, and free/quote-only consultations clearly distinguished.
 - Three family packages and a service wish-list planner for multiple people. Prices are estimates, and hair for extensions is separate.
@@ -64,6 +65,12 @@ The contact endpoint uses shared Redis limits when configured. Its fallback is b
 5. Add `hairnthere.com` when ready. Follow the DNS records Vercel provides and redirect `www` to the apex. Preview pages are noindex and canonical URLs use the production domain. Enable preview deployment protection where available.
 
 For rollback, choose a previous working production deployment in Vercel and use its rollback/promote control. Reconcile the code on `main` afterward so a later push preserves the fix. This implementation does not itself provision hosting, change billing/DNS, push Git commits, or deploy.
+
+## Digital business card
+
+Open `/card` when introducing HairnThere in person. Neighbors scan the large code to open the business homepage. “Fill screen” removes surrounding card content inside the browser viewport; the code stays black on white in either theme. The homepage and navigation link to the card.
+
+QR assets are checked into `public/card/`. Regenerate them with `pnpm create:card-qr` after deliberately changing `business.cardDestination` in `src/data/business.ts`. Scan the final screen/printed proof on real iPhone and Android devices before use. See [the digital card notes](docs/digital-business-card.md). Wallet, loyalty and referral features are outside this release.
 
 ## Pricing and service availability
 

@@ -17,7 +17,7 @@ import { Wordmark } from "@/components/site/wordmark";
 import { launchNotice } from "@/data/availability";
 
 const navigation = [
-  { href: "/#work", label: "The inspiration" },
+  { href: "/card", label: "Digital card" },
   { href: "/services", label: "Services & prices" },
   { href: "/#about", label: "Meet Elisabeth" },
 ];
@@ -26,7 +26,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
     <header className="border-b border-border/80">
-      <div className="site-container flex h-22 items-center justify-between gap-4 md:h-26">
+      <div className="site-container flex h-18 items-center justify-between gap-4 md:h-20">
         <Wordmark />
         <div className="flex items-center gap-2 md:gap-6">
           <nav
