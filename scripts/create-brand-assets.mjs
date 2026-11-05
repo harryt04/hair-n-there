@@ -52,6 +52,19 @@ for (const size of [180, 192, 512]) {
     .png()
     .toFile(destination);
 }
+// The entire detailed logo fits inside the central 80%-diameter safe circle.
+// A square of side 56% has corners within that circle (56% * sqrt(2) < 80%).
+const maskableLogo = await sharp(logo)
+  .resize(286, 286, { fit: "contain", background: "#FBF7F2" })
+  .png()
+  .toBuffer();
+await sharp({
+  create: { width: 512, height: 512, channels: 4, background: "#FBF7F2" },
+})
+  .composite([{ input: maskableLogo, left: 113, top: 113 }])
+  .removeAlpha()
+  .png()
+  .toFile("public/brand/icon-maskable-512.png");
 const social = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect width="1200" height="630" fill="#FBF7F2"/><rect x="28" y="28" width="1144" height="574" rx="24" fill="none" stroke="#DFD3C8"/><image href="data:image/png;base64,${logo.toString("base64")}" x="70" y="90" width="440" height="440"/><text x="550" y="235" fill="#4B2E4F" font-family="Georgia,serif" font-style="italic" font-size="64">HairnThere</text><text x="550" y="290" fill="#8B6B56" font-family="Georgia,serif" font-size="30">Great Hair Travels.</text><text x="550" y="365" fill="#3B2417" font-family="Georgia,serif" font-size="34">Beautiful Hair,</text><text x="550" y="409" fill="#3B2417" font-family="Georgia,serif" font-size="34">Wherever You Are.</text><text x="550" y="500" fill="#8B6B56" font-family="sans-serif" font-size="18" letter-spacing="2">SUNCREST · DRAPER, UTAH</text></svg>`;
 await sharp(Buffer.from(social)).png().toFile("public/brand/social-card.png");
 const wordmark = `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="100" viewBox="0 0 480 100"><text x="8" y="76" fill="#4B2E4F" font-family="Georgia,serif" font-style="italic" font-weight="bold" font-size="68" letter-spacing="-4">Hair<tspan fill="#8B6B56">n</tspan>There</text><path d="M409 25h23v23m0-23-28 28" fill="none" stroke="#8B6B56" stroke-width="3"/></svg>`;
@@ -61,5 +74,5 @@ await writeFile(
   wordmark.replaceAll("#4B2E4F", "#F6EDE3").replaceAll("#8B6B56", "#B18F72"),
 );
 console.log(
-  "Exported H/mountain SVG and 16/32/48px ICO, 180px Apple icon, 192/512px app icons, and social card from the current brand.",
+  "Exported H/mountain SVG and 16/32/48px ICO, 180px Apple icon, 192/512px app icons, 512px maskable icon, and social card from the current brand.",
 );

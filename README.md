@@ -16,6 +16,7 @@ The site currently welcomes **consultations and interest inquiries**. House-call
 - Planned household convenience-fee bands and the $60 house-call service minimum. Real travel quotes remain unconfirmed until the private origin and routing provider are configured.
 - A validated contact form with optional SMS consent, Discord delivery, and Terms/Privacy pages adapted from Sunshine Flower Bar.
 - Vercel Analytics, standard Speed Insights, metadata, sitemap, robots instructions, and social/browser icons.
+- Installable PWA with a home-screen suggestion, Android maskable icon, and a lightweight offline information page.
 
 ## Run it locally
 
@@ -112,3 +113,15 @@ Temporary inspiration images: [portrait source](https://images.unsplash.com/phot
 - `AGENTS.md`: instructions for coding agents; this README is for people running the site.
 
 The current logo is `public/brand/logo.png`, used in the header, homepage, footer, and social card. The original root `logo.png` stays intact as an archive. Run `node scripts/create-brand-assets.mjs` to regenerate brand exports. Browser tabs use a simplified vector H/mountain mark rather than shrinking the detailed illustration. Next.js automatically registers `src/app/favicon.ico` (16/32/48px), `src/app/icon.svg`, and `src/app/apple-icon.png` (180px); the manifest references 192/512px app icons. Icon metadata is managed through these file conventions, without duplicate manual declarations. Fonts use `next/font` and are served with the site after build-time download.
+
+## Install HairnThere on a phone
+
+On the production HTTPS site in **Chrome on Android**, choose **Install HairnThere** in the suggestion below the page content when Chrome makes installation available. Alternatively, open Chrome’s menu → **Add to home screen** → **Install** (wording varies). Launch the HairnThere icon from the home screen. On iPhone, use **Safari → Share → Add to Home Screen**. Install from the production domain; a preview deployment is a separate app.
+
+Chrome decides when to offer its native prompt based on eligibility and engagement. The suggestion includes manual instructions when the prompt is unavailable. “Not now” hides the suggestion for the current tab session. Installed standalone windows hide it automatically. Installation adds convenient access; appointments and payments are still inactive.
+
+The service worker runs in production builds, including `pnpm build && pnpm start` on localhost, and needs HTTPS on a phone. Development mode does not register it. Only `/offline.html` is cached; service pages, API responses, inquiry contents and payments are not stored by the worker. If a document cannot load, the offline page asks the visitor to reconnect. There is no background sending or offline booking. In-app client navigation can instead show Next.js’s normal connection error; reconnect and retry. No new provider configuration is needed.
+
+When changing the offline page, bump `OFFLINE_CACHE` in `public/sw.js`. Worker updates wait until existing app windows/tabs close, avoiding forced reloads of forms. `/sw.js` is served with revalidation/no-store headers. To remove local PWA state during development, unregister the worker and clear its cache in browser developer tools; opening the same origin in development does not remove a previously installed worker.
+
+See [the PWA plan and device acceptance checklist](docs/pwa-plan.md) for release verification and future booking/payment work. Actual Android home-screen installation must be checked on the deployed HTTPS site with a physical phone.

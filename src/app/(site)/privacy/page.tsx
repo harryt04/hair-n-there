@@ -156,6 +156,21 @@ export default function PrivacyPage() {
           policies.
         </p>
       </PolicySection>
+      <PolicySection title="Home-screen installation and local storage">
+        <p>
+          You can install HairnThere on a supported device. A service worker
+          stores a public offline information page in your browser. It does not
+          store inquiry contents or payment information, queue submissions, or
+          send notifications. Current services and inquiries require an internet
+          connection.
+        </p>
+        <p>
+          If you dismiss the installation suggestion, a preference is stored for
+          the current browser tab session. You can clear this preference and the
+          offline page through your browser’s site-data settings. Installation
+          and removal are managed by your browser or device.
+        </p>
+      </PolicySection>
       <PolicySection title="Retention and security">
         <p>
           We keep inquiry and related communication records as needed to

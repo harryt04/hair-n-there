@@ -72,7 +72,7 @@ export function PolicyLayout({
             {subtitle}
           </p>
           <p className="mt-5 text-xs text-muted-foreground">
-            Effective November 3, 2026
+            Effective November 4, 2026
           </p>
         </div>
         <div className="space-y-10 py-10 sm:space-y-12 sm:py-12">

@@ -198,3 +198,10 @@
     font-size: 16px;
   }
 }
+
+/* Installed windows never need the home-screen suggestion, including before hydration. */
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  .pwa-install {
+    display: none;
+  }
+}
