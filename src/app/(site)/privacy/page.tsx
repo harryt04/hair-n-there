@@ -107,17 +107,27 @@ export default function PrivacyPage() {
       </PolicySection>
       <PolicySection title="Website analytics and performance">
         <p>
-          The website includes Vercel Web Analytics and Speed Insights to
-          understand page visits and website performance when those services are
-          enabled. These tools can collect page or route information,
-          approximate visitor location, browser and device characteristics,
-          referral information, and performance measurements.
+          When configured in production, the website uses PostHog Cloud US to
+          understand page visits and website performance. It can process page
+          paths, referral information with query strings and fragments removed,
+          approximate visitor location, browser and device characteristics, and
+          performance measurements. Vercel continues to host the website and
+          forwards analytics requests to PostHog.
         </p>
         <p>
-          We do not intentionally send inquiry text, names, contact details,
-          exact addresses, or SMS consent records to analytics. Optional
-          conversion events describe broad actions, such as beginning an
-          inquiry, rather than the contents of a message.
+          We send broad actions, such as beginning an inquiry, a confirmed
+          submission, or clicking Instagram. We do not send inquiry text, names,
+          contact details, exact addresses, family-member labels, or consent
+          records to analytics. Query strings, fragments, and campaign
+          attribution data are removed before analytics are sent. Analytics
+          availability does not determine whether an inquiry can be delivered.
+        </p>
+        <p>
+          We disable automatic interaction recording, session replay, automatic
+          error collection, and identified person profiles. Anonymous analytics
+          identifiers stay only in page memory; we do not store them in
+          analytics cookies or local storage, and they reset on a full reload.
+          Local development and preview deployments do not collect analytics.
         </p>
         <p>
           External websites, including Instagram, have their own privacy

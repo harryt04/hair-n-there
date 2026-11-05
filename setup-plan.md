@@ -4,7 +4,7 @@ Latest planning update: see [Elisabeth revision plan](docs/elisabeth-revision-pl
 
 Status: approved design implemented in the Next.js app. Local lint, TypeScript, and production-build verification pass. See README.md for development and Vercel setup. Hosting connection, webhook secrets, and domain configuration are still external setup tasks; nothing has been deployed or pushed.
 
-Deployment decision: use Vercel's built-in Git integration. Push directly to main to deploy production; optional branch pushes create previews without pull requests. Use Vercel Pro for this commercial site, plus @vercel/analytics and @vercel/speed-insights. No automated tests, pull request process, GitHub Actions, Docker pipeline, or external CI/CD setup.
+Deployment decision: use Vercel's built-in Git integration. Push directly to main to deploy production; optional branch pushes create previews without pull requests. Use Vercel Pro for this commercial site, with PostHog Cloud US for analytics and performance (superseding the original Vercel Analytics/Speed Insights choice). No automated tests, pull request process, GitHub Actions, Docker pipeline, or external CI/CD setup.
 
 ## Product and launch scope
 
@@ -46,7 +46,7 @@ pnpm create next-app@latest hairnthere-scaffold --ts --tailwind --eslint --app -
 cd hairnthere-scaffold
 pnpm dlx shadcn@latest init
 pnpm dlx shadcn@latest add button card badge input label textarea select checkbox radio-group accordion sheet separator sonner
-pnpm add next-themes zod react-hook-form @hookform/resolvers @vercel/analytics @vercel/speed-insights
+pnpm add next-themes zod react-hook-form @hookform/resolvers posthog-js
 ```
 
 Install only components actually used. Use the shadcn initializer's supported defaults, then apply the brand theme. No `--all` component installation.
@@ -62,28 +62,16 @@ Install only components actually used. Use the shadcn initializer's supported de
 
 ### Analytics and performance instrumentation
 
-Install:
+Updated November 5, 2026: Harry approved replacing Vercel Analytics and Speed Insights with PostHog Cloud US while retaining Vercel hosting and native Git deployment. The neighboring Coolify-hosted applications use a same-origin `/ingest` proxy to PostHog Cloud; this is not a self-hosted PostHog installation.
 
-```sh
-pnpm add @vercel/analytics @vercel/speed-insights
-```
-
-In `src/app/layout.tsx`, add the Next.js-specific components once, alongside the page content, while keeping the root layout a Server Component:
-
-```tsx
-import { Analytics } from '@vercel/analytics/next'
-import { SpeedInsights } from '@vercel/speed-insights/next'
-
-// Inside the existing <body>, following the page/theme content:
-// <Analytics />
-// <SpeedInsights />
-```
-
-- Enable Web Analytics for the project in Vercel, deploy, and confirm that actual visits appear. Installing the package alone does not complete dashboard setup.
-- Start with page views and standard Speed Insights. Keep Speed Insights Plus and other paid add-ons out of the initial setup; verify current allowances when configuring the project.
-- Later, when conversion flows exist, add a small typed set of events: `instagram_clicked`, `quote_started`, and `inquiry_submitted`. Emit submission success only after the API confirms delivery. Restrict business conversion events to production and verify environment handling so preview/testing traffic does not contaminate results.
-- Never send names, contact details, addresses, free-text messages, or sensitive query parameters to analytics. Use route paths and coarse, predefined event properties only; scrub URLs with the package hooks if needed. Document analytics in `/privacy`.
-- Analytics/performance collection must not block or determine inquiry success. Use real visitor data to guide later optimization; a low-traffic site may take time to produce meaningful measurements.
+- Install `posthog-js`; remove both Vercel analytics packages. Use Next.js client instrumentation and one pageview mechanism, without duplicate initial/navigation events.
+- Use a dedicated HairnThere PostHog Cloud US project and optional `NEXT_PUBLIC_POSTHOG_KEY`. No separate host variable is required. Keep analytics disabled when configuration is absent and in local/preview environments; `NODE_ENV=production` alone is not sufficient to distinguish previews.
+- Proxy the region-appropriate asset and ingestion hosts through `/ingest` rewrites. Preserve Cache Components and the Tailwind Turbopack CSS-module exclusion.
+- Keep the typed broad events `instagram_clicked`, `inquiry_started`, and `inquiry_submitted`. Fire the start event once per form interaction session and success only after the API confirms delivery.
+- Collect FCP, LCP, INP, and CLS without sampling, plus TTFB as a separate `web_vital` event. Use PostHog’s performance dashboard and configure a basic conversion dashboard after project setup; do not assume SDK installation configures dashboards or proves live collection.
+- Disable automatic interaction capture, session replay, automatic exception capture, and identified person profiles. Use memory-only analytics identifiers without analytics cookies/local-storage persistence; document the resulting limits on returning-visitor counts.
+- Never send names, contact details, addresses, member labels, private origins, free-text messages, consent records, or cinema assignments. Remove query strings, fragments, and campaign attribution properties before transmission, including referrer/initial URL properties. Document actual handling in `/privacy`.
+- Analytics/performance failures must not block navigation or inquiry success. Manually verify payloads, single pageviews, conversion timing, excluded environments, and inquiry behavior with analytics blocked. After an authorized deployment and confirmed PostHog collection, disable Vercel Web Analytics and Speed Insights in the project dashboard. Historical data is not migrated automatically.
 
 ## 3. Establish the visual foundation
 
@@ -136,7 +124,7 @@ The reference saves to MongoDB before email/Discord notifications. Decide the Ha
 - Adapt the example SMS checkbox as a separate optional, unchecked opt-in for inquiry/appointment follow-up. Keep its linked Terms/Privacy disclosures next to the checkbox. Accept inquiries without SMS consent and use another supplied contact method in that case. Do not turn transactional follow-up consent into marketing permission.
 - Include consent status in the validated payload and Discord notification, along with submission timestamp and consent-text version/source. If SMS automation is enabled, retain a durable consent record rather than relying only on a Discord message.
 - Plan for the later flow: inquiry → Discord webhook → AI agent → assigned business phone number. The future agent must receive and respect consent status and opt-outs; recording opt-in does not itself implement STOP/HELP handling or number registration.
-- Adapt `/terms` and `/privacy` from the inspected examples: replace brand, services, support contact, effective date, and messaging purpose. Preserve the example's SMS frequency/rates, STOP/HELP, optional-consent, and carrier-delivery language as a starting template. Update actual data handling for Vercel Analytics, Discord, and the eventual agent/telephony provider; omit newsletter/email-marketing claims unless implemented.
+- Adapt `/terms` and `/privacy` from the inspected examples: replace brand, services, support contact, effective date, and messaging purpose. Preserve the example's SMS frequency/rates, STOP/HELP, optional-consent, and carrier-delivery language as a starting template. Update actual data handling for PostHog, Discord, and the eventual agent/telephony provider; omit newsletter/email-marketing claims unless implemented.
 - Policy pages are launch scope, even if AI/SMS is activated later. Check the final text and actual opt-in flow against AgentPhone's then-current registration requirements before enabling the number; copying the example is a starting point, not evidence of provider/carrier approval.
 
 ## 7. Local verification and deployment
@@ -150,7 +138,7 @@ The reference saves to MongoDB before email/Discord notifications. Decide the Ha
 
 ## Suggested implementation checkpoints
 
-1. Foundation: pnpm/Next.js/shadcn scaffold, scripts, brand tokens, theme, responsive shell, Analytics, and Speed Insights components; clean build/typecheck/lint.
+1. Foundation: pnpm/Next.js/shadcn scaffold, scripts, brand tokens, theme, responsive shell, PostHog pageview/conversion and performance instrumentation; clean build/typecheck/lint.
 2. Content: polished homepage, supplied logo/palette, curated gallery, service information, adapted Terms/Privacy pages, metadata, sitemap, and robots.
 3. Conversion: estimator, adapted Sunshine Flower Bar contact form with SMS opt-in/policy links, and reliable Discord inquiry delivery, checked manually.
 4. Release preparation: Vercel Git connection/environment setup, README, automatic main-branch deployment, analytics verification, and domain configuration.
@@ -169,7 +157,7 @@ Unknown prices and integrations can remain explicit placeholders while the found
 - Create/link the project under the intended Vercel Pro team with repository root `.` and the Next.js preset. Confirm Node/pnpm alignment. Retain the domain at its current DNS provider if desired.
 - Separate Development, Preview, and Production environment values. Runtime secret: `DISCORD_CONTACT_WEBHOOK_URL`. Add any spam-protection provider variables only when that implementation is chosen.
 - Apply preview deployment protection where available and prevent indexing of nonproduction deployments. Keep production canonical URLs fixed to `https://hairnthere.com` while preview links stay usable.
-- Enable Web Analytics, include standard Speed Insights, and configure usage/spend notifications. Do not turn on automatic site pausing as an assumed default for a business website.
+- Configure the dedicated PostHog Cloud US project token for production, verify events and web vitals, then disable Vercel Web Analytics and Speed Insights. Configure usage/spend notifications for the services actually used; analytics proxy traffic still uses Vercel request/bandwidth allowances. Do not turn on automatic site pausing as an assumed default for a business website.
 - Deploy a working preview before touching production DNS. Manually verify mobile layout, estimate calculations, and delivery with preview configuration. Document the known-good deployment and Vercel rollback procedure.
 - On release, configure the apex domain and www redirect, verify HTTPS/canonical behavior, verify the production inquiry path, confirm telemetry arrives, and review runtime logs without logging form contents.
 
@@ -180,7 +168,7 @@ Unknown prices and integrations can remain explicit placeholders while the found
 - [Next.js on Vercel](https://vercel.com/docs/frameworks/full-stack/nextjs)
 - [Supported Node versions](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions)
 - [Vercel Git integration](https://vercel.com/docs/git)
-- [Web Analytics quickstart](https://vercel.com/docs/analytics/quickstart)
-- [Speed Insights quickstart](https://vercel.com/docs/speed-insights/quickstart)
-- [Speed Insights limits and pricing](https://vercel.com/docs/speed-insights/limits-and-pricing)
+- [PostHog Next.js integration](https://posthog.com/docs/libraries/next-js)
+- [PostHog Next.js rewrites](https://posthog.com/docs/advanced/proxy/nextjs)
+- [PostHog web vitals](https://posthog.com/docs/web-analytics/web-vitals)
 - [Sunshine Flower Bar reference repository](https://github.com/harryt04/flowers)

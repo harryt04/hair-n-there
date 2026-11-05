@@ -63,6 +63,7 @@ export function ContactForm({
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState("");
   const sending = useRef(false);
+  const inquiryStarted = useRef(false);
   const stageRef = useRef<HTMLHeadingElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
   const successRef = useRef<HTMLDivElement>(null);
@@ -73,6 +74,17 @@ export function ContactForm({
       ? "appointment_request"
       : "consultation";
 
+  function startInquiry(event: FormEvent<HTMLFormElement>) {
+    if (
+      event.target instanceof HTMLInputElement &&
+      event.target.name === "website"
+    )
+      return;
+    if (!inquiryStarted.current) {
+      inquiryStarted.current = true;
+      trackEvent("inquiry_started");
+    }
+  }
   function update(field: keyof typeof values, value: string) {
     setValues((current) => ({ ...current, [field]: value }));
   }
@@ -250,6 +262,7 @@ export function ContactForm({
   return (
     <div className="rounded-xl border border-border bg-card p-5 sm:p-8">
       <form
+        onChange={startInquiry}
         onSubmit={submit}
         noValidate
         aria-label="House-call or service inquiry"

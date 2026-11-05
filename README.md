@@ -15,7 +15,7 @@ The site welcomes **house-call inquiries** for manual follow-up by Elisabeth or 
 - A simple three-stage inquiry: service counts, visit preferences and address, then name/email. `/quote` redirects to `/contact`.
 - Internal catalog, package, minimum, and travel rules retained for planning. Travel and any group pricing are discussed individually.
 - Validated inquiries with acknowledged Discord delivery and updated Terms/Privacy; no phone/SMS collection in the current form.
-- Vercel Analytics, standard Speed Insights, metadata, sitemap, robots instructions, and social/browser icons.
+- PostHog page visits, broad conversion events, and web-vitals reporting, plus metadata, sitemap, robots instructions, and social/browser icons.
 - Installable PWA with a home-screen suggestion, Android maskable icon, and a lightweight offline information page.
 
 ## Run it locally
@@ -45,15 +45,16 @@ The repository intentionally has no automated test suite, pull request requireme
 
 Copy the variable names from `.env.example`. On Vercel, set them in the project’s environment settings rather than committing values.
 
-| Variable                                                | Purpose                                                                   |
-| ------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_INSTAGRAM_URL`                             | Public profile; defaults to `https://www.instagram.com/hairnthere/`.      |
-| `NEXT_PUBLIC_SUPPORT_EMAIL`                             | Public support email. Until supplied, support links use the contact page. |
-| `DISCORD_CONTACT_WEBHOOK_URL`                           | Server-only destination for production/local inquiries.                   |
-| `DISCORD_PREVIEW_WEBHOOK_URL`                           | Separate preview destination. Previews never use the production webhook.  |
-| `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` | Optional shared request limiting. Configure the pair together.            |
+| Variable                                                | Purpose                                                                                                           |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_INSTAGRAM_URL`                             | Public profile; defaults to `https://www.instagram.com/hairnthere/`.                                              |
+| `NEXT_PUBLIC_SUPPORT_EMAIL`                             | Public support email. Until supplied, support links use the contact page.                                         |
+| `NEXT_PUBLIC_POSTHOG_KEY`                               | Optional public project token for a dedicated HairnThere PostHog Cloud US project. Without it analytics stay off. |
+| `DISCORD_CONTACT_WEBHOOK_URL`                           | Server-only destination for production/local inquiries.                                                           |
+| `DISCORD_PREVIEW_WEBHOOK_URL`                           | Separate preview destination. Previews never use the production webhook.                                          |
+| `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` | Optional shared request limiting. Configure the pair together.                                                    |
 
-Public environment values are embedded at build time, so redeploy after changing them. Vercel supplies its environment identifiers; keep system environment variables exposed so production analytics can identify production correctly. Analytics and Speed Insights stay off in local and preview environments.
+Public environment values are embedded at build time, so redeploy after changing them. Keep Vercel system environment variables exposed so `NEXT_PUBLIC_VERCEL_ENV` identifies production correctly. PostHog only collects when that value is `production` and a project token is configured; local and preview environments stay excluded, including production-mode preview builds. Hosting remains on Vercel.
 
 The contact endpoint uses shared Redis limits when configured. Its fallback is bounded but process-local, so it cannot enforce a global limit across Vercel instances. Host-level firewall limits can provide another layer of protection. If configured Redis is unavailable, the form fails safely rather than bypassing it.
 
@@ -61,11 +62,23 @@ The contact endpoint uses shared Redis limits when configured. Its fallback is b
 
 1. Import `harryt04/hair-n-there` into the intended Vercel Pro team, using the **Next.js** preset and repository root `.`. Keep the default framework build/output settings; use Node 26 and pnpm.
 2. Select `main` as the production branch and leave Git deployments enabled. Pushes to `main` build and deploy production. Other branches can create previews without pull requests.
-3. Configure production and preview environment values separately, including their separate Discord destinations. Enable Web Analytics and Speed Insights in the Vercel project dashboard, then redeploy. The app already mounts `@vercel/speed-insights/next` from the root layout through `Telemetry`; it reports only in production and removes URL query strings and fragments before sending. Keep Vercel system environment variables exposed so `NEXT_PUBLIC_VERCEL_ENV` is available at build time. After visiting the production site, check the Speed Insights dashboard for incoming performance data.
+3. Configure production and preview environment values separately, including their separate Discord destinations. Create or select a dedicated HairnThere PostHog Cloud US project, set `NEXT_PUBLIC_POSTHOG_KEY` for production, and keep Vercel system environment variables exposed so `NEXT_PUBLIC_VERCEL_ENV` is available at build time. Redeploy after configuration changes. Verify incoming events and web vitals in PostHog after visiting production, then disable Web Analytics and Speed Insights in the Vercel project dashboard. This repository does not configure either dashboard or migrate historical Vercel analytics data.
 4. Check a preview: layouts, keyboard navigation, themes, reduced motion, all three inquiry stages, field errors, and delivery to the preview destination. House-call inquiries are authorized; other settings remain gated.
 5. Add `hairnthere.com` when ready. Follow the DNS records Vercel provides and redirect `www` to the apex. Preview pages are noindex and canonical URLs use the production domain. Enable preview deployment protection where available.
 
 For rollback, choose a previous working production deployment in Vercel and use its rollback/promote control. Reconcile the code on `main` afterward so a later push preserves the fix. This implementation does not itself provision hosting, change billing/DNS, push Git commits, or deploy.
+
+## Analytics and performance
+
+PostHog Cloud US receives browser analytics through same-origin `/ingest` rewrites. This follows the pattern in the neighboring Coolify-hosted apps; PostHog itself is not hosted on Coolify. No separate host variable is required. Vercel still hosts HairnThere, and proxied analytics requests use its bandwidth/request allowances.
+
+The integration records pageviews, `instagram_clicked`, `inquiry_started` on the first form interaction, and `inquiry_submitted` only after the server confirms delivery. Events contain broad action names, not inquiry contents. URL query strings, fragments, and attribution data are removed before transmission. Names, email addresses, visit addresses, family-member labels, consent records, private origins, and the decorative cinema assignment are excluded. Automatic interaction capture, session replay, automatic exception capture, and identified person profiles are disabled.
+
+Analytics identifiers are kept only in memory, without analytics cookies or local-storage persistence. Reloading creates a new anonymous identifier, so returning-visitor and cross-load funnel counts are limited. Approximate location and device/browser information may still be processed by PostHog. Blocking analytics or leaving its token unset must not prevent navigation or inquiry delivery.
+
+Web-vitals collection covers FCP, LCP, INP, and CLS without sampling; TTFB is reported separately as a `web_vital` event. Not every browser visit produces every metric. Use PostHog’s web-vitals dashboard for performance and a small conversion dashboard for pageviews → inquiry starts → confirmed submissions, plus Instagram clicks. Dashboard creation and production data verification remain operator setup steps; configuration in the repository alone does not demonstrate live collection.
+
+Before release, manually check one pageview per initial load/navigation, the three conversion events, metrics after interaction/page exit, query/referrer sanitization, no analytics cookies or local-storage entries, and no collection in local/preview environments. Confirm inquiry error and success paths still work when analytics requests are blocked. Preserve the local `pnpm lint`, `pnpm typecheck`, and `pnpm build` checks; no automated test suite is added.
 
 ## Digital business card
 
