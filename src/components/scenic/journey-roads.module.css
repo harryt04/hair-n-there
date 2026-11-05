@@ -1,0 +1,85 @@
+.journey {
+  --journey-lane: 48px;
+  --journey-car: 36px;
+  position: relative;
+  isolation: isolate;
+  padding-left: var(--journey-lane);
+}
+.lane {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--journey-lane);
+  pointer-events: none;
+  background: var(--muted);
+  border-right: 1px solid var(--border);
+}
+.road {
+  position: absolute;
+  inset: 0;
+  left: calc(var(--journey-car) / 2 + 4px);
+  width: calc(100% - var(--journey-car) - 8px);
+  height: 100%;
+}
+.shoulder {
+  fill: none;
+  stroke: var(--secondary);
+  stroke-opacity: 0.12;
+  stroke-width: 14;
+}
+.dashes {
+  fill: none;
+  stroke: var(--secondary);
+  stroke-opacity: 0.65;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 10;
+}
+.vehicle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--journey-car);
+  transform: translate(calc(var(--journey-lane) / 2), 110px)
+    translate(-50%, -50%);
+}
+.vehicle svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.journey[data-moving] .vehicle {
+  will-change: transform;
+}
+.content {
+  min-width: 0;
+}
+@media (min-width: 640px) {
+  .journey {
+    --journey-lane: 80px;
+    --journey-car: 64px;
+  }
+}
+@media (min-width: 1024px) {
+  .journey {
+    --journey-lane: 140px;
+    --journey-car: 86px;
+  }
+}
+@media (min-width: 1280px) {
+  .journey {
+    --journey-lane: 180px;
+    --journey-car: 95px;
+  }
+}
+@media (min-width: 1600px) {
+  .journey {
+    --journey-lane: 250px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vehicle {
+    transform: translate(calc(var(--journey-lane) / 2), 110px)
+      translate(-50%, -50%) !important;
+    will-change: auto !important;
+  }
+}

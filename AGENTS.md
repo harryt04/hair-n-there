@@ -12,7 +12,7 @@ Use `docs/elisabeth-revision-plan.md` when changing the catalog, family planner,
 2. Keep shared data/types agreed before splitting related work among agents. Give each agent distinct files; integrate dependent API, catalog, and UI changes together.
 3. Finish with the relevant local commands in `package.json`: lint, typecheck, and production build for application changes. Manually inspect affected calculation/error paths. Report unavailable configuration honestly.
 
-Harry explicitly chose **no automated test suites, test runners, pull request process, GitHub Actions, or Docker pipeline**. Use local verification and Vercel’s native Git deployments. Do not commit, push, deploy, or activate a paid service unless requested.
+Harry explicitly chose **no automated test suites, test runners, pull request process, GitHub Actions, or Docker pipeline**. Use local verification and Vercel’s native Git deployments. For this early-stage repository, commit completed, verified changes and push directly to `main` without a PR until Harry changes this policy. This overrides the global Treehouse PR default. Preserve concurrent changes and use ordinary non-force pushes. Main pushes may trigger Vercel’s native Git deployment; separate deployment actions and paid-service activation still require explicit authorization.
 
 ## Business rules that must survive changes
 
@@ -27,7 +27,7 @@ Harry explicitly chose **no automated test suites, test runners, pull request pr
 
 Use existing shadcn components and inspect their generated APIs: this preset uses **Base UI**, with `render` and `nativeButton={false}` for button-styled links, not `asChild`.
 
-Keep the Subaru decorative, in reserved scenic bands, driven by normal scroll with passive listeners/requestAnimationFrame and cleanup. Reduced motion and no-JavaScript states leave a parked car; forms and reading never depend on animation. Avoid scroll hijacking and overlays across controls.
+Keep the Subaru decorative, in a reserved continuous scenic margin, driven by normal scroll with passive listeners/requestAnimationFrame and cleanup. Reduced motion and no-JavaScript states leave a parked car; forms and reading never depend on animation. Avoid scroll hijacking and overlays across controls.
 
 Keep all service-menu content server rendered. Preserve semantic headings, keyboard access, associated form errors, mobile layouts, and consent links. Use approved biography/portfolio details only; temporary stock is labeled inspiration, never Elisabeth’s work or a before/after pair. Public Instagram is `@hairnthere`; import source is `@justbeyou_hair`.
 

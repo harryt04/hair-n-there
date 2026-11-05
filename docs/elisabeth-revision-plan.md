@@ -140,10 +140,13 @@ House calls require **$60 in services before travel fees**. For a $35 haircut, s
 
 ## 5. Subaru scroll animation
 
+November 2026 revision: replace isolated chapter dividers with one continuous scenic margin around the site content and footer. One Subaru accompanies normal scrolling across the entire page, retraces the route on upward scroll, and parks at the endpoint. Reserve 48px on mobile, 80px on tablet, 140–180px on laptop, and 250px on wide desktop. The site header stays full width. The shared site layout carries the journey on informational, service, planner, and contact pages, keeping every control outside its decorative lane. Reduced-motion and no-JavaScript views park the car near the start. This supersedes the divider-based motion described in the original concept selection.
+
+
 Create approved code-native SVG vehicle artwork inspired by the supplied Subaru illustration, plus a separate SVG route. Keep the original complete logo unchanged. Maintain separate car orientation/art transforms from its route-position transform; pivot and rotation should follow the path without flipping text or tools unnaturally.
 
-- Desktop/laptop: reserve a narrow outer column or decorative chapter band. Move the vehicle along the chosen route using normalized page/section scroll progress; do not position it over copy, prices, form inputs, navigation, or calls to action.
-- Tablet/mobile: use a dedicated slim story rail or chapter divider in the content flow with a smaller car. It responds to touch scrolling the same way; do not require hover, dragging, wheel events, or precision pointer input. Do not put the desktop route over a cramped mobile layout; reserve its own space and simplify its path.
+- Desktop/laptop: reserve a narrow outer column. Move the vehicle along the chosen route using normalized page/section scroll progress; do not position it over copy, prices, form inputs, navigation, or calls to action.
+- Tablet/mobile: use a dedicated slim story rail in the content flow with a smaller car. It responds to touch scrolling the same way; do not require hover, dragging, wheel events, or precision pointer input. Do not put the desktop route over a cramped mobile layout; reserve its own space and simplify its path.
 - Use one passive scroll handler and one requestAnimationFrame scheduler, SVG path length/point sampling, and transforms only for the car. Measure route geometry on resize, not repeatedly on every scroll event. Recompute geometry after responsive layout changes and clean up listeners.
 - Clamp progress at the route endpoints. Scrolling upward reverses progress naturally. Preserve the browser’s normal scroll speed and navigation; no scroll hijacking, pinning that traps content, autoplay travel, sound, or spinning interface decorations.
 - Mark route/car `aria-hidden`, `pointer-events: none`, and nonfocusable. Keep all important information independent of the animation.
@@ -185,7 +188,7 @@ Use Vercel’s optional branch preview for visual review if requested; productio
 
 ## Open decisions
 
-1. Resolved: Scenic Journey (B), with dedicated scenic road bands and scroll-driven Subaru.
+1. Resolved: Scenic Journey (B), revised to a continuous scenic margin and one scroll-driven Subaru.
 2. Written requirements/authorization for each exact service location model; salon venue and off-site event arrangements remain unconfirmed. Who will provide the decision and when?
 3. Continue manual confirmation/interest inquiries for this release, or integrate real-time scheduling later? No live scheduling provider has been chosen.
 4. Resolved: Mommy & Me includes the women’s haircut + blow-dry. Any substitutions or upgrades still need explicit pricing.

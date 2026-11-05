@@ -16,9 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { FrequentlyAskedQuestions } from "@/components/site/faq";
 import { InstagramLink } from "@/components/site/instagram-link";
 import { WebsiteQr } from "@/components/card/website-qr";
-import { JourneyRoads } from "@/components/scenic/journey-roads";
 import { MountainLandscape } from "@/components/scenic/landscape";
-import { RoadBand } from "@/components/scenic/road-band";
 import { business } from "@/data/business";
 import { availability, launchNotice } from "@/data/availability";
 import { services } from "@/data/services";
@@ -162,12 +160,9 @@ export default function Home() {
         </Card>
       </section>
 
-      <JourneyRoads>
-        <div className={styles.scenery} aria-hidden="true">
-          <MountainLandscape />
-        </div>
-        <RoadBand chapter="A little mountain spirit. A lot of good hair." />
-      </JourneyRoads>
+      <div className={styles.scenery} aria-hidden="true">
+        <MountainLandscape />
+      </div>
 
       <section
         id="services"
