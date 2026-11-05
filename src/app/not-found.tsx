@@ -1,12 +1,20 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+
+export const metadata: Metadata = {
+  title: "404 — Page not found",
+  description: "The requested page does not exist on HairnThere.",
+  robots: { index: false, follow: true },
+};
+
 export default function NotFound() {
   return (
     <main id="main-content" className="site-container py-28 text-center">
-      <p className="eyebrow">A little off the beaten path</p>
-      <h1 className="mt-5 text-5xl">Let’s get you back home.</h1>
+      <p className="eyebrow">404 — Not found</p>
+      <h1 className="mt-5 text-5xl">Page not found</h1>
       <p className="mt-5 text-muted-foreground">
-        This page isn’t here, but your next good hair day could be.
+        The page you requested does not exist on this website.
       </p>
       <Button
         nativeButton={false}
