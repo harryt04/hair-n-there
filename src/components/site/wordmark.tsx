@@ -8,7 +8,7 @@ export function Wordmark({ className }: { className?: string }) {
       href="/"
       aria-label="HairnThere home"
       className={cn(
-        "inline-flex shrink-0 items-center gap-2 font-display text-2xl leading-none font-semibold tracking-[-0.075em] italic sm:gap-2.5 sm:text-[1.85rem]",
+        "inline-flex shrink-0 items-center gap-2 font-display text-2xl leading-none font-semibold tracking-[-0.04em] sm:gap-2.5 sm:text-[1.85rem]",
         className,
       )}
     >

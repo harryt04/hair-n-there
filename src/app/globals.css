@@ -3,9 +3,9 @@
 @import "shadcn/tailwind.css";
 @custom-variant dark (&:is(.dark *));
 @theme inline {
-  --font-sans: var(--font-montserrat);
-  --font-display: var(--font-playfair);
-  --font-heading: var(--font-playfair);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-manrope);
+  --font-heading: var(--font-manrope);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -119,7 +119,7 @@
   h2,
   h3,
   h4 {
-    @apply font-display;
+    @apply font-display font-semibold;
     text-wrap: balance;
   }
   button:not(:disabled),
@@ -162,9 +162,10 @@
   color: var(--secondary);
 }
 @utility heading-display {
-  font-family: var(--font-playfair), Georgia, serif;
-  letter-spacing: -0.045em;
-  line-height: 1.07;
+  font-family: var(--font-manrope), Arial, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.14;
 }
 @utility prose-policy {
   max-width: 46rem;

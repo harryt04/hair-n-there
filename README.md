@@ -8,7 +8,7 @@ The site welcomes **house-call inquiries** for manual follow-up by Elisabeth or 
 
 ## What’s included
 
-- Responsive mountain-led homepage with light/dark themes, Playfair Display and Montserrat typography, the new circular H/mountain logo, and compact logo/icon assets.
+- Responsive mountain-led homepage with light/dark themes, Manrope headings and DM Sans body typography, the new circular H/mountain logo, and compact logo/icon assets.
 - A QR-first digital business card at `/card`, with a viewport-filling presentation view, copyable website link and downloadable QR image. No Apple/Google Wallet integration or membership enrollment.
 - A scroll-driven wagon in dedicated scenic bands. It responds to normal mouse, trackpad, keyboard, and touch scrolling; reduced-motion preferences park the car.
 - A server-rendered service menu without public prices; customers receive personal quotes.

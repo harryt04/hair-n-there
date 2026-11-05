@@ -1,20 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Montserrat, Playfair_Display } from "next/font/google";
+import { DM_Sans, Manrope } from "next/font/google";
 import { Providers } from "@/components/site/providers";
 import { PwaSupport } from "@/components/site/pwa-support";
 import { Telemetry } from "@/components/site/telemetry";
 import { business } from "@/data/business";
 import "./globals.css";
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
   display: "swap",
 });
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
-  style: ["normal", "italic"],
   display: "swap",
 });
 const isPreview = process.env.VERCEL_ENV === "preview";
@@ -61,7 +60,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${montserrat.variable} ${playfair.variable}`}
+      className={`${dmSans.variable} ${manrope.variable}`}
     >
       <body className="min-h-screen">
         <Providers>

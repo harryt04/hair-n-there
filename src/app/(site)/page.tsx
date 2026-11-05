@@ -53,9 +53,7 @@ export default function Home() {
           <h1 id="hero-heading" className={styles.title}>
             Good Hair. Good Vibes.
             <br />
-            <span className="text-primary italic">
-              Right in Your Neighborhood.
-            </span>
+            <span className="text-primary">Right in Your Neighborhood.</span>
           </h1>
         </div>
         <div className={styles.stamp} aria-hidden="true">

@@ -1,5 +1,12 @@
 # HairnThere: Elisabeth revision plan
 
+## November 5 typography decision
+
+Harry selected proposal C in the typography review: upright Manrope headings
+(weight 600) with DM Sans body copy. This supersedes the earlier Playfair Display
+and Montserrat instructions below. Preserve the existing illustrated logo,
+Mountain Cinema artwork, brand palette, light/dark themes, and business rules.
+
 ## November 5 Elisabeth copy and portrait update
 
 Use Elisabeth’s supplied first-person biography and neighborhood voice: “Good
