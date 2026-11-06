@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ContactSection } from "@/components/contact/contact-section";
 import { FrequentlyAskedQuestions } from "@/components/site/faq";
 import { InstagramLink } from "@/components/site/instagram-link";
+import { ServiceCategoryMenu } from "@/components/site/service-category-menu";
 import { InstagramGallery } from "@/components/site/instagram-gallery";
 import { business } from "@/data/business";
 import { availability, launchNotice } from "@/data/availability";
@@ -19,27 +20,6 @@ export const metadata: Metadata = {
     "Meet Elisabeth, your neighborhood hairstylist with over 10 years of experience. Explore cuts, color, extensions, and family hair days in Suncrest, Draper, Utah.",
   alternates: { canonical: "/" },
 };
-
-const highlights = [
-  {
-    id: "womens-haircut-blow-dry",
-    label: "Haircuts",
-    title: "Fresh Cuts",
-    copy: "From little trims to big changes.",
-  },
-  {
-    id: "root-touch-up",
-    label: "Color",
-    title: "Color Magic",
-    copy: "Dimensional blondes, rich brunettes, and everything in between.",
-  },
-  {
-    id: "extension-consultation",
-    label: "Length, volume & styling",
-    title: "Extensions & Styling",
-    copy: "A little extra length, volume, or sparkle. Extension hair is priced separately.",
-  },
-];
 
 export default function Home() {
   return (
@@ -157,26 +137,7 @@ export default function Home() {
             <ArrowUpRight className="size-4" aria-hidden="true" />
           </Link>
         </div>
-        <div className={styles.services}>
-          {highlights.map((highlight) => {
-            return (
-              <Card
-                key={highlight.id}
-                className={`gap-0 py-0 shadow-none ring-0 ${styles.serviceCard}`}
-              >
-                <CardContent className="flex h-full flex-col px-0 py-6 md:px-6">
-                  <p className="eyebrow">{highlight.label}</p>
-                  <h3 className="mt-4 text-3xl tracking-[-.035em]">
-                    {highlight.title}
-                  </h3>
-                  <p className="mt-4 mb-7 text-xs leading-7 text-muted-foreground">
-                    {highlight.copy}
-                  </p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+        <ServiceCategoryMenu />
         <p className="mt-4 text-sm leading-7 text-muted-foreground">
           Every head of hair is different. We’ll talk through your services and
           a personal quote before you commit.

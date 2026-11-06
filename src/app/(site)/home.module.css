@@ -31,19 +31,6 @@
 .section {
   padding-block: 48px 60px;
 }
-.services {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-.serviceCard {
-  border-radius: 0;
-  border-top: 1px solid var(--border);
-  border-right: 1px solid var(--border);
-  background: transparent;
-}
-.serviceCard:last-child {
-  border-right: 0;
-}
 .familyCard {
   border-radius: 0;
   border-block: 1px solid var(--border);
@@ -109,12 +96,6 @@
   }
   .section {
     padding-block: 30px 42px;
-  }
-  .services {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .serviceCard {
-    border-right: 0;
   }
   .invitation {
     align-items: flex-start;

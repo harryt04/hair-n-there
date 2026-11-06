@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { ServiceCategoryMenu } from "@/components/site/service-category-menu";
+import styles from "./services.module.css";
 import { Button } from "@/components/ui/button";
 import { services, serviceCategories } from "@/data/services";
 import { familyPackages } from "@/data/packages";
@@ -47,37 +49,30 @@ function InquiryButton({ href, name }: { href: string; name: string }) {
 export default function ServicesPage() {
   return (
     <main id="main-content" className="site-container py-12 sm:py-20">
-      <div className="max-w-2xl">
-        <p className="eyebrow">HairnThere services</p>
-        <h1 className="heading-display mt-5 text-5xl sm:text-6xl">
+      <div className={styles.intro}>
+        <p className={styles.eyebrow}>HairnThere services</p>
+        <h1 className="heading-display mt-5 text-3xl sm:text-5xl">
           Hey Neighbor, Let’s Do Your Hair!
         </h1>
-        <p className="mt-6 text-lg leading-8 text-muted-foreground">
+        <p className="mt-6 text-lg leading-8">
           Fresh cuts, beautiful color, and happy hair days. Great hair travels!
         </p>
-        <p className="mt-4 text-sm leading-7 text-muted-foreground">
+        <p className="mt-4 text-sm leading-7">
           Pick a little refresh or dream up something new. I’ll personally help
           you plan your hair day and confirm your quote.
         </p>
-        <p className="mt-4 rounded-lg bg-muted p-4 text-sm leading-7">
+        <p className={styles.notice}>
           {launchNotice} Every request starts a conversation, never a
           reservation.
         </p>
       </div>
-      <nav
-        aria-label="Service categories"
-        className="my-9 flex flex-wrap gap-2"
-      >
-        {["Family Hair Days", ...serviceCategories].map((category) => (
-          <a
-            key={category}
-            href={`#${categoryId(category)}`}
-            className="inline-flex min-h-12 items-center rounded-lg border border-border px-4 py-3 text-sm hover:bg-muted"
-          >
-            {category}
-          </a>
-        ))}
-      </nav>
+      <div id="service-menu" className="pt-8">
+        <h2 className="text-2xl">What are you dreaming of?</h2>
+        <p className="mt-2 text-sm leading-7 text-muted-foreground">
+          Choose a category to jump to the services, or explore a family bundle.
+        </p>
+        <ServiceCategoryMenu onServicesPage />
+      </div>
       <section
         id="family-hair-days"
         aria-labelledby="family-heading"
@@ -141,12 +136,17 @@ export default function ServicesPage() {
             id={categoryId(category)}
             aria-labelledby={`heading-${categoryId(category)}`}
           >
-            <h2
-              id={`heading-${categoryId(category)}`}
-              className="mb-5 text-3xl"
-            >
-              {category}
-            </h2>
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+              <h2 id={`heading-${categoryId(category)}`} className="text-3xl">
+                {category}
+              </h2>
+              <a
+                href="#service-menu"
+                className="inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4"
+              >
+                All categories ↑
+              </a>
+            </div>
             {category === "Extensions" && (
               <p className="mb-4 text-sm leading-7 text-muted-foreground">
                 Extensions & treatments: a little extra length, fullness, or
