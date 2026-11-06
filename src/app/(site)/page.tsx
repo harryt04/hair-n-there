@@ -35,6 +35,13 @@ export default function Home() {
             <br />
             <span className="text-primary">Right in Your Neighborhood.</span>
           </h1>
+          <Button
+            nativeButton={false}
+            render={<Link href="/contact" />}
+            className="mt-5 min-h-12 px-5"
+          >
+            Get in touch with Elisabeth <ArrowUpRight aria-hidden="true" />
+          </Button>
         </div>
         <div className={styles.stamp} aria-hidden="true">
           Great
@@ -130,10 +137,10 @@ export default function Home() {
             </h2>
           </div>
           <Link
-            href="/services"
+            href="/pricing"
             className="inline-flex shrink-0 items-center gap-2 text-xs font-semibold text-primary hover:underline"
           >
-            View the full menu{" "}
+            View services & pricing{" "}
             <ArrowUpRight className="size-4" aria-hidden="true" />
           </Link>
         </div>

@@ -21,3 +21,27 @@
   font-size: 0.8125rem;
   line-height: 1.8;
 }
+
+.contact {
+  min-height: 3rem;
+  padding-inline: 1.25rem;
+  background: var(--service-hero-foreground);
+  color: var(--service-hero);
+  white-space: normal;
+}
+.contact:hover {
+  background: color-mix(
+    in srgb,
+    var(--service-hero-foreground) 90%,
+    var(--service-hero)
+  );
+}
+.pricingLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 3rem;
+  padding-inline: 1rem;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

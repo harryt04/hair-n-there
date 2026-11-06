@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  ArrowDown,
   ArrowUpRight,
   Heart,
   Palette,
@@ -39,18 +38,20 @@ const categories = [
 ];
 
 export function ServiceCategoryMenu({
-  onServicesPage = false,
+  includeFamily = false,
 }: {
-  onServicesPage?: boolean;
+  includeFamily?: boolean;
 }) {
-  const prefix = onServicesPage ? "" : "/services";
-  const Arrow = onServicesPage ? ArrowDown : ArrowUpRight;
-
   return (
     <nav aria-label="Service categories" className={styles.menu}>
       <div className={styles.grid}>
         {categories.map(({ id, title, copy, icon: Icon }) => (
-          <Link key={id} href={`${prefix}#${id}`} className={styles.link}>
+          <Link
+            key={id}
+            id={id}
+            href={`/pricing#${id}`}
+            className={styles.link}
+          >
             <Card className={`ring-0 shadow-none ${styles.card}`}>
               <CardContent className={styles.content}>
                 <Icon
@@ -61,26 +62,28 @@ export function ServiceCategoryMenu({
                 <span className={styles.title}>{title}</span>
                 <span className={styles.copy}>{copy}</span>
                 <span className={styles.action}>
-                  Explore <Arrow aria-hidden="true" size={16} />
+                  Services & prices{" "}
+                  <ArrowUpRight aria-hidden="true" size={16} />
                 </span>
               </CardContent>
             </Card>
           </Link>
         ))}
       </div>
-      {onServicesPage && (
+      {includeFamily && (
         <Link
-          href="#family-hair-days"
+          id="family-hair-days"
+          href="/pricing#family-hair-days"
           className={`${styles.link} ${styles.family}`}
         >
           <Users aria-hidden="true" size={28} strokeWidth={1.6} />
           <span>
             <span className={styles.title}>Family Hair Days</span>
             <span className={styles.copy}>
-              One happy household. Explore the bundles.
+              Multiple haircuts, one happy household. View bundles & prices.
             </span>
           </span>
-          <ArrowDown aria-hidden="true" size={20} />
+          <ArrowUpRight aria-hidden="true" size={20} />
         </Link>
       )}
     </nav>

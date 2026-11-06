@@ -43,6 +43,13 @@ export function SiteHeader() {
             ))}
           </nav>
           <Button
+            render={<Link href="/contact" />}
+            nativeButton={false}
+            className="hidden min-h-11 px-4 lg:inline-flex"
+          >
+            Get in touch <ArrowUpRight aria-hidden="true" />
+          </Button>
+          <Button
             render={<Link href="/card" />}
             nativeButton={false}
             variant="outline"
@@ -77,10 +84,20 @@ export function SiteHeader() {
                 aria-label="Mobile navigation"
                 className="mt-6 flex flex-col gap-2"
               >
+                <Button
+                  render={
+                    <Link href="/contact" onClick={() => setOpen(false)} />
+                  }
+                  nativeButton={false}
+                  className="mb-4 min-h-12 rounded-sm"
+                >
+                  Get in touch with Elisabeth{" "}
+                  <ArrowUpRight aria-hidden="true" />
+                </Button>
                 {[
                   ...navigation,
+                  { href: "/pricing", label: "Pricing" },
                   { href: "/card", label: "QR Code" },
-                  { href: "/contact", label: "Say hello" },
                 ].map(({ href, label }) => (
                   <Link
                     key={href}
@@ -91,15 +108,6 @@ export function SiteHeader() {
                     {label}
                   </Link>
                 ))}
-                <Button
-                  render={
-                    <Link href="/contact" onClick={() => setOpen(false)} />
-                  }
-                  nativeButton={false}
-                  className="mt-4 h-12 rounded-sm"
-                >
-                  Plan your visit <ArrowUpRight aria-hidden="true" />
-                </Button>
               </nav>
             </SheetContent>
           </Sheet>

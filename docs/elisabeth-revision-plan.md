@@ -1,5 +1,17 @@
 # HairnThere: Elisabeth revision plan
 
+## November 6 contact-first service navigation
+
+Harry requested a simpler service experience: prioritize getting in touch,
+keep the overview unpriced, and make detailed pricing an optional next step.
+`/services` now leads with a contact action and short category descriptions;
+`/pricing` is the dedicated full menu. Each menu row shows its name, brief
+catalog description, and price. Timing, individual inquiry links, and extra
+policy information sit in native, server-rendered disclosures. Prices remain
+available without submitting contact details. The successful inquiry state
+also offers the pricing link. Preserve catalog values, selected-service/package
+handoff, inquiry validation/delivery, and availability gates.
+
 ## November 6 services copy and menu decision
 
 Harry supplied Elisabeth’s updated written service menu and authorized
@@ -9,6 +21,7 @@ supplied estimated durations. Keep the quote route redirected to contact.
 Preserve Mountain Cinema, current typography, themes, and service IDs.
 
 Implementation plan:
+
 1. Update the shared catalog with the November 6 prices, durations, friendly
    descriptions, and new services. Add the $85 Neighborhood Refresh and $115+
    Color & Cut Combo; update Family Trim to $80. Keep Mommy & Me at $75 with
@@ -34,7 +47,6 @@ with additional services explicitly extra.
 
 Use “Say hello before launch” for the launch-list invitation. An inquiry does
 not subscribe someone to ongoing marketing; no mailing list is activated.
-
 
 ## November 5 typography decision
 

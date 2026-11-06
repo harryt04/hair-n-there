@@ -88,6 +88,8 @@ QR assets are checked into `public/card/`. Regenerate them with `pnpm create:car
 
 ## Pricing and service availability
 
+The services overview prioritizes getting in touch; `/pricing` offers the full menu without requiring contact details. Timing and policy information are available in expandable details.
+
 Prices live in `src/data/services.ts` and packages in `src/data/packages.ts`. The quote calculator uses these server-owned values rather than accepting a browser’s price. A `+` means “starting at”; a correction needing consultation does not silently add $0 to a guaranteed total. Row-priced work uses row counts. Extension hair is outside installation labor.
 
 Family Trim is $85 and Little Crew is $70. Mommy & Me is $75 and includes a women’s haircut + blow-dry and one child’s cut. Packages include their stated cuts once; individually added services are additional services, so avoid adding included cuts a second time.

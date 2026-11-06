@@ -25,6 +25,18 @@ export function SiteFooter() {
             Services
           </Link>
           <Link
+            href="/pricing"
+            className="underline-offset-4 hover:text-foreground hover:underline"
+          >
+            Pricing
+          </Link>
+          <Link
+            href="/contact"
+            className="underline-offset-4 hover:text-foreground hover:underline"
+          >
+            Get in touch
+          </Link>
+          <Link
             href="/card"
             className="underline-offset-4 hover:text-foreground hover:underline"
           >

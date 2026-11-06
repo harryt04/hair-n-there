@@ -270,6 +270,16 @@ export function ContactForm({
           Appointments are coming soon, pending licensing approval. Your inquiry
           hasn’t reserved a date or time.
         </p>
+        <p className="mt-5 text-sm leading-7 text-muted-foreground">
+          While you wait, you can{" "}
+          <Link
+            href="/pricing"
+            className="text-primary underline underline-offset-4"
+          >
+            explore services & pricing
+          </Link>
+          .
+        </p>
         <Link
           href="/"
           className="mt-6 inline-block py-3 text-sm text-primary underline underline-offset-4"
