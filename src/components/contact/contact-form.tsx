@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { services } from "@/data/services";
+import { familyPackages } from "@/data/packages";
 import { availability } from "@/data/availability";
 import { business, phoneContactConsentText } from "@/data/business";
 import { inquirySchema, type InquiryInput } from "@/lib/inquiry-validation";
@@ -16,7 +18,7 @@ import { trackEvent } from "@/components/site/telemetry";
 
 const stages = ["Your people", "Your visit", "Stay in touch"];
 const stageFields = [
-  ["haircutCount", "colorCount", "message"],
+  ["haircutCount", "colorCount", "message", "services", "packages"],
   ["preferredDate", "preferredTime", "exactTime", "address"],
   ["name", "phone", "email"],
 ];
@@ -28,9 +30,17 @@ export function ContactEntry() {
   const visitType = visit === "salon" || visit === "event" ? visit : "house";
   const topic =
     search.get("topic") === "neighborhood" ? "neighborhood" : "general";
+  const service = services.find((item) => item.id === search.get("service"));
+  const pack = familyPackages.find((item) => item.id === search.get("package"));
+  const selection = service
+    ? `service:${service.id}`
+    : pack
+      ? `package:${pack.id}`
+      : "";
   return (
     <ContactForm
-      key={`${visitType}:${topic}`}
+      key={`${visitType}:${topic}:${selection}`}
+      initialSelection={selection}
       visitType={visitType}
       topic={topic}
     />
@@ -40,11 +50,14 @@ export function ContactEntry() {
 export function ContactForm({
   visitType = "house",
   topic = "general",
+  initialSelection = "",
 }: {
+  initialSelection?: string;
   visitType?: VisitType;
   topic?: "general" | "neighborhood";
 }) {
   const prefix = useId();
+  const [selection, setSelection] = useState(initialSelection);
   const [step, setStep] = useState(0);
   const [values, setValues] = useState({
     haircutCount: "0",
@@ -125,8 +138,12 @@ export function ContactForm({
       visitType,
       intent,
       topic,
-      services: [],
-      packages: [],
+      services: selection.startsWith("service:")
+        ? [{ id: selection.slice(8), quantity: 1 }]
+        : [],
+      packages: selection.startsWith("package:")
+        ? [{ id: selection.slice(8), quantity: 1 }]
+        : [],
       smsConsent: false,
       phoneContactConsent: !!values.phone.trim(),
     };
@@ -200,7 +217,7 @@ export function ContactForm({
       setSuccess(
         typeof result.message === "string"
           ? result.message
-          : "Elisabeth or a member of her team will be in touch shortly to discuss your plans.",
+          : "I’ll be in touch to talk through your plans.",
       );
       trackEvent("inquiry_submitted");
       requestAnimationFrame(() => successRef.current?.focus());
@@ -250,7 +267,8 @@ export function ContactForm({
           {success}
         </p>
         <p className="mt-3 text-sm leading-7 text-muted-foreground">
-          Your date, time, and quote will be confirmed together.
+          Appointments are coming soon, pending licensing approval. Your inquiry
+          hasn’t reserved a date or time.
         </p>
         <Link
           href="/"
@@ -320,6 +338,57 @@ export function ContactForm({
             {stages[step]}
           </h2>
           <div hidden={step !== 0}>
+            <div className="mb-5 space-y-2">
+              <Label htmlFor={`${prefix}-selection`}>
+                What caught your eye? · optional
+              </Label>
+              <select
+                id={`${prefix}-selection`}
+                name="selection"
+                value={selection}
+                onChange={(event) => setSelection(event.target.value)}
+                aria-invalid={!!errors.services || !!errors.packages}
+                aria-describedby={
+                  errors.services
+                    ? `${prefix}-services-error`
+                    : errors.packages
+                      ? `${prefix}-packages-error`
+                      : undefined
+                }
+                className="min-h-12 w-full rounded-lg border border-input bg-card px-3 text-base"
+              >
+                <option value="">Let’s figure it out together</option>
+                <optgroup label="Family Hair Days & bundles">
+                  {familyPackages.map((pack) => (
+                    <option key={pack.id} value={`package:${pack.id}`}>
+                      {pack.name}
+                    </option>
+                  ))}
+                </optgroup>
+                {["Haircuts", "Color", "Styling", "Extensions"].map(
+                  (category) => (
+                    <optgroup key={category} label={category}>
+                      {services
+                        .filter((service) => service.category === category)
+                        .map((service) => (
+                          <option
+                            key={service.id}
+                            value={`service:${service.id}`}
+                          >
+                            {service.name}
+                          </option>
+                        ))}
+                    </optgroup>
+                  ),
+                )}
+              </select>
+              {fieldError("services")}
+              {fieldError("packages")}
+              <p className="text-xs leading-6 text-muted-foreground">
+                This is your inquiry interest, not a booking or final service
+                count. Use the note for anything else you’d like to add.
+              </p>
+            </div>
             <p className="mb-5 text-sm leading-7 text-muted-foreground">
               A whole family or just you. How many people would like each
               service?
@@ -454,9 +523,9 @@ export function ContactForm({
           </div>
           <div hidden={step !== 2}>
             <p className="mb-5 text-sm leading-7 text-muted-foreground">
-              Leave a phone number or email so Elisabeth or her team can discuss
-              your visit and a personal quote. If you provide a phone number,
-              we’ll use calls or texts for appointment follow-up.
+              Leave a phone number or email so I can discuss your visit and a
+              personal quote. If you provide a phone number, we’ll use calls or
+              texts for appointment follow-up.
             </p>
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="space-y-2">
@@ -508,7 +577,7 @@ export function ContactForm({
             </p>
             <p className="mt-5 text-xs leading-6 text-muted-foreground">
               {house
-                ? "Your preferred date and time aren’t reserved until we confirm with you."
+                ? "This is an inquiry for a future house call, not an appointment reservation."
                 : "This is a consultation inquiry, not an appointment reservation."}
             </p>
           </div>

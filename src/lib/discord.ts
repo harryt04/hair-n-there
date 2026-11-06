@@ -58,8 +58,12 @@ export async function sendContactInquiry(
   const timestamp = new Date().toISOString();
   const simple =
     input.haircutCount !== undefined || input.colorCount !== undefined;
+  const interestText = [
+    ...quote.items.map((item) => item.name),
+    ...quote.packageItems.map((item) => item.name),
+  ].join(", ");
   const serviceText = simple
-    ? `People wanting haircuts: ${input.haircutCount ?? 0}\nPeople wanting color: ${input.colorCount ?? 0}\nA person receiving both appears in both counts. Services and personal quote to discuss.`
+    ? `People wanting haircuts: ${input.haircutCount ?? 0}\nPeople wanting color: ${input.colorCount ?? 0}\nA person receiving both appears in both counts. Services and personal quote to discuss.\nSelected interest (not a final service count): ${interestText || "To discuss"}`
     : [
         ...quote.items.map(
           (item) =>
@@ -67,7 +71,7 @@ export async function sendContactInquiry(
         ),
         ...quote.packageItems.map(
           (item) =>
-            `${item.name} × ${item.quantity}: ${formatMoney(item.subtotalCents)} — ${item.inclusions}${item.needsConfirmation ? " (inclusions need confirmation)" : ""}`,
+            `${item.name} × ${item.quantity}: ${item.startingPrice ? "from " : ""}${formatMoney(item.subtotalCents)} — ${item.inclusions}${item.needsConfirmation ? " (inclusions need confirmation)" : ""}`,
         ),
       ].join("\n") || "General inquiry; services to discuss";
   const status =

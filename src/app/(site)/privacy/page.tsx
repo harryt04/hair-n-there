@@ -32,9 +32,10 @@ export default function PrivacyPage() {
         <p>
           When you send an inquiry, we collect your name, phone number and/or
           email, the number of people wanting haircuts or color, your preferred
-          date and time, the visit address or venue, and any optional note. One
-          person may appear in both service counts. We do not need family
-          members’ names, dates of birth, payment details, or health records.
+          date and time, selected service or package interests, the visit
+          address or venue, and any optional note. One person may appear in both
+          service counts. We do not need family members’ names, dates of birth,
+          payment details, or health records.
         </p>
         <p>
           Provide a phone number or email so we can reach you. Providing a phone
@@ -45,11 +46,10 @@ export default function PrivacyPage() {
       </PolicySection>
       <PolicySection title="How we use your information">
         <p>
-          Elisabeth or authorized team members use your details to respond by
-          your preferred contact method, discuss services and a personal quote,
-          check the visit location and availability, and coordinate your visit.
-          Sending an inquiry does not automatically reserve a date or confirm an
-          appointment.
+          I use your details to respond by your preferred contact method,
+          discuss services and a personal quote, check the visit location and
+          availability, and coordinate your visit. Sending an inquiry does not
+          automatically reserve a date or confirm an appointment.
         </p>
         <p>
           Our form does not enroll you in a newsletter or authorize unrelated
@@ -59,14 +59,13 @@ export default function PrivacyPage() {
       </PolicySection>
       <PolicySection title="Phone and text messages">
         <p>
-          Calls and texts from Elisabeth or her team are limited to your
-          appointment inquiry and appointment confirmations. They may be
-          one-time or ongoing for your appointments, never for marketing or
-          unrelated purposes. We never sell your contact information. You may
-          ask Elisabeth or her team to stop calling or texting at any time,
-          including by replying to a personal text. Message and data rates may
-          apply. You can choose email instead by leaving your phone number
-          blank.
+          Calls and texts from me are limited to your appointment inquiry and
+          appointment confirmations. They may be one-time or ongoing for your
+          appointments, never for marketing or unrelated purposes. We never sell
+          your contact information. You may ask me to stop calling or texting at
+          any time, including by replying to a personal text. Message and data
+          rates may apply. You can choose email instead by leaving your phone
+          number blank.
         </p>
         <p>
           We record your phone contact preference, the disclosure shown, its
@@ -82,12 +81,13 @@ export default function PrivacyPage() {
         <p>
           Submitted inquiries are sent to a private Discord destination used to
           manage HairnThere inquiries. The notification includes the information
-          you submitted, including service counts and date/time preferences.
-          Your visit address is included in the private text attachment rather
-          than the notification preview. Older inquiries may also include
-          service selections, planning estimates, or consent details. Discord
-          and the people authorized to manage that destination process the
-          information to support your inquiry.
+          you submitted, including service counts, selected service or package
+          interests, and date/time preferences. Your visit address is included
+          in the private text attachment rather than the notification preview.
+          Older inquiries may also include service selections, planning
+          estimates, or consent details. Discord and the people authorized to
+          manage that destination process the information to support your
+          inquiry.
         </p>
         <p>
           Vercel hosts the website and runs the contact endpoint. Hosting and
@@ -108,10 +108,10 @@ export default function PrivacyPage() {
       </PolicySection>
       <PolicySection title="Travel planning">
         <p>
-          House-call inquiries ask for a street address, city, and ZIP so the
-          team can discuss the visit location and any travel cost with you. No
-          live address lookup, geocoding, or routing service is used. An address
-          does not generate an automatic travel quote.
+          House-call inquiries ask for a street address, city, and ZIP so I can
+          discuss the visit location and any travel cost with you. No live
+          address lookup, geocoding, or routing service is used. An address does
+          not generate an automatic travel quote.
         </p>
         <p>
           If address-based estimates are introduced, this policy will describe

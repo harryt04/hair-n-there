@@ -1,5 +1,41 @@
 # HairnThere: Elisabeth revision plan
 
+## November 6 services copy and menu decision
+
+Harry supplied Elisabeth’s updated written service menu and authorized
+implementation. This supersedes the November 5 retirement of public prices:
+publish the updated catalog prices, starting-price markers, per-row units, and
+supplied estimated durations. Keep the quote route redirected to contact.
+Preserve Mountain Cinema, current typography, themes, and service IDs.
+
+Implementation plan:
+1. Update the shared catalog with the November 6 prices, durations, friendly
+   descriptions, and new services. Add the $85 Neighborhood Refresh and $115+
+   Color & Cut Combo; update Family Trim to $80. Keep Mommy & Me at $75 with
+   the women’s haircut + blow-dry and one child’s cut, and Little Crew at $70.
+2. Lead services with “Hey Neighbor, Let’s Do Your Hair!” and the supplied
+   subheading. Feature Family Hair Days and bundles near the top, followed by
+   Haircuts, Color, Styling, and Extensions (including treatments).
+3. Link each service/package to a visible, editable inquiry selection and carry
+   its validated ID into delivery. Use first-person stylist copy, clear prices,
+   large mobile tap targets, and household/minimum/consultation explanations.
+4. Reject house-call appointment requests server-side pending licensing;
+   consultation inquiries remain open. Preserve delivery and privacy safeguards.
+5. Run local lint, typecheck, production build, and manual calculation/validation
+   checks, then commit and push directly to main.
+
+Written prices supersede older screenshot prices. No duration was supplied for
+most extension/treatment services, color correction, or bundles: show “Timing
+confirmed during consultation” rather than inventing minutes. Starting prices
+may increase for extra product, length, density, or complexity. Extension hair
+is additional; travel is once per household and routing stays pending. The $60
+minimum is a service requirement, not a surcharge. Bundles are charged once,
+with additional services explicitly extra.
+
+Use “Say hello before launch” for the launch-list invitation. An inquiry does
+not subscribe someone to ongoing marketing; no mailing list is activated.
+
+
 ## November 5 typography decision
 
 Harry selected proposal C in the typography review: upright Manrope headings

@@ -154,7 +154,7 @@ export async function POST(request: Request) {
       {
         success: true,
         message:
-          "Your inquiry is with HairnThere. Elisabeth or a member of her team will be in touch shortly to discuss your plans. Your date, time, and quote will be confirmed together.",
+          "Your inquiry is with HairnThere. I’ll be in touch to talk through your plans. Your date, time, and quote will be confirmed together.",
       },
       { headers: { "Cache-Control": "no-store" } },
     );

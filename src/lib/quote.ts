@@ -12,6 +12,7 @@ export type * from "@/lib/quote-types";
 
 const extensionHairServices = new Set([
   "tape-in-installation",
+  "tape-in-reinstallation",
   "beaded-weft-move-up",
   "extension-installation",
 ]);
@@ -93,13 +94,19 @@ export function calculateQuote(
       id: familyPackage.id,
       quantity: selection.quantity,
       name: familyPackage.name,
+      startingPrice: familyPackage.startingPrice,
       inclusions: familyPackage.inclusions,
       subtotalCents: familyPackage.priceCents * selection.quantity,
       needsConfirmation: familyPackage.needsConfirmation,
     };
   });
 
-  const hasStartingPrices = items.some((item) => item.pricingKind === "from");
+  const hasStartingPrices =
+    items.some((item) => item.pricingKind === "from") ||
+    packages.some(
+      (line) =>
+        familyPackages.find((pack) => pack.id === line.id)?.startingPrice,
+    );
   const hasUnpricedServices = items.some((item) => item.subtotalCents === null);
   const hasUnresolvedPackage = packageItems.some(
     (item) => item.needsConfirmation,

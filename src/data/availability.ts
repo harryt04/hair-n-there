@@ -7,9 +7,9 @@ export const availability = {
     label: "House calls",
     model: "client_home",
     status: "Taking inquiries",
-    acceptsAppointments: true,
+    acceptsAppointments: false,
     message:
-      "House-call inquiries are open. Appointments are coming soon, pending licensing approval. Elisabeth or her team will follow up to discuss your plans and a personal quote.",
+      "House-call inquiries are open. Appointments are coming soon, pending licensing approval. I’ll follow up to discuss your plans and a personal quote.",
   },
   salon: {
     label: "Salon services",

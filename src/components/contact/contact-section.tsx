@@ -26,9 +26,8 @@ export function ContactSection({
           on your list.
         </Heading>
         <p className="mt-5 max-w-lg text-sm leading-7 text-muted-foreground">
-          Tell us about your people and what works for you. Elisabeth or a
-          member of her team will be in touch shortly to discuss your visit and
-          a personal quote.
+          Tell me about your people and what works for you. I’ll personally help
+          you plan your hair day and talk through a quote.
         </p>
         <p className="mt-3 max-w-lg text-xs leading-6 text-muted-foreground">
           {launchNotice}

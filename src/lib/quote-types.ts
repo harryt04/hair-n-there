@@ -14,6 +14,7 @@ export type ServiceDefinition = {
   category: string;
   name: string;
   description: string;
+  duration: string;
   pricingKind: PricingKind;
   unitPriceCents: number | null;
   unit: "service" | "row";
@@ -23,6 +24,7 @@ export type PackageDefinition = {
   id: string;
   name: string;
   priceCents: number;
+  startingPrice?: boolean;
   inclusions: string;
   needsConfirmation: boolean;
 };
@@ -34,6 +36,7 @@ export type QuoteItem = ServiceSelection & {
   consultation: boolean;
 };
 export type QuotePackageItem = PackageSelection & {
+  startingPrice?: boolean;
   name: string;
   inclusions: string;
   subtotalCents: number;

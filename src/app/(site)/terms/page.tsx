@@ -32,17 +32,17 @@ export default function TermsPage() {
         <p>
           HairnThere is developing a personal hair-service offering including
           cuts, color, extensions, and styling. This website lets you explore
-          the menu and send visit details for Elisabeth or her team to discuss.
+          the menu and send visit details for me to discuss.
         </p>
       </PolicySection>
       <PolicySection title="Current availability">
         <p>
           House-call appointments are coming soon, pending licensing approval.
-          Inquiries are open. Elisabeth or a member of her team will follow up
-          to discuss pricing, timing, and the visit location. Salon services
-          remain a future plan; special-event inquiries are informational until
-          location and services are confirmed. The website does not
-          automatically reserve appointments or collect deposits or payments.
+          Inquiries are open. I’ll follow up to discuss pricing, timing, and the
+          visit location. Salon services remain a future plan; special-event
+          inquiries are informational until location and services are confirmed.
+          The website does not automatically reserve appointments or collect
+          deposits or payments.
         </p>
         <p>
           The illustrated Subaru is part of the brand. It does not represent an
@@ -66,27 +66,29 @@ export default function TermsPage() {
       </PolicySection>
       <PolicySection title="Personal quotes and travel">
         <p>
-          Public service descriptions are not fixed-price offers. We discuss a
-          personal quote based on your services, group, location, and the work
-          involved. Any family or neighborhood-day discount must be agreed
-          individually; no discount is automatically applied. Extension hair is
+          The service menu lists prices and estimated durations. Prices marked
+          “+” are starting prices and may increase for extra product, hair
+          length, density, or complexity. Final pricing and timing are confirmed
+          during consultation. Published bundles are charged once, without
+          charging their included services again. Additional services are extra.
+          Neighborhood-day reductions need a custom quote. Extension hair is
           priced separately from installation and maintenance.
         </p>
         <p>
-          A house-call service minimum may apply and will be discussed before
-          confirmation. A minimum is a service requirement, not an automatic
-          surcharge. Any travel fee applies once per household visit rather than
-          per person. There is no automated route-based quote on this site.
+          House calls require $60 in services before travel. A minimum is a
+          service requirement, not an automatic surcharge. Any travel fee
+          applies once per household visit rather than per person. There is no
+          automated route-based quote on this site.
         </p>
       </PolicySection>
       <PolicySection title="Appointment follow-up and messaging">
         <p>
           Provide a phone number or email so we can respond. By providing a
-          phone number, you choose personal calls or texts from Elisabeth or her
-          team about your appointment inquiry and appointment confirmations, now
-          or for future appointments. These contacts may be one-time or ongoing
-          for appointments only, never for marketing or unrelated messages. We
-          never sell your contact information. You can ask us to stop calling or
+          phone number, you choose personal calls or texts from me about your
+          appointment inquiry and appointment confirmations, now or for future
+          appointments. These contacts may be one-time or ongoing for
+          appointments only, never for marketing or unrelated messages. We never
+          sell your contact information. You can ask us to stop calling or
           texting at any time. Message and data rates may apply. If you prefer
           email, leave phone blank and provide an email address.
         </p>

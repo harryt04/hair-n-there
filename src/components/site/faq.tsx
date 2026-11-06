@@ -9,8 +9,8 @@ export function FrequentlyAskedQuestions() {
           Can I book a house call yet?
         </summary>
         <p className="pb-5 text-sm leading-7 text-muted-foreground">
-          {launchNotice} Send an inquiry to start a conversation with Elisabeth
-          or her team. Submitting the form does not reserve an appointment.
+          {launchNotice} Send an inquiry to start a conversation with me.
+          Submitting the form does not reserve an appointment.
         </p>
       </details>
       <details className="py-1">
@@ -18,9 +18,11 @@ export function FrequentlyAskedQuestions() {
           How will pricing work?
         </summary>
         <p className="pb-5 text-sm leading-7 text-muted-foreground">
-          We’ll put together a personal quote based on your group, services, and
-          location. Any family pricing or household travel cost will be
-          discussed before you confirm. Extension hair is priced separately.
+          Explore prices, estimated times, and bundles on the services page.
+          I’ll confirm your personal quote with you. Prices marked + may
+          increase for extra product, length, density, or complexity. House
+          calls require $60 in services before travel, with a travel fee once
+          per household. Extension hair is additional.
         </p>
       </details>
       <details className="py-1">

@@ -94,7 +94,7 @@ export const inquirySchema = z
           })
           .strict(),
       )
-      .max(3)
+      .max(5)
       .refine(
         (values) =>
           new Set(values.map((value) => value.id)).size === values.length,
@@ -130,7 +130,12 @@ export const inquirySchema = z
         message: "Please add a time or choose a flexible time of day.",
       });
     }
-    if (value.intent === "appointment_request" && value.visitType === "house") {
+    if (
+      value.visitType === "house" &&
+      (value.intent === "appointment_request" ||
+        value.haircutCount !== undefined ||
+        value.colorCount !== undefined)
+    ) {
       for (const key of ["haircutCount", "colorCount"] as const) {
         if (value[key] === undefined)
           context.addIssue({
@@ -148,7 +153,9 @@ export const inquirySchema = z
       if (
         value.haircutCount === 0 &&
         value.colorCount === 0 &&
-        !value.message
+        !value.message &&
+        !value.services.length &&
+        !value.packages.length
       ) {
         context.addIssue({
           code: "custom",
