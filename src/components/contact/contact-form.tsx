@@ -267,8 +267,7 @@ export function ContactForm({
           {success}
         </p>
         <p className="mt-3 text-sm leading-7 text-muted-foreground">
-          Appointments are coming soon, pending licensing approval. Your inquiry
-          hasn’t reserved a date or time.
+          I’ll confirm availability and your visit details with you personally.
         </p>
         <p className="mt-5 text-sm leading-7 text-muted-foreground">
           While you wait, you can{" "}
@@ -586,9 +585,7 @@ export function ContactForm({
               {phoneContactConsentText}
             </p>
             <p className="mt-5 text-xs leading-6 text-muted-foreground">
-              {house
-                ? "This is an inquiry for a future house call, not an appointment reservation."
-                : "This is a consultation inquiry, not an appointment reservation."}
+              I’ll follow up to confirm your visit details and personal quote.
             </p>
           </div>
           <div

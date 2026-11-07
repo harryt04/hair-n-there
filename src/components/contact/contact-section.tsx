@@ -1,4 +1,4 @@
-import { launchNotice } from "@/data/availability";
+import { inquiryNotice } from "@/data/availability";
 import { business } from "@/data/business";
 import { Suspense } from "react";
 import { ContactEntry, ContactForm } from "@/components/contact/contact-form";
@@ -30,7 +30,7 @@ export function ContactSection({
           you plan your hair day and talk through a quote.
         </p>
         <p className="mt-3 max-w-lg text-xs leading-6 text-muted-foreground">
-          {launchNotice}
+          {inquiryNotice}
         </p>
       </div>
       {standalone ? (

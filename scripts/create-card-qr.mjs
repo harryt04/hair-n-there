@@ -2,7 +2,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import QRCode from "qrcode";
 import { business } from "../src/data/business.ts";
 
-// Keep this destination stable: printed cards should continue to open the homepage.
+// Generate both formats from the same services destination used by the digital card.
 const directory = new URL("../public/card/", import.meta.url);
 await mkdir(directory, { recursive: true });
 const options = {

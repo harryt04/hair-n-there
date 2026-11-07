@@ -1,5 +1,16 @@
 # HairnThere: Elisabeth revision plan
 
+## November 6 established-business copy and QR destination
+
+Harry asked for the QR code to open `/services` and for public copy to read as
+an operating business. Remove prelaunch, coming-soon, and pending-licensing
+messages from the UI and metadata. Use confident, present-tense service copy
+and explain that availability, visit details, and quotes are confirmed personally.
+This is a copy and QR destination change, not authorization to change the
+appointment-acceptance flags or invent a salon address or credentials.
+The digital card, copy link, and regenerated SVG/PNG QR assets use
+`https://hairnthere.com/services`.
+
 ## November 6 approved guided service chooser (Option D)
 
 Harry reviewed five interactive Lavish proposals and selected Option D,

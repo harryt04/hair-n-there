@@ -11,7 +11,7 @@ import { InstagramLink } from "@/components/site/instagram-link";
 import { ServiceGuide } from "@/components/site/service-guide";
 import { InstagramGallery } from "@/components/site/instagram-gallery";
 import { business } from "@/data/business";
-import { availability, launchNotice } from "@/data/availability";
+import { availability, inquiryNotice } from "@/data/availability";
 import styles from "./home.module.css";
 
 export const metadata: Metadata = {
@@ -50,7 +50,7 @@ export default function Home() {
           <br />
           Travels.
         </div>
-        <p className={styles.launch}>{launchNotice}</p>
+        <p className={styles.notice}>{inquiryNotice}</p>
       </section>
 
       <InstagramGallery />
@@ -65,7 +65,7 @@ export default function Home() {
           render={<Link href="/contact" />}
           className="h-11 gap-2 rounded-sm px-4 text-xs"
         >
-          Say hello before launch <ArrowUpRight aria-hidden="true" />
+          Say hello to Elisabeth <ArrowUpRight aria-hidden="true" />
         </Button>
       </div>
 

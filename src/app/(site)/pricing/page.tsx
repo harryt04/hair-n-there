@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { services, serviceCategories } from "@/data/services";
 import { familyPackages } from "@/data/packages";
-import { launchNotice } from "@/data/availability";
+import { inquiryNotice } from "@/data/availability";
 import { formatMoney } from "@/lib/quote";
 import type { ServiceDefinition } from "@/lib/quote-types";
 import styles from "./pricing.module.css";
@@ -60,7 +60,7 @@ export default function PricingPage() {
           <ContactButton />
         </div>
         <p className="mt-4 text-xs leading-6 text-muted-foreground">
-          {launchNotice}
+          {inquiryNotice}
         </p>
       </header>
       <nav
@@ -199,8 +199,8 @@ export default function PricingPage() {
             extension-consultation format and location are confirmed together.
           </p>
           <p>
-            Inquiries don’t reserve a time or confirm a price. House-call
-            appointments are coming soon, pending licensing approval.
+            Your date, time, location, and final quote are confirmed personally
+            before your appointment.
           </p>
         </div>
       </details>

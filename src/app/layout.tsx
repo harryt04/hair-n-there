@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: business.name,
     title: "HairnThere · Great Hair Travels.",
     description:
-      "Good Hair. Good Vibes. Right in Your Neighborhood. House-call appointments are coming soon, pending licensing approval. Inquiries are welcome!",
+      "Good Hair. Good Vibes. Right in Your Neighborhood. Explore cuts, color, styling, and family hair days with Elisabeth in Suncrest, Draper, Utah.",
     images: [
       {
         url: "/brand/social-card.png",

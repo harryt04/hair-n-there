@@ -82,7 +82,7 @@ Before release, manually check one pageview per initial load/navigation, the thr
 
 ## Digital business card
 
-Open `/card` when introducing HairnThere in person. Neighbors scan the large code to open the business homepage. “Fill screen” removes surrounding card content inside the browser viewport; the code stays black on white in either theme. The homepage and navigation link to the card.
+Open `/card` when introducing HairnThere in person. Neighbors scan the large code to open the guided services page at `https://hairnthere.com/services`. “Fill screen” removes surrounding card content inside the browser viewport; the code stays black on white in either theme. The homepage and navigation link to the card.
 
 QR assets are checked into `public/card/`. Regenerate them with `pnpm create:card-qr` after deliberately changing `business.cardDestination` in `src/data/business.ts`. Scan the final screen/printed proof on real iPhone and Android devices before use. See [the digital card notes](docs/digital-business-card.md). Wallet, loyalty and referral features are outside this release.
 

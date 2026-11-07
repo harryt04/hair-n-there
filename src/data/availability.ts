@@ -9,15 +9,15 @@ export const availability = {
     status: "Taking inquiries",
     acceptsAppointments: false,
     message:
-      "House-call inquiries are open. Appointments are coming soon, pending licensing approval. I’ll follow up to discuss your plans and a personal quote.",
+      "Tell me about your hair goals and household. I’ll follow up to discuss availability, your visit, and a personal quote.",
   },
   salon: {
     label: "Salon services",
     model: "salon_booth",
-    status: "Coming soon",
+    status: "Ask for details",
     acceptsAppointments: false,
     message:
-      "Salon appointments are coming in a future chapter. A booth location hasn’t been announced yet.",
+      "Contact me to discuss salon arrangements. We’ll confirm the location, services, and availability together.",
   },
   event: {
     label: "Special events",
@@ -37,5 +37,5 @@ export const availability = {
     message: string;
   }
 >;
-export const launchNotice =
-  "House-call appointments are coming soon, pending licensing approval. Inquiries are welcome!";
+export const inquiryNotice =
+  "Let’s plan your hair day. Get in touch for availability and a personal quote.";

@@ -36,7 +36,7 @@ export default function DigitalCardPage() {
       </div>
       <div className={styles.footer}>
         <Link
-          href="/"
+          href={business.cardDestination}
           className="inline-flex items-center gap-1.5 text-sm font-semibold underline-offset-4 hover:underline"
         >
           {business.cardWebsiteLabel}{" "}
@@ -47,7 +47,7 @@ export default function DigitalCardPage() {
         </p>
         <CardActions />
         <p className="mt-3 text-[10px] leading-5 text-muted-foreground">
-          Consultations &amp; interest welcome ·{" "}
+          Let’s plan your hair day ·{" "}
           <Link href="/contact" className="underline underline-offset-4">
             Say hello
           </Link>

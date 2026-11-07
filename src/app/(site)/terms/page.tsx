@@ -30,19 +30,18 @@ export default function TermsPage() {
       </PolicySection>
       <PolicySection title="Our services">
         <p>
-          HairnThere is developing a personal hair-service offering including
-          cuts, color, extensions, and styling. This website lets you explore
-          the menu and send visit details for me to discuss.
+          HairnThere offers personal hair services including cuts, color,
+          extensions, and styling. Explore the menu and get in touch to discuss
+          your hair goals and arrange a visit.
         </p>
       </PolicySection>
       <PolicySection title="Current availability">
         <p>
-          House-call appointments are coming soon, pending licensing approval.
-          Inquiries are open. I’ll follow up to discuss pricing, timing, and the
-          visit location. Salon services remain a future plan; special-event
-          inquiries are informational until location and services are confirmed.
-          The website does not automatically reserve appointments or collect
-          deposits or payments.
+          I confirm pricing, timing, and the visit location with you personally.
+          Salon arrangements and special-event services are discussed
+          individually, including location and availability. The website does
+          not automatically reserve appointments or collect deposits or
+          payments.
         </p>
         <p>
           The illustrated Subaru is part of the brand. It does not represent an
