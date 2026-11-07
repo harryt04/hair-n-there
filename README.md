@@ -88,7 +88,7 @@ QR assets are checked into `public/card/`. Regenerate them with `pnpm create:car
 
 ## Pricing and service availability
 
-The services overview prioritizes getting in touch; `/pricing` offers the full menu without requiring contact details. Timing and policy information are available in expandable details.
+The homepage service area and `/services` use the approved guided chooser: pick a hair goal, then see a few relevant services and prices. Contacting Elisabeth is always a direct option. `/pricing` remains the optional full menu, including a no-JavaScript fallback. Timing and individual service inquiries are available in expandable details.
 
 Prices live in `src/data/services.ts` and packages in `src/data/packages.ts`. The quote calculator uses these server-owned values rather than accepting a browser’s price. A `+` means “starting at”; a correction needing consultation does not silently add $0 to a guaranteed total. Row-priced work uses row counts. Extension hair is outside installation labor.
 

@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ContactSection } from "@/components/contact/contact-section";
 import { FrequentlyAskedQuestions } from "@/components/site/faq";
 import { InstagramLink } from "@/components/site/instagram-link";
-import { ServiceCategoryMenu } from "@/components/site/service-category-menu";
+import { ServiceGuide } from "@/components/site/service-guide";
 import { InstagramGallery } from "@/components/site/instagram-gallery";
 import { business } from "@/data/business";
 import { availability, launchNotice } from "@/data/availability";
@@ -124,31 +124,7 @@ export default function Home() {
         className={`site-container ${styles.section}`}
         aria-labelledby="services-heading"
       >
-        <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-          <div>
-            <p className="eyebrow">
-              A Little Hair. A Little There. A Lot of Happy.
-            </p>
-            <h2
-              id="services-heading"
-              className="mt-4 font-display text-4xl tracking-[-.04em] sm:text-5xl"
-            >
-              Good hair, your way.
-            </h2>
-          </div>
-          <Link
-            href="/pricing"
-            className="inline-flex shrink-0 items-center gap-2 text-xs font-semibold text-primary hover:underline"
-          >
-            View services & pricing{" "}
-            <ArrowUpRight className="size-4" aria-hidden="true" />
-          </Link>
-        </div>
-        <ServiceCategoryMenu />
-        <p className="mt-4 text-sm leading-7 text-muted-foreground">
-          Every head of hair is different. We’ll talk through your services and
-          a personal quote before you commit.
-        </p>
+        <ServiceGuide headingId="services-heading" />
       </section>
 
       <section

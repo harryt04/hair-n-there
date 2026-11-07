@@ -1,16 +1,23 @@
 # HairnThere: Elisabeth revision plan
 
-## November 6 contact-first service navigation
+## November 6 approved guided service chooser (Option D)
 
-Harry requested a simpler service experience: prioritize getting in touch,
-keep the overview unpriced, and make detailed pricing an optional next step.
-`/services` now leads with a contact action and short category descriptions;
-`/pricing` is the dedicated full menu. Each menu row shows its name, brief
-catalog description, and price. Timing, individual inquiry links, and extra
-policy information sit in native, server-rendered disclosures. Prices remain
-available without submitting contact details. The successful inquiry state
-also offers the pricing link. Preserve catalog values, selected-service/package
-handoff, inquiry validation/delivery, and availability gates.
+Harry reviewed five interactive Lavish proposals and selected Option D,
+“Help me choose,” for implementation. This supersedes the unreviewed
+contact-first overview with category links to a separate pricing page.
+The homepage service area and `/services` now start with four goals: a fresh
+cut, color & brightness, styling or length, and not sure yet. A second choice
+reveals two or three relevant catalog services or family bundles, each with
+its name, short description, and price. Talking to Elisabeth is always a
+direct option. “Not sure yet” offers a conversation without selecting a service.
+
+The reviewed paths and catalog IDs live in `src/data/service-guide.ts`.
+Choices filter server-rendered panels; the full menu and contact route remain
+available without JavaScript. `/pricing` remains an optional complete reference,
+not the main browsing flow. Full details retain timing and service/package
+inquiry selections. Keep the existing contact form, server validation/delivery,
+catalog values, availability gates, and Mountain Cinema behavior unchanged.
+Future material UI directions should go through Lavish review before implementation.
 
 ## November 6 services copy and menu decision
 
