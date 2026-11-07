@@ -38,8 +38,8 @@ export function InstagramGallery() {
         </Button>
       </div>
       <p className={styles.notice}>
-        Hair by Elisabeth, from her @justbeyou_hair portfolio. Follow her next
-        chapter at @hairnthere. Swipe or use the arrows to explore.
+        Hair by Elisabeth. Follow her next chapter at @hairnthere. Swipe or use
+        the arrows to explore.
       </p>
       <PortfolioCarousel count={gallery.length}>
         {gallery.map((image, index) => {
@@ -52,9 +52,9 @@ export function InstagramGallery() {
             >
               <figure>
                 <InstagramLink
-                  href={image.sourceUrl}
+                  href={business.instagramUrl}
                   className={styles.photo}
-                  aria-label={`View ${image.label} on Elisabeth’s original Instagram post${image.kind === "reel" ? " (reel)" : ""}.`}
+                  aria-label={`Follow @hairnthere on Instagram · ${image.label}`}
                 >
                   <Photo
                     src={image.src}
@@ -76,8 +76,8 @@ export function InstagramGallery() {
                 <p className={styles.caption}>{image.caption}</p>
                 <p className={styles.mediaType}>
                   {image.kind === "reel"
-                    ? "Reel cover · watch on Instagram"
-                    : `${image.photoCount} photos · view original post`}
+                    ? "Reel cover · follow @hairnthere"
+                    : `${image.photoCount} photos · follow @hairnthere`}
                 </p>
               </figure>
             </CarouselItem>

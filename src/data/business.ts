@@ -5,11 +5,9 @@ export const business = {
   url: "https://hairnthere.com",
   cardDestination: "https://hairnthere.com/services",
   cardWebsiteLabel: "hairnthere.com/services",
-  instagramUrl:
-    process.env.NEXT_PUBLIC_INSTAGRAM_URL ||
-    "https://www.instagram.com/hairnthere/",
-  portfolioSourceUrl: "https://www.instagram.com/justbeyou_hair/",
-  supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "",
+  instagramUrl: "https://www.instagram.com/hairnthere/",
+  // Use the current Instagram account until a replacement email is confirmed.
+  supportEmail: "",
   serviceArea: "Suncrest, Draper · Highland · Alpine & surrounding communities",
 } as const;
 

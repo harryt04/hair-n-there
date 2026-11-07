@@ -47,8 +47,6 @@ Copy the variable names from `.env.example`. On Vercel, set them in the projectâ
 
 | Variable                                                | Purpose                                                                                                           |
 | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_INSTAGRAM_URL`                             | Public profile; defaults to `https://www.instagram.com/hairnthere/`.                                              |
-| `NEXT_PUBLIC_SUPPORT_EMAIL`                             | Public support email. Until supplied, support links use the contact page.                                         |
 | `NEXT_PUBLIC_POSTHOG_KEY`                               | Optional public project token for a dedicated HairnThere PostHog Cloud US project. Without it analytics stay off. |
 | `DISCORD_CONTACT_WEBHOOK_URL`                           | Server-only destination for production/local inquiries.                                                           |
 | `DISCORD_PREVIEW_WEBHOOK_URL`                           | Separate preview destination. Previews never use the production webhook.                                          |
@@ -157,10 +155,13 @@ artwork, assignment policy, accessibility fallbacks, and future seasonal possibi
 
 The @hairnthere gallery shows 11 real posts from Elisabethâ€™s previous account in a
 server-rendered, horizontally scrollable carousel. Images are served locally; no API
-key or live Instagram feed is needed. Reel covers link to the original videos, and
+key or live Instagram feed is needed. Every Instagram link, including photos and reel covers, goes to @hairnthere, and
 original captions appear prominently beneath each image. Source captions, ordered carousel photos, review
 status, and source links are recorded in `src/data/instagram-posts.json`. The follow
-destination remains @hairnthere; source-post links go to @justbeyou_hair.
+destination is fixed to @hairnthere. Historical source-post URLs are archival only;
+Elisabeth no longer controls @justbeyou_hair or its email account. Public email
+links remain disabled until a replacement business email is confirmed. Legacy
+`NEXT_PUBLIC_INSTAGRAM_URL` and `NEXT_PUBLIC_SUPPORT_EMAIL` values are not used.
 The **QR Code** app-bar shortcut opens `/card`; the large QR presentation lives on `/card`, linked in the footer.
 
 ### Local cinema regression checks

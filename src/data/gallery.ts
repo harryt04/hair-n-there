@@ -11,7 +11,6 @@ export const gallery = inventory.posts
     height: "height" in post.assets[0] ? (post.assets[0].height ?? 5) : 5,
     alt: post.alt,
     label: post.label,
-    sourceUrl: post.sourceUrl,
     caption: post.originalCaption,
     kind: post.kind,
     photoCount: post.assets.length,
