@@ -12,7 +12,7 @@ import { services } from "@/data/services";
 import { familyPackages } from "@/data/packages";
 import { availability } from "@/data/availability";
 import { business, phoneContactConsentText } from "@/data/business";
-import { inquirySchema, type InquiryInput } from "@/lib/inquiry-validation";
+import type { InquiryInput } from "@/lib/inquiry-validation";
 import type { VisitType } from "@/lib/quote-types";
 import { trackEvent } from "@/components/site/telemetry";
 
@@ -77,6 +77,7 @@ export function ContactForm({
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState("");
   const sending = useRef(false);
+  const validationPending = useRef(false);
   const inquiryStarted = useRef(false);
   const stageRef = useRef<HTMLHeadingElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
@@ -164,10 +165,27 @@ export function ContactForm({
     if (firstStage !== -1) setStep(firstStage);
     requestAnimationFrame(() => errorRef.current?.focus());
   }
-  function move(next: number) {
-    if (submitting) return;
+  async function validate() {
+    if (validationPending.current) return null;
+    validationPending.current = true;
+    try {
+      const { inquirySchema } = await import("@/lib/inquiry-validation");
+      return inquirySchema.safeParse(payload());
+    } catch {
+      showErrors(
+        {},
+        "The form couldn’t finish loading. Please try again; your details are still here.",
+      );
+      return null;
+    } finally {
+      validationPending.current = false;
+    }
+  }
+  async function move(next: number) {
+    if (submitting || validationPending.current) return;
     if (next > step) {
-      const parsed = inquirySchema.safeParse(payload());
+      const parsed = await validate();
+      if (!parsed) return;
       if (!parsed.success) {
         const relevant = stageFields.slice(0, next).flat();
         const found: FieldErrors = {};
@@ -231,16 +249,17 @@ export function ContactForm({
       setSubmitting(false);
     }
   }
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (sending.current || success) return;
+    if (sending.current || validationPending.current || success) return;
     if (step < 2) {
       move(step + 1);
       return;
     }
     setErrors({});
     setError("");
-    const parsed = inquirySchema.safeParse(payload());
+    const parsed = await validate();
+    if (!parsed || sending.current) return;
     if (!parsed.success) {
       const found: FieldErrors = {};
       for (const issue of parsed.error.issues) {
