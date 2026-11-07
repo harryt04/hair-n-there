@@ -54,9 +54,26 @@ pointer events. Reading, forms, and the gallery never depend on motion.
 
 One passive scroll listener schedules requestAnimationFrame work. Route samples and
 geometry are measured outside scroll frames. Resize, font loading, and pageshow update
-geometry; unmount cleans up observers/listeners and cancels the frame. Reduced motion
-parks the car and all scenery; no JavaScript shows a static Powder Day scene. The page
-works with storage disabled. Keep the reserved height and anchor scroll offset in
+geometry; unmount cleans up observers/listeners and cancels the frame.
+
+On mobile (below 768px), Harry approved the **smaller ribbon** behavior: normal
+scrolling down compresses the 112px scene to 40px over 72px of travel; scrolling
+up expands it again, wherever the visitor is on the page. The Subaru scales with
+the scene and keeps traveling. The caption fades out as space contracts. The 64px
+app bar remains visible; desktop/tablet retain the 145px ribbon. Small scroll jitter
+and elastic overscroll do not change direction. Resize and content measurements
+preserve the current collapse amount within the active breakpoint.
+
+The sticky outer ribbon retains its original document footprint. Its sticky top
+moves upward by the collapse amount while a shorter, bottom-aligned inner scene
+keeps the visible artwork directly under the app bar. This reclaims screen space
+without changing document height, invoking scroll anchoring, intercepting touch or
+wheel input, or adding a second scrolling container. Anchor offsets keep the full
+ribbon allowance so reverse-scroll expansion cannot hide the target heading.
+
+Reduced motion parks the car and all scenery; the mobile ribbon still resizes
+directly with scroll, without added easing. No JavaScript shows a static full-height
+Powder Day scene. The page works with storage disabled. Keep the reserved height and anchor scroll offset in
 `globals.css` coordinated with the app bar.
 
 ## Landing page and gallery

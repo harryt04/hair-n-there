@@ -21,6 +21,7 @@ export function MountainCinema() {
     const vehicle = car.current;
     if (!banner || !road || !vehicle) return;
 
+    const mobile = matchMedia("(max-width: 767px)");
     const reduced = matchMedia("(prefers-reduced-motion: reduce)");
     const length = road.getTotalLength();
     const points = Array.from({ length: 401 }, (_, index) => {
@@ -36,12 +37,29 @@ export function MountainCinema() {
     let width = 0;
     let height = 0;
     let carHeight = 0;
+    let compactHeight = 40;
+    let collapsed = 0;
+    let lastScroll = 0;
     let frame = 0;
     let disposed = false;
+    let measured = false;
+    let wasMobile = mobile.matches;
 
     const draw = () => {
       frame = 0;
       if (disposed) return;
+      const sceneHeight = height - collapsed;
+      const sceneCarHeight = carHeight * (sceneHeight / height);
+      banner.style.setProperty("--cinema-collapse", `${collapsed}px`);
+      banner.style.setProperty("--cinema-scene-height", `${sceneHeight}px`);
+      banner.style.setProperty(
+        "--cinema-car-scale",
+        String(sceneHeight / height),
+      );
+      banner.style.setProperty(
+        "--cinema-caption-opacity",
+        String(1 - collapsed / Math.max(1, height - compactHeight)),
+      );
       const progress = reduced.matches ? 0 : clamp(window.scrollY / maximum);
       const sample = progress * 400;
       const index = Math.min(399, Math.floor(sample));
@@ -50,11 +68,11 @@ export function MountainCinema() {
       const after = points[index + 1];
       const x = ((before.x + (after.x - before.x) * fraction) / 1000) * width;
       const y =
-        ((before.y + (after.y - before.y) * fraction) / 300) * height -
-        (48 / 180) * carHeight;
+        ((before.y + (after.y - before.y) * fraction) / 300) * sceneHeight -
+        (48 / 180) * sceneCarHeight;
       const slope =
         (Math.atan2(
-          ((after.y - before.y) * height) / 300,
+          ((after.y - before.y) * sceneHeight) / 300,
           ((after.x - before.x) * width) / 1000,
         ) *
           180) /
@@ -62,6 +80,9 @@ export function MountainCinema() {
       const lean =
         variant === "night-shift" ? 0 : Math.max(-4, Math.min(4, slope));
       vehicle.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) rotate(${lean}deg)`;
+      if (orb) {
+        orb.setAttribute("rx", String(((sceneHeight * 0.13) / width) * 1000));
+      }
       layers.forEach((layer, index) =>
         layer?.setAttribute(
           "transform",
@@ -79,20 +100,42 @@ export function MountainCinema() {
       const bounds = banner.getBoundingClientRect();
       width = bounds.width;
       height = bounds.height;
-      carHeight = Number.parseFloat(getComputedStyle(vehicle).height);
+      // Read the unscaled car size; the scene shrinks only in paint, not document flow.
+      carHeight = mobile.matches ? 88 : 116;
+      compactHeight = Number.parseFloat(
+        getComputedStyle(banner).getPropertyValue("--cinema-compact-height"),
+      );
       maximum = Math.max(
         1,
         document.documentElement.scrollHeight - innerHeight,
       );
-      if (orb) {
-        orb.setAttribute("rx", String(((height * 0.13) / width) * 1000));
-        orb.setAttribute("ry", "39");
+      lastScroll = Math.max(0, Math.min(maximum, window.scrollY));
+      if (!measured || wasMobile !== mobile.matches) {
+        collapsed = mobile.matches
+          ? Math.min(height - compactHeight, lastScroll)
+          : 0;
+      } else {
+        collapsed = Math.max(0, Math.min(height - compactHeight, collapsed));
       }
+      measured = true;
+      wasMobile = mobile.matches;
+      if (orb) orb.setAttribute("ry", "39");
       banner.dataset.measured = "true";
       schedule();
     };
     const onScroll = () => {
-      if (!reduced.matches) schedule();
+      // Clamp Safari's elastic overscroll and ignore subpixel direction jitter.
+      const scroll = Math.max(0, Math.min(maximum, window.scrollY));
+      const delta = scroll - lastScroll;
+      if (Math.abs(delta) >= 2 || scroll === 0) {
+        collapsed = mobile.matches
+          ? Math.max(0, Math.min(height - compactHeight, collapsed + delta))
+          : 0;
+        if (scroll === 0) collapsed = 0;
+        lastScroll = scroll;
+      }
+      // Reduced motion still reclaims space; the vehicle and scenery stay parked.
+      schedule();
     };
     const observer = new ResizeObserver(measure);
     observer.observe(document.body);
@@ -101,6 +144,7 @@ export function MountainCinema() {
     window.addEventListener("resize", measure, { passive: true });
     window.addEventListener("pageshow", measure);
     reduced.addEventListener("change", schedule);
+    mobile.addEventListener("change", measure);
     document.fonts.ready.then(() => {
       if (!disposed) measure();
     });
@@ -113,6 +157,15 @@ export function MountainCinema() {
       window.removeEventListener("resize", measure);
       window.removeEventListener("pageshow", measure);
       reduced.removeEventListener("change", schedule);
+      mobile.removeEventListener("change", measure);
+      for (const property of [
+        "--cinema-collapse",
+        "--cinema-scene-height",
+        "--cinema-car-scale",
+        "--cinema-caption-opacity",
+      ]) {
+        banner.style.removeProperty(property);
+      }
       delete banner.dataset.measured;
       vehicle.style.removeProperty("transform");
     };
@@ -125,43 +178,45 @@ export function MountainCinema() {
       data-cinema-variant={variant}
       aria-hidden="true"
     >
-      <svg
-        className={styles.landscape}
-        viewBox="0 0 1000 300"
-        preserveAspectRatio="none"
-        focusable="false"
-      >
-        <CinemaLandscape variant={variant} />
-        <path
-          d="M-200 279Q220 206 520 255T1200 258"
-          fill="none"
-          stroke="var(--cinema-road)"
-          strokeWidth="28"
-        />
-        <path
-          ref={path}
-          d={route}
-          fill="none"
-          stroke="var(--cinema-stripe)"
-          strokeWidth="1.6"
-          strokeDasharray="10 13"
-        />
-      </svg>
-      <svg
-        ref={car}
-        className={styles.car}
-        viewBox="-135 -95 270 180"
-        focusable="false"
-      >
-        <OutbackArtwork variant={variant} />
-      </svg>
-      <span className={styles.caption}>
-        {variant === "alpine-local"
-          ? "Suncrest / Mountain roots. Personal hair."
-          : variant === "night-shift"
-            ? "Last chair. Next chapter."
-            : "Powder days / Great Hair Travels."}
-      </span>
+      <div className={styles.scene}>
+        <svg
+          className={styles.landscape}
+          viewBox="0 0 1000 300"
+          preserveAspectRatio="none"
+          focusable="false"
+        >
+          <CinemaLandscape variant={variant} />
+          <path
+            d="M-200 279Q220 206 520 255T1200 258"
+            fill="none"
+            stroke="var(--cinema-road)"
+            strokeWidth="28"
+          />
+          <path
+            ref={path}
+            d={route}
+            fill="none"
+            stroke="var(--cinema-stripe)"
+            strokeWidth="1.6"
+            strokeDasharray="10 13"
+          />
+        </svg>
+        <svg
+          ref={car}
+          className={styles.car}
+          viewBox="-135 -95 270 180"
+          focusable="false"
+        >
+          <OutbackArtwork variant={variant} />
+        </svg>
+        <span className={styles.caption}>
+          {variant === "alpine-local"
+            ? "Suncrest / Mountain roots. Personal hair."
+            : variant === "night-shift"
+              ? "Last chair. Next chapter."
+              : "Powder days / Great Hair Travels."}
+        </span>
+      </div>
     </div>
   );
 }
