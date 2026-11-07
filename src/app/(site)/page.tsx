@@ -180,25 +180,7 @@ export default function Home() {
         aria-labelledby="about-heading"
       >
         <div className={styles.about}>
-          <div className={styles.portraits}>
-            <Image
-              src="/Elisabeth/subaru.jpeg"
-              alt="Elisabeth smiling in her Subaru"
-              width={1080}
-              height={1920}
-              sizes="(max-width: 767px) 65vw, 27vw"
-              className={styles.portrait}
-            />
-            <Image
-              src="/Elisabeth/sundance.jpeg"
-              alt="Elisabeth in a black dress beneath wooden beams and string lights at Sundance"
-              width={1152}
-              height={2048}
-              sizes="(max-width: 767px) 40vw, 17vw"
-              className={styles.sundance}
-            />
-          </div>
-          <div className="space-y-5 text-sm leading-8 text-muted-foreground">
+          <div className={styles.aboutHeading}>
             <p className="eyebrow">Meet Elisabeth</p>
             <h2
               id="about-heading"
@@ -206,38 +188,64 @@ export default function Home() {
             >
               Hey, I’m Elisabeth!
             </h2>
-            <p>
-              I’ve been doing hair for over a decade, and my favorite part has
-              always been the people in my chair.
-            </p>
-            <p>
-              I love getting to know my clients, hearing their stories, sharing
-              a few laughs, and helping them feel like the best version of
-              themselves.
-            </p>
-            <p>
-              HairnThere was born from a simple idea: great hair shouldn’t have
-              to be complicated. And if that means loading my Subaru with
-              hairbrushes and heading into the mountains, well… great hair
-              travels!
-            </p>
-            <p className="font-medium text-foreground">
-              Can’t wait to meet you, neighbor! 💗
-            </p>
-            <p>
-              Based in Suncrest, a neighborhood in Draper, Utah, with house-call
-              inquiries welcome around Draper, Highland, Alpine, and surrounding
-              communities. We’ll confirm your location and availability
-              together.
-            </p>
-            <InstagramLink
-              href={business.instagramUrl}
-              className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:underline"
+          </div>
+          <div className={styles.biography}>
+            <Image
+              src="/Elisabeth/subaru.jpeg"
+              alt="Elisabeth smiling in her Subaru"
+              width={1080}
+              height={1920}
+              sizes="(max-width: 767px) calc(100vw - 40px), 260px"
+              className={styles.portrait}
+            />
+            <div
+              className={`${styles.aboutIntro} space-y-5 text-sm leading-8 text-muted-foreground`}
             >
-              <Camera className="size-4" aria-hidden="true" /> Follow
-              @hairnthere{" "}
-              <ArrowUpRight className="size-3.5" aria-hidden="true" />
-            </InstagramLink>
+              <p>
+                I’ve been doing hair for over a decade, and my favorite part has
+                always been the people in my chair.
+              </p>
+              <p>
+                I love getting to know my clients, hearing their stories,
+                sharing a few laughs, and helping them feel like the best
+                version of themselves.
+              </p>
+            </div>
+            <Image
+              src="/Elisabeth/sundance.jpeg"
+              alt="Elisabeth in a black dress beneath wooden beams and string lights at Sundance"
+              width={1152}
+              height={2048}
+              sizes="(max-width: 767px) calc(100vw - 40px), 300px"
+              className={styles.sundance}
+            />
+            <div
+              className={`${styles.aboutStory} space-y-5 text-sm leading-8 text-muted-foreground`}
+            >
+              <p>
+                HairnThere was born from a simple idea: great hair shouldn’t
+                have to be complicated. And if that means loading my Subaru with
+                hairbrushes and heading into the mountains, well… great hair
+                travels!
+              </p>
+              <p className="font-medium text-foreground">
+                Can’t wait to meet you, neighbor! 💗
+              </p>
+              <p>
+                Based in Suncrest, a neighborhood in Draper, Utah, with
+                house-call inquiries welcome around Draper, Highland, Alpine,
+                and surrounding communities. We’ll confirm your location and
+                availability together.
+              </p>
+              <InstagramLink
+                href={business.instagramUrl}
+                className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:underline"
+              >
+                <Camera className="size-4" aria-hidden="true" /> Follow
+                @hairnthere{" "}
+                <ArrowUpRight className="size-3.5" aria-hidden="true" />
+              </InstagramLink>
+            </div>
           </div>
         </div>
       </section>

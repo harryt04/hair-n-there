@@ -98,3 +98,12 @@ Business rules remain in `docs/elisabeth-revision-plan.md` and the existing cata
 quote, and availability modules. Harry opened house-call inquiries in the November 5 contact redesign;
 salon/event appointment acceptance stays inactive. Visits and personal quotes are
 confirmed manually. There are no new payments, routing, or automated messages.
+
+## About photo layout
+
+Harry approved option 4, **Woven through the story**, in the November 6 photo
+layout review. The biography heading precedes a Subaru portrait floated left
+beside the introduction, followed by the Sundance photo floated right beside
+the origin story. Below 768px, the order is heading, Subaru, introduction,
+Sundance, origin story and location note. Keep the approved biography intact,
+use the supplied photos, and preserve the 4:5 mobile crops.
