@@ -3,6 +3,7 @@ import inventory from "./instagram-posts.json";
 /** Elisabeth's work from her prior account; original captions remain in the inventory. */
 export const gallery = inventory.posts
   .filter((post) => post.websiteSelected && post.assets[0]?.src)
+  .reverse()
   .map((post) => ({
     id: post.id,
     src: post.assets[0].src!,
