@@ -6,6 +6,8 @@ export const gallery = inventory.posts
   .map((post) => ({
     id: post.id,
     src: post.assets[0].src!,
+    width: "width" in post.assets[0] ? (post.assets[0].width ?? 4) : 4,
+    height: "height" in post.assets[0] ? (post.assets[0].height ?? 5) : 5,
     alt: post.alt,
     label: post.label,
     sourceUrl: post.sourceUrl,

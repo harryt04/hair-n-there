@@ -36,9 +36,14 @@ export function ContactSection({
       {standalone ? (
         <Suspense
           fallback={
-            <p role="status" className="text-sm">
-              Getting your inquiry form ready…
-            </p>
+            <>
+              <p role="status" className="sr-only">
+                Getting your inquiry form ready…
+              </p>
+              <div inert aria-hidden="true">
+                <ContactForm />
+              </div>
+            </>
           }
         >
           <ContactEntry />

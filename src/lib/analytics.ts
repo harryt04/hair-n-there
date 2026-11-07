@@ -1,19 +1,24 @@
-import posthog from "posthog-js";
+import type { PostHog } from "posthog-js";
 import { sanitizeAnalyticsEvent } from "@/lib/analytics-policy";
 
 let initialized = false;
+let loading = false;
+let posthog: PostHog;
 
-export function initializeAnalytics() {
+export async function initializeAnalytics() {
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
   if (
     initialized ||
+    loading ||
     typeof window === "undefined" ||
     process.env.NEXT_PUBLIC_VERCEL_ENV !== "production" ||
     !key
   )
     return;
 
+  loading = true;
   try {
+    posthog = (await import("posthog-js")).default;
     posthog.init(key, {
       api_host: "/ingest",
       ui_host: "https://us.posthog.com",
@@ -44,6 +49,8 @@ export function initializeAnalytics() {
     initialized = true;
   } catch {
     // Analytics is optional and must never interrupt navigation or inquiries.
+  } finally {
+    loading = false;
   }
 }
 

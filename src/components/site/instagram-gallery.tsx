@@ -57,8 +57,10 @@ export function InstagramGallery() {
                   src={image.src}
                   alt={image.alt}
                   fill
-                  sizes="(max-width: 767px) 82vw, (max-width: 1279px) 42vw, 380px"
+                  // Account for object-fit: contain inside the 4:5 frame.
+                  sizes={`(max-width: 767px) ${82 * Math.min(1, image.width / image.height / 0.8)}vw, (max-width: 904px) ${42 * Math.min(1, image.width / image.height / 0.8)}vw, ${380 * Math.min(1, image.width / image.height / 0.8)}px`}
                   loading={index === 0 ? "eager" : "lazy"}
+                  fetchPriority={index === 0 ? "high" : "auto"}
                   className={styles.image}
                 />
               </InstagramLink>
