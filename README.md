@@ -144,13 +144,14 @@ See [the PWA plan and device acceptance checklist](docs/pwa-plan.md) for release
 ## Mountain Cinema and gallery
 
 The current design is **Mountain Cinema / Powder Day**. All three black 2020 Outback
-banner variants are preserved. The first draw favors Powder Day (75%) over Alpine
-Local and Night Shift (12.5% each). Every later full load or refresh, including mobile
-pull-to-refresh, excludes that tab’s previous banner and draws from the other two
-with their relative weights preserved. Client navigation keeps the current choice.
-The last banner ID is kept in tab-scoped session storage; blocked or cleared storage
-falls back to an independent draw, which can repeat. The default/no-JavaScript view
-is Powder Day. Banner assignment is not an A/B test or analytics event. See
+banner variants are preserved. First visits always show winter (Powder Day).
+Subsequent full loads and refreshes exclude the current tab’s displayed scene,
+with the remaining relative weights preserved (Powder Day 6, others 1 each).
+Client navigation keeps the choice. A local-storage preference expires after
+24 hours of browser inactivity, returning the next visit to winter; a tab-scoped
+record prevents repeats when multiple tabs are open. Blocked or cleared storage
+falls back to winter. The default/no-JavaScript view is Powder Day.
+Banner assignment is not an A/B test or analytics event. See
 [the design and motion notes](docs/mountain-cinema.md) for the
 artwork, assignment policy, accessibility fallbacks, and future seasonal possibilities.
 
@@ -161,3 +162,12 @@ original captions appear prominently beneath each image. Source captions, ordere
 status, and source links are recorded in `src/data/instagram-posts.json`. The follow
 destination remains @hairnthere; source-post links go to @justbeyou_hair.
 The **QR Code** app-bar shortcut opens `/card`; the large QR presentation lives on `/card`, linked in the footer.
+
+### Local cinema regression checks
+
+Run `pnpm test:cinema` to verify winter-first visits, refresh variation, the
+24-hour inactivity boundary and renewal, multiple tabs, restored pages, invalid
+or blocked storage, and subscription cleanup. These use Node’s built-in test
+runner with simulated browser storage and time against the actual cinema store;
+they do not exercise browser rendering or animation. No CI or branch protection
+is configured; commits still go directly to main.

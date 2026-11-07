@@ -11,44 +11,129 @@ import {
 let initialized = false;
 let current: CinemaVariant = defaultCinemaVariant;
 const listeners = new Set<() => void>();
-const storageKey = "hairnthere-cinema-last-v2";
+const storageKey = "hairnthere-cinema-visit-v3";
+const tabStorageKey = "hairnthere-cinema-tab-v3";
+const inactivityTTL = 24 * 60 * 60 * 1000;
+let lastRemembered = 0;
+
+function readVisit(): { variant: CinemaVariant; activeAt: number } | undefined {
+  try {
+    const stored = JSON.parse(localStorage.getItem(storageKey) ?? "null");
+    if (
+      stored &&
+      cinemaVariants.includes(stored.variant) &&
+      typeof stored.activeAt === "number" &&
+      Number.isFinite(stored.activeAt) &&
+      stored.activeAt <= Date.now() &&
+      Date.now() - stored.activeAt < inactivityTTL
+    )
+      return stored;
+  } catch {
+    // Missing, malformed, or blocked storage starts with winter.
+  }
+}
 
 function rememberCurrent() {
+  lastRemembered = Date.now();
   try {
-    sessionStorage.setItem(storageKey, current);
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        variant: current,
+        activeAt: lastRemembered,
+      }),
+    );
+    sessionStorage.setItem(tabStorageKey, current);
   } catch {
     // Storage restrictions must never prevent the page from working.
   }
 }
 
+function notify() {
+  listeners.forEach((listener) => listener());
+}
+
+function resume() {
+  if (!readVisit()) {
+    current = defaultCinemaVariant;
+    notify();
+  }
+  rememberCurrent();
+}
+
 function onPageShow(event: PageTransitionEvent) {
-  // A restored page is showing its original scene, not the most recent full load's.
-  if (event.persisted) rememberCurrent();
+  // Restored pages keep their scene unless the browser preference has expired.
+  if (event.persisted) resume();
+}
+
+function onVisibilityChange() {
+  if (document.visibilityState === "visible") resume();
+  else recordDeparture();
+}
+
+function recordDeparture() {
+  if (Date.now() - lastRemembered < inactivityTTL && readVisit())
+    rememberCurrent();
+}
+
+function onActivity() {
+  // Bound synchronous storage writes during scrolling and pointer movement.
+  if (Date.now() - lastRemembered >= 30_000) resume();
 }
 
 function initializePageLoad() {
   if (initialized) return;
   initialized = true;
-  let previous: CinemaVariant | undefined;
-  try {
-    const stored = sessionStorage.getItem(storageKey);
-    previous = cinemaVariants.find((variant) => variant === stored);
-  } catch {
-    // Without storage, fall back to an independent draw.
+  const visit = readVisit();
+  if (visit) {
+    let previous = visit.variant;
+    try {
+      const stored = sessionStorage.getItem(tabStorageKey);
+      previous =
+        cinemaVariants.find((variant) => variant === stored) ?? previous;
+    } catch {
+      // The browser-level record remains available if tab storage is blocked.
+    }
+    const sample = crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
+    current = selectCinemaVariant(sample, previous);
+  } else {
+    current = defaultCinemaVariant;
   }
-  const sample = crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
-  current = selectCinemaVariant(sample, previous);
   rememberCurrent();
-  listeners.forEach((listener) => listener());
+  notify();
 }
 
 function subscribe(listener: () => void) {
   listeners.add(listener);
   initializePageLoad();
-  window.addEventListener("pageshow", onPageShow);
+  if (listeners.size === 1) {
+    window.addEventListener("pageshow", onPageShow);
+    window.addEventListener("pagehide", recordDeparture);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    for (const event of [
+      "pointerdown",
+      "pointermove",
+      "keydown",
+      "scroll",
+    ] as const) {
+      window.addEventListener(event, onActivity, { passive: true });
+    }
+  }
   return () => {
     listeners.delete(listener);
-    window.removeEventListener("pageshow", onPageShow);
+    if (listeners.size === 0) {
+      window.removeEventListener("pageshow", onPageShow);
+      window.removeEventListener("pagehide", recordDeparture);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      for (const event of [
+        "pointerdown",
+        "pointermove",
+        "keydown",
+        "scroll",
+      ] as const) {
+        window.removeEventListener(event, onActivity);
+      }
+    }
   };
 }
 const getSnapshot = () => current;

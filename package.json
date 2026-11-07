@@ -9,7 +9,8 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "format": "prettier --write src README.md next.config.ts components.json",
-    "create:card-qr": "node scripts/create-card-qr.mjs"
+    "create:card-qr": "node scripts/create-card-qr.mjs",
+    "test:cinema": "node --test scripts/tests/cinema-visit.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

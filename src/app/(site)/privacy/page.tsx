@@ -151,14 +151,15 @@ export default function PrivacyPage() {
       </PolicySection>
       <PolicySection title="Browser preferences and home-screen installation">
         <p>
-          The decorative mountain banner is chosen randomly on each full page
-          load, including refresh. It stays consistent during navigation within
-          that page session. We save only the last banner ID in this tab’s
-          session storage so the next full load chooses a different banner. This
-          preference lasts for the tab session and can be cleared through your
-          browser’s site-data settings. If storage is blocked or cleared,
-          banners may repeat. The choice is not sent to analytics or used for
-          retention testing.
+          The decorative mountain banner starts with the winter scene on your
+          first visit and after 24 hours of inactivity in this browser. Each
+          subsequent full load or refresh chooses a different scene; navigation
+          within the site keeps the current scene. We store a banner ID and
+          activity timestamp in local storage, plus the displayed banner ID in
+          tab session storage. Activity renews the 24-hour preference. You can
+          clear these preferences through your browser’s site-data settings. If
+          storage is blocked or cleared, the banner defaults to winter. The
+          choice is not sent to analytics or used for retention testing.
         </p>
         <p>
           You can install HairnThere on a supported device. A service worker

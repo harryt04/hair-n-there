@@ -1,7 +1,7 @@
 # Mountain Cinema
 
 Harry approved Powder Day as the starting website direction, with all three Mountain
-Cinema banners retained and randomly assigned on each full page load. This supersedes the older
+Cinema banners retained. First visits start in winter; subsequent full loads vary. This supersedes the older
 Scenic Journey sidebar. The new art and layout were approved through the Mountain
 Cinema Lavish review; the review files are optional local artifacts, not build inputs.
 
@@ -19,21 +19,23 @@ snowboarder persona through Harry; this does not imply the car is an operating s
 ## Assignment
 
 `src/data/cinema.ts` owns the variant IDs, seasonal weights, and Powder Day fallback.
-After hydration, the client draws once per full page load. The first draw uses
-**Powder Day 75%**, **Alpine Local 12.5%**, and **Night Shift 12.5%**. Each later
-full load, including refresh and mobile pull-to-refresh, excludes the previous
-banner in that tab. The remaining choices retain their relative weights: after
-Powder Day, each alternative has a 50% chance; after either alternative, Powder
-Day has a 6/7 chance and the other alternative has a 1/7 chance. The original
-75% weight is therefore only the first-draw probability, not the overall frequency.
+The first full load with no valid preference always shows **Powder Day**, the winter
+mountain scene. Every later full load, including refresh and mobile pull-to-refresh,
+excludes the scene currently displayed in that tab. The remaining choices retain
+relative weights: after Powder Day, each alternative has a 50% chance; after either
+alternative, Powder Day has a 6/7 chance and the other alternative a 1/7 chance.
 Client navigation keeps the in-memory choice.
 
-The last banner ID is saved in tab-scoped `sessionStorage` under
-`hairnthere-cinema-last-v2`, so other tabs do not overwrite the current tab's choice.
-Restoring a page from the back/forward cache records its displayed banner again.
-Unknown saved values are ignored. If browser storage is blocked or cleared, the
-next load uses the first-draw probabilities and cannot guarantee a different banner.
-The old `hairnthere-cinema-v1` preference is ignored.
+The browser preference stores the last scene and activity timestamp in local storage
+under `hairnthere-cinema-visit-v3`. It expires after 24 hours of inactivity; the next
+visit starts with winter again. Pointer, keyboard, and scroll activity renew it
+(with writes limited to once per 30 seconds), as do page departure and return within
+that window. Hidden tabs do not renew it in the background. Returning to an expired
+open or back/forward-cached page also resets to winter.
+A separate tab-scoped `hairnthere-cinema-tab-v3` record preserves the displayed scene
+so another tab cannot cause a refresh to repeat it. Invalid/expired values and older
+preferences are ignored. Blocked or cleared storage falls back to winter; refresh
+variation requires browser storage. These records contain no visitor identifier.
 
 Server rendering and no-JavaScript views consistently use Powder Day, avoiding random
 server/client hydration mismatches. The browser-only draw happens when the store is
