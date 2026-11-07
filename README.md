@@ -39,11 +39,11 @@ pnpm build
 pnpm start
 ```
 
-The repository intentionally has no automated test suite, pull request requirement, GitHub Actions, or Docker pipeline. Local checks and manual verification support the built-in Vercel deployment workflow.
+The repository intentionally has no automated test suite, pull request requirement, GitHub Actions, or Docker pipeline. Local checks and manual verification support deployment through Coolify. Coolify manages the application container; there is no separate repository-managed Docker build/publish pipeline.
 
 ## Configure the site
 
-Copy the variable names from `.env.example`. On Vercel, set them in the project’s environment settings rather than committing values.
+Copy the variable names from `.env.example`. In Coolify, set them in the application’s environment settings rather than committing values.
 
 | Variable                                                | Purpose                                                                                                           |
 | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
@@ -52,23 +52,35 @@ Copy the variable names from `.env.example`. On Vercel, set them in the project�
 | `DISCORD_PREVIEW_WEBHOOK_URL`                           | Separate preview destination. Previews never use the production webhook.                                          |
 | `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` | Optional shared request limiting. Configure the pair together.                                                    |
 
-Public environment values are embedded at build time, so redeploy after changing them. Keep Vercel system environment variables exposed so `NEXT_PUBLIC_VERCEL_ENV` identifies production correctly. PostHog only collects when that value is `production` and a project token is configured; local and preview environments stay excluded, including production-mode preview builds. Hosting remains on Vercel.
+Public environment values are embedded at build time, so rebuild and redeploy after changing them. The application still reads the legacy names below; Coolify does not supply them automatically.
 
-The contact endpoint uses shared Redis limits when configured. Its fallback is bounded but process-local, so it cannot enforce a global limit across Vercel instances. Host-level firewall limits can provide another layer of protection. If configured Redis is unavailable, the form fails safely rather than bypassing it.
+| Environment     | Build-time values                                                                                             | Runtime values                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Production      | `NEXT_PUBLIC_VERCEL_ENV=production`, optional `NEXT_PUBLIC_POSTHOG_KEY`; `VERCEL_ENV=production` for metadata | `VERCEL_ENV=production`, `DISCORD_CONTACT_WEBHOOK_URL`                                 |
+| Preview/staging | `NEXT_PUBLIC_VERCEL_ENV=preview`, `VERCEL_ENV=preview`; leave the PostHog token unset                         | `VERCEL_ENV=preview`, `DISCORD_PREVIEW_WEBHOOK_URL`                                    |
+| Local           | Leave analytics variables unset                                                                               | Use a development Discord destination, never a production webhook for sample inquiries |
 
-## Deploy with Vercel
+Set `VERCEL_ENV` at both build time and runtime: it controls preview indexing and webhook selection. An unset or incorrect preview marker can select the production webhook. Keep production secrets out of preview applications entirely. Do not set `VERCEL`: the rate limiter must use the normal proxy-header path on Coolify. The legacy names are compatibility settings, not a Vercel hosting dependency.
 
-1. Import `harryt04/hair-n-there` into the intended Vercel Pro team, using the **Next.js** preset and repository root `.`. Keep the default framework build/output settings; use Node 26 and pnpm.
-2. Select `main` as the production branch and leave Git deployments enabled. Pushes to `main` build and deploy production. Other branches can create previews without pull requests.
-3. Configure production and preview environment values separately, including their separate Discord destinations. Create or select a dedicated HairnThere PostHog Cloud US project, set `NEXT_PUBLIC_POSTHOG_KEY` for production, and keep Vercel system environment variables exposed so `NEXT_PUBLIC_VERCEL_ENV` is available at build time. Redeploy after configuration changes. Verify incoming events and web vitals in PostHog after visiting production, then disable Web Analytics and Speed Insights in the Vercel project dashboard. This repository does not configure either dashboard or migrate historical Vercel analytics data.
-4. Check a preview: layouts, keyboard navigation, themes, reduced motion, all three inquiry stages, field errors, and delivery to the preview destination. House-call inquiries are authorized; other settings remain gated.
-5. Add `hairnthere.com` when ready. Follow the DNS records Vercel provides and redirect `www` to the apex. Preview pages are noindex and canonical URLs use the production domain. Enable preview deployment protection where available.
+The contact endpoint uses shared Redis limits when configured. Its bounded process-local fallback resets on restart and cannot enforce a global limit across multiple processes or replicas. If configured Redis is unavailable, the form fails safely rather than bypassing it. Verify the hosting proxy supplies trustworthy `x-forwarded-for` headers and that the application port cannot bypass the proxy.
 
-For rollback, choose a previous working production deployment in Vercel and use its rollback/promote control. Reconcile the code on `main` afterward so a later push preserves the fix. This implementation does not itself provision hosting, change billing/DNS, push Git commits, or deploy.
+## Deploy with Coolify
+
+HairnThere deploys through Coolify from `harryt04/hair-n-there`, with `main` as the production branch. Commit verified work and push directly to `main`; no pull request or GitHub Actions workflow is required. A push may trigger the configured Coolify automatic deployment. The live application’s build method, server, and trigger settings live in Coolify, not this repository.
+
+1. Use the existing Coolify application and confirm repository root `.` and branch `main`. Match Node `26.x` and `pnpm@11.17.0` from `package.json`. Install with `pnpm install --frozen-lockfile`, build with `pnpm build`, and run the Next.js server with `pnpm start` on internal port `3000` (or align the port with an explicitly configured `PORT`). This is a server application, not a static export.
+2. Configure the build/runtime variables above in Coolify. Keep webhook and Redis credentials server-only. Rebuild when public variables change. Confirm the build environment can download the fonts used by `next/font`.
+3. For a shareable staging build, configure a separate Coolify application/branch and domain with isolated preview variables. Branch pushes do not inherently create previews. Verify noindex metadata and robots behavior; restrict staging access at the proxy where appropriate.
+4. Verify layouts, keyboard navigation, themes, reduced motion, all three inquiry stages, field errors, and delivery to the preview destination. House-call inquiries are authorized; other settings remain gated.
+5. Configure the production domain `hairnthere.com`, HTTPS, and the `www` redirect through the hosting proxy and DNS provider. Verify canonical URLs, inquiry delivery, and PostHog collection on production.
+
+For rollback, use Coolify’s **Rollback** view to select a retained working image. Availability depends on image retention; current environment/runtime settings must remain compatible with that image. If no usable image remains, revert the faulty commit on `main` and deploy the corrected revision. Reconcile `main` after any image rollback so the next push preserves the fix. Separate deployment actions, infrastructure changes, and paid-service activation require authorization.
+
+References: [Coolify environment variables](https://coolify.io/docs/applications/configuration/environment-variables), [application configuration](https://coolify.io/docs/applications/configuration/overview), and [rollbacks](https://coolify.io/docs/applications/deployments/rollbacks).
 
 ## Analytics and performance
 
-PostHog Cloud US receives browser analytics through same-origin `/ingest` rewrites. This follows the pattern in the neighboring Coolify-hosted apps; PostHog itself is not hosted on Coolify. No separate host variable is required. Vercel still hosts HairnThere, and proxied analytics requests use its bandwidth/request allowances.
+PostHog Cloud US receives browser analytics through same-origin `/ingest` rewrites. Coolify hosts the website; PostHog itself remains on PostHog Cloud. No separate PostHog host variable is required. Proxied analytics requests use the application server’s resources and network bandwidth.
 
 The integration records pageviews, `instagram_clicked`, `inquiry_started` on the first form interaction, and `inquiry_submitted` only after the server confirms delivery. Events contain broad action names, not inquiry contents. URL query strings, fragments, and attribution data are removed before transmission. Names, phone numbers, email addresses, visit addresses, family-member labels, consent records, private origins, and the decorative cinema assignment are excluded. Automatic interaction capture, session replay, automatic exception capture, and identified person profiles are disabled.
 

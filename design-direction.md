@@ -44,4 +44,4 @@ Use the named product design system from `color-palette-context.md` and the supp
 
 Stock mood images and all dollar amounts in the prototype are illustrative. Replace before production; the Instagram URL is a generic placeholder until the account is supplied. No fabricated testimonials, portfolio ownership claims, availability promises, or response-time guarantees.
 
-After approval: scaffold the application, translate the visual system to shadcn components, finalize logo assets, implement actual content/estimator/contact/policies, and connect Vercel native Git deployment. No tests, pull requests, or GitHub Actions.
+After approval: scaffold the application, translate the visual system to shadcn components, finalize logo assets, implement actual content/estimator/contact/policies, and connect Coolify deployment from main (see README.md). No tests, pull requests, or GitHub Actions.

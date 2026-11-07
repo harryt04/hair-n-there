@@ -1,4 +1,6 @@
-# HairnThere repository setup plan
+# HairnThere repository setup plan (historical)
+
+**Superseded deployment guidance — November 7, 2026:** HairnThere now deploys through Coolify from main. Use [README.md](README.md#deploy-with-coolify) for current build/start commands, environment scopes, staging isolation, and rollback. The Vercel instructions below record the original plan and must not be used for deployment. Later product decisions in AGENTS.md and docs/ also supersede the earlier product concepts below.
 
 Latest planning update: see [Elisabeth revision plan](docs/elisabeth-revision-plan.md) for the newly supplied catalog, family/travel pricing, design options, and inactive paid-booking policy pending location/licensing confirmation. Scenic Journey, the supplied pricing, service planner, and inactive-booking policy are implemented. See README.md for the remaining configuration and content inputs.
 

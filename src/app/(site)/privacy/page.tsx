@@ -90,12 +90,12 @@ export default function PrivacyPage() {
           inquiry.
         </p>
         <p>
-          Vercel hosts the website and runs the contact endpoint. Hosting and
-          security services may process technical information such as network
-          addresses and request details to deliver and protect the website.
-          Where a shared rate-limiting service is configured, a hashed
-          network-address identifier and short-lived request counts are used to
-          limit abuse.
+          The website and contact endpoint run on infrastructure managed through
+          Coolify. Hosting and security services may process technical
+          information such as network addresses and request details to deliver
+          and protect the website. Where a shared rate-limiting service is
+          configured, a hashed network-address identifier and short-lived
+          request counts are used to limit abuse.
         </p>
         <p>
           We share information with service providers only as needed to operate
@@ -125,8 +125,8 @@ export default function PrivacyPage() {
           understand page visits and website performance. It can process page
           paths, referral information with query strings and fragments removed,
           approximate visitor location, browser and device characteristics, and
-          performance measurements. Vercel continues to host the website and
-          forwards analytics requests to PostHog.
+          performance measurements. The website server forwards analytics
+          requests to PostHog.
         </p>
         <p>
           We send broad actions, such as beginning an inquiry, a confirmed

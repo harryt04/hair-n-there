@@ -1,6 +1,6 @@
 # HairnThere deployment research
 
-Historical research: the Actions-oriented requirements and recommendation below are superseded. The current decision is native Vercel Git deployments from main, with no automated tests, pull request process, or external CI/CD. See [the current setup plan](setup-plan.md).
+Historical research only: the provider comparisons and Actions-oriented recommendation below are superseded. HairnThere now deploys through Coolify from main, without a pull request process or GitHub Actions. Use [README.md](README.md#deploy-with-coolify) for current deployment, environment, and rollback guidance; do not follow the historical setup instructions below.
 
 Checked 2026-11-03. Official primary sources only. Scope: a small commercial Next.js App Router site with SSR and a POST contact Route Handler; GitHub connection, branch deployments, previews, and GitHub Actions ownership. Cloudflare findings are included below. No exact prices are quoted.
 
