@@ -8,8 +8,8 @@ messages from the UI and metadata. Use confident, present-tense service copy
 and explain that availability, visit details, and quotes are confirmed personally.
 This is a copy and QR destination change, not authorization to change the
 appointment-acceptance flags or invent a salon address or credentials.
-The digital card, copy link, and regenerated SVG/PNG QR assets use
-`https://hairnthere.com/services`.
+Superseded: the QR, copy link, and SVG/PNG QR assets now target the home page
+(`https://hairnthere.com/`); they previously used `https://hairnthere.com/services`.
 
 ## November 6 approved guided service chooser (Option D)
 

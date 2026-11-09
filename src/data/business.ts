@@ -3,8 +3,8 @@ export const business = {
   tagline: "Great Hair Travels.",
   owner: "Elisabeth",
   url: "https://hairnthere.com",
-  cardDestination: "https://hairnthere.com/services",
-  cardWebsiteLabel: "hairnthere.com/services",
+  cardDestination: "https://hairnthere.com/",
+  cardWebsiteLabel: "hairnthere.com",
   instagramUrl: "https://www.instagram.com/hairnthere/",
   // Use the current Instagram account until a replacement email is confirmed.
   supportEmail: "",

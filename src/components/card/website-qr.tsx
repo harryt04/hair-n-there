@@ -10,7 +10,7 @@ export function WebsiteQr({ className }: { className?: string }) {
       height={370}
       unoptimized
       loading="eager"
-      alt={`Scan to explore HairnThere’s services at ${business.cardDestination}`}
+      alt={`Scan to visit HairnThere at ${business.cardWebsiteLabel}`}
       className={className}
     />
   );

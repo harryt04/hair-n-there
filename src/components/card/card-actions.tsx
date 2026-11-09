@@ -23,7 +23,7 @@ export function CardActions() {
     try {
       await navigator.clipboard.writeText(website);
       setCopied(true);
-      setMessage("Services link copied.");
+      setMessage("Website link copied.");
     } catch {
       setCopied(false);
       setMessage(
@@ -54,7 +54,7 @@ export function CardActions() {
               </SheetTitle>
               <SheetDescription className="sr-only">
                 Point your phone camera at this QR code to open the HairnThere
-                services page. Close this view to return to the digital card.
+                website. Close this view to return to the digital card.
               </SheetDescription>
             </div>
             <div className={styles.stage}>

@@ -86,7 +86,7 @@ first-person biography and both Elisabeth portraits, compact FAQ disclosures,
 and the three-stage house-call inquiry. The large QR presentation lives at `/card`,
 linked from the app bar and slim footer. Keep **QR Code**
 visible in the app bar on mobile and desktop; it opens `/card`. The QR assets and
-copy link use `https://hairnthere.com/services` without www.
+copy link use `https://hairnthere.com/` (home page, without www; originally `/services`).
 
 The gallery uses shadcn’s carousel with 11 real portfolio posts collected from
 @justbeyou_hair without an API key. Content is server-rendered with local images;
