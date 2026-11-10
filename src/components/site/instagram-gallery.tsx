@@ -31,7 +31,8 @@ export function InstagramGallery() {
           render={<InstagramLink href={business.instagramUrl} />}
           variant="outline"
           className="h-11 gap-2 rounded-sm px-3 text-xs"
-          aria-label="Open @hairnthere on Instagram"
+          // Keep the visible "Open Instagram" text inside the accessible name (WCAG 2.5.3).
+          aria-label="Open Instagram for @hairnthere"
         >
           <Camera aria-hidden="true" />{" "}
           <span className="hidden sm:inline">Open Instagram</span>
