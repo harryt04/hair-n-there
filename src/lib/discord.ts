@@ -5,6 +5,7 @@ import {
   phoneContactConsentText,
   phoneContactConsentVersion,
 } from "@/data/business";
+import { formatSlotRange } from "@/lib/booking";
 import { calculateQuote, formatMoney } from "@/lib/quote";
 import type { ContactInput } from "@/lib/validation";
 
@@ -44,9 +45,13 @@ const clipped = (value: string, limit = 900) =>
     ? `${value.slice(0, limit - 30)}… (full details attached)`
     : value;
 
+/** A tentative hold already written to the calendar for this request. */
+export type HoldNotice = { start: Date; end: Date };
+
 export async function sendContactInquiry(
   input: ContactInput,
   sourcePath: "/" | "/contact" | "/quote" | "/api/contact" = "/api/contact",
+  hold?: HoldNotice,
 ) {
   const url = contactWebhookUrl();
   const quote = calculateQuote(
@@ -74,8 +79,12 @@ export async function sendContactInquiry(
             `${item.name} × ${item.quantity}: ${item.startingPrice ? "from " : ""}${formatMoney(item.subtotalCents)} — ${item.inclusions}${item.needsConfirmation ? " (inclusions need confirmation)" : ""}`,
         ),
       ].join("\n") || "General inquiry; services to discuss";
-  const status =
-    input.intent === "consultation"
+  const holdText = hold
+    ? `Requested time: ${formatSlotRange(hold.start, hold.end)}\nTentative hold placed on Google Calendar. Confirm or move it there.`
+    : "";
+  const status = hold
+    ? "Tentative time request"
+    : input.intent === "consultation"
       ? "Consultation inquiry"
       : input.intent === "interest"
         ? "Interest inquiry"
@@ -103,6 +112,7 @@ export async function sendContactInquiry(
     `Name: ${input.name}`,
     `Email: ${input.email || "Not supplied"}`,
     `Phone: ${input.phone || "Not supplied"}`,
+    ...(hold ? [holdText] : []),
     `Format: ${format}`,
     `Topic: ${input.topic}`,
     `Area: ${input.area || "To discuss"}`,
@@ -156,9 +166,11 @@ export async function sendContactInquiry(
       ),
     },
     {
-      name: "Visit preferences",
+      name: hold ? "Requested time" : "Visit preferences",
       value: escapeDiscord(
-        `Date: ${input.preferredDate || "Flexible"}\nTime (Mountain Time): ${input.preferredTime === "specific" ? input.exactTime : input.preferredTime}\nAddress / venue: see private attachment`,
+        hold
+          ? `${holdText}\nAddress / venue: see private attachment`
+          : `Date: ${input.preferredDate || "Flexible"}\nTime (Mountain Time): ${input.preferredTime === "specific" ? input.exactTime : input.preferredTime}\nAddress / venue: see private attachment`,
       ),
     },
     {
@@ -183,7 +195,9 @@ export async function sendContactInquiry(
       : []),
   ];
   const payload = {
-    content: `New HairnThere ${status.toLowerCase()}. Customer-provided content is attached. No appointment is reserved or accepted by this notification.`,
+    content: hold
+      ? "New HairnThere tentative time request. A tentative hold was placed on Google Calendar; confirm or move it there. Customer-provided content is attached. Nothing is confirmed until you confirm it."
+      : `New HairnThere ${status.toLowerCase()}. Customer-provided content is attached. No appointment is reserved or accepted by this notification.`,
     allowed_mentions: { parse: [] },
     embeds: [
       {
