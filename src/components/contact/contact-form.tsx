@@ -572,6 +572,7 @@ export function ContactForm({
             )}
             {house ? (
               <SlotPicker
+                active={step === 1}
                 selection={payload()}
                 slot={slot}
                 onSlot={(next, zone) => {
@@ -762,6 +763,14 @@ export function ContactForm({
                 }).format(new Date(slot.start))}{" "}
                 · {slotTime(slot.start, timeZone)}
               </span>
+              <Button
+                type="button"
+                variant="ghost"
+                className="h-12 px-3"
+                onClick={() => move(step - 1)}
+              >
+                Back
+              </Button>
               <Button type="submit" className="h-12">
                 Continue
               </Button>

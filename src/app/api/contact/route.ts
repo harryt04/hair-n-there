@@ -6,6 +6,8 @@ import { contactSchema, type ContactInput } from "@/lib/validation";
 import {
   acquireLock,
   checkContactRateLimit,
+  checkHoldDailyLimit,
+  checkHoldEmailLimit,
   type HeldLock,
   RateLimitUnavailableError,
 } from "@/lib/rate-limit";
@@ -60,8 +62,16 @@ const BOOKING_OFF =
   "Online time requests aren’t available right now. Please describe your timing instead.";
 const SLOT_TAKEN =
   "That time was just requested by someone else. Please choose another time.";
-const NOTHING_RESERVED =
-  "We couldn’t check the calendar just now, so nothing was reserved. Please try again, or describe your timing instead.";
+const SLOT_GONE =
+  "That time is no longer available. Please choose another time.";
+const DAY_BUSY =
+  "Someone is requesting a time on this day right now. Please try again in a moment.";
+const HOLD_LIMIT =
+  "You’ve already requested a time recently, and Elisabeth will be in touch. To ask about another time, please describe your timing instead.";
+const DAILY_LIMIT =
+  "Online time requests are paused for today. Please describe your timing instead and Elisabeth will follow up.";
+const NOT_PLACED =
+  "We couldn’t place your time request just now. Please try again in a moment, or describe your timing instead.";
 const unschedulable = {
   nothing_selected:
     "Please add at least one person or service before choosing a time.",
@@ -76,6 +86,23 @@ const LOCK_TTL_SECONDS = 60;
 const LOCK_WAIT_MS = 4000;
 
 type SourcePath = "/" | "/contact" | "/quote" | "/api/contact";
+
+const LINK_PATTERN = /\b(?:[a-z][a-z0-9+.-]*:\/\/|www\.)\S+/gi;
+/** Plain single-line text for invitation fields: no links or control characters. */
+const inviteText = (value: string, max: number) =>
+  value
+    .replace(LINK_PATTERN, "")
+    .replace(/[\p{Cc}\p{Cf}]+/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, max);
+/** Names keep letters, marks, spaces, apostrophes, periods, and hyphens only. */
+const personName = (value: string) =>
+  inviteText(value, 100)
+    .replace(/[^\p{L}\p{M} '.-]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 60);
 
 /**
  * Request a tentative hold for a validated house-call submission with slotStart.
@@ -114,7 +141,7 @@ async function requestHold(input: ContactInput, sourcePath: SourcePath) {
   const now = new Date();
   // Cheap pre-check (hours, notice, horizon) before touching the lock or calendar.
   if (!isSlotOpen(start, { now, durationMinutes: estimate.minutes, busy: [] }))
-    return bookingFailure("slot_unavailable", SLOT_TAKEN, 409);
+    return bookingFailure("slot_unavailable", SLOT_GONE, 409);
 
   const date = localDateOf(start, schedule.timeZone);
   let lock: HeldLock | null = null;
@@ -128,10 +155,10 @@ async function requestHold(input: ContactInput, sourcePath: SourcePath) {
   } catch (error) {
     // Redis is configured but failing: fail closed rather than risk double holds.
     if (error instanceof RateLimitUnavailableError)
-      return bookingFailure("booking_unavailable", NOTHING_RESERVED, 503);
+      return bookingFailure("booking_unavailable", NOT_PLACED, 503);
     throw error;
   }
-  if (!lock) return bookingFailure("slot_unavailable", SLOT_TAKEN, 409);
+  if (!lock) return bookingFailure("slot_unavailable", DAY_BUSY, 409);
 
   try {
     const buffer = schedule.travelBufferMinutes * minute;
@@ -156,7 +183,16 @@ async function requestHold(input: ContactInput, sourcePath: SourcePath) {
     )
       return bookingFailure("slot_unavailable", SLOT_TAKEN, 409);
 
-    const firstName = input.name.trim().split(/\s+/)[0];
+    // Caps on invitations sent from Elisabeth's account (spam/flooding guard),
+    // counted only once a hold is about to be written.
+    const today = localDateOf(new Date(), schedule.timeZone);
+    if (!(await checkHoldDailyLimit(today)).allowed)
+      return bookingFailure("booking_unavailable", DAILY_LIMIT, 429);
+    if (!(await checkHoldEmailLimit(input.email!)).allowed)
+      return bookingFailure("booking_unavailable", HOLD_LIMIT, 429);
+
+    const firstName =
+      personName(input.name).split(" ")[0] || "website request";
     const serviceNames = new Map(
       services.map((service) => [service.id, service.name]),
     );
@@ -166,14 +202,17 @@ async function requestHold(input: ContactInput, sourcePath: SourcePath) {
     const selections = [
       ...input.services.map(
         (line) =>
-          `- ${line.member ? `${line.member}: ` : ""}${serviceNames.get(line.id) ?? line.id} × ${line.quantity}`,
+          `- ${line.member ? `${inviteText(line.member, 40)}: ` : ""}${serviceNames.get(line.id) ?? line.id} × ${line.quantity}`,
       ),
       ...input.packages.map(
         (line) =>
           `- ${packageNames.get(line.id) ?? line.id} × ${line.quantity}`,
       ),
     ];
-    // The customer is an attendee and can read this description: no prices.
+    // The attendee (whoever's email was submitted) receives this content from
+    // Elisabeth's account, so it carries no prices and no free-form visitor
+    // text: the message goes to Discord only, and names/addresses are reduced
+    // to plain text without links.
     const description = [
       "Tentative time request from hairnthere.com. Elisabeth will confirm this time or suggest another; your personal quote will follow.",
       "",
@@ -182,13 +221,11 @@ async function requestHold(input: ContactInput, sourcePath: SourcePath) {
       ...(selections.length ? ["Services:", ...selections] : []),
       `Estimated duration: ${estimate.minutes} minutes (includes setup)`,
       "",
-      `Address: ${input.address || "Not supplied"}`,
-      `Name: ${input.name}`,
+      `Address: ${inviteText(input.address || "", 400) || "Not supplied"}`,
+      `Name: ${personName(input.name)}`,
       `Email: ${input.email}`,
       ...(input.phone ? [`Phone: ${input.phone}`] : []),
-      "",
-      "Message:",
-      input.message || "None",
+      ...(input.message ? ["", "Your note was sent to Elisabeth separately."] : []),
     ].join("\n");
 
     await placeTentativeHold({
@@ -196,9 +233,9 @@ async function requestHold(input: ContactInput, sourcePath: SourcePath) {
       end,
       summary: `Requested: house call · ${firstName}`,
       description,
-      location: input.address || undefined,
+      location: inviteText(input.address || "", 400) || undefined,
       attendeeEmail: input.email!,
-      attendeeName: input.name,
+      attendeeName: personName(input.name),
     });
   } catch (error) {
     if (error instanceof CalendarConfigurationError)
@@ -206,7 +243,7 @@ async function requestHold(input: ContactInput, sourcePath: SourcePath) {
       console.error(`Booking calendar configuration: ${error.message}`);
     // Calendar or lock failures before the hold exists. A timed-out insert
     // could rarely still land; Elisabeth would see it as an unconfirmed hold.
-    return bookingFailure("booking_unavailable", NOTHING_RESERVED, 503);
+    return bookingFailure("booking_unavailable", NOT_PLACED, 503);
   } finally {
     await lock.release();
   }
@@ -216,7 +253,10 @@ async function requestHold(input: ContactInput, sourcePath: SourcePath) {
   try {
     await sendContactInquiry(input, sourcePath, { start, end });
   } catch {
-    // Unconfigured or failed webhook: the hold already exists; never log input.
+    // Unconfigured or failed webhook: the hold already exists. Google does not
+    // notify an organizer about events inserted on her own calendar, so leave
+    // an operator signal. Never log customer input or webhook details.
+    console.error("Tentative hold placed; Discord notification failed.");
   }
   return Response.json(
     {

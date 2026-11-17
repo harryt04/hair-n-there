@@ -43,42 +43,51 @@ export function SlotSummary({
   timeZone,
   onChange,
 }: {
-  slot: Slot;
+  slot: Slot | null;
   timeZone: string;
   onChange?: () => void;
 }) {
   return (
     <div
       aria-live="polite"
-      className="my-4 grid gap-2 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm"
+      aria-atomic="true"
+      className={
+        slot
+          ? "my-4 grid gap-2 rounded-lg border border-primary/30 bg-primary/5 p-4 text-sm"
+          : ""
+      }
     >
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-medium text-primary">
-          Requested time · tentative hold
-        </span>
-        {onChange && (
-          <button
-            type="button"
-            onClick={onChange}
-            className="min-h-11 text-primary underline underline-offset-4"
-          >
-            Change
-          </button>
-        )}
-      </div>
-      <b>
-        {new Intl.DateTimeFormat("en-US", {
-          timeZone,
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-        }).format(new Date(slot.start))}{" "}
-        · {slotTime(slot.start, timeZone)} – {slotTime(slot.end, timeZone)}
-      </b>
-      <p className="text-muted-foreground">
-        Elisabeth will confirm or suggest another time. You’ll get a calendar
-        invitation by email.
-      </p>
+      {slot && (
+        <>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-medium text-primary">
+              Requested time · tentative hold
+            </span>
+            {onChange && (
+              <button
+                type="button"
+                onClick={onChange}
+                className="min-h-11 text-primary underline underline-offset-4"
+              >
+                Change
+              </button>
+            )}
+          </div>
+          <b>
+            {new Intl.DateTimeFormat("en-US", {
+              timeZone,
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+            }).format(new Date(slot.start))}{" "}
+            · {slotTime(slot.start, timeZone)} – {slotTime(slot.end, timeZone)}
+          </b>
+          <p className="text-muted-foreground">
+            Elisabeth will confirm or suggest another time. You’ll get a
+            calendar invitation by email.
+          </p>
+        </>
+      )}
     </div>
   );
 }
@@ -103,6 +112,7 @@ export function SlotPicker(
 }
 function MountedSlotPicker({
   selection,
+  active,
   slot,
   onSlot,
   fallback,
@@ -111,6 +121,7 @@ function MountedSlotPicker({
   errorId,
 }: {
   selection: EstimateInput;
+  active: boolean;
   slot: Slot | null;
   onSlot: (slot: Slot | null, zone?: string) => void;
   fallback: ReactNode;
@@ -136,6 +147,20 @@ function MountedSlotPicker({
   const [date, setDate] = useState("");
   const [month, setMonth] = useState(today.slice(0, 7));
   const [cache, setCache] = useState<Record<string, AvailabilityResponse>>({});
+  const cacheRef = useRef<Record<string, AvailabilityResponse>>({});
+  const inFlight = useRef(new Map<string, Promise<AvailabilityResponse>>());
+  const [failures, setFailures] = useState<
+    Record<string, AvailabilityResponse>
+  >({});
+  const ready =
+    [selection.haircutCount, selection.colorCount].every(
+      (count) => typeof count === "number" && Number.isFinite(count),
+    ) &&
+    [...selection.services, ...selection.packages].every((item) =>
+      Number.isFinite(item.quantity),
+    );
+  const heading = useRef<HTMLHeadingElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const [flex, setFlex] = useState(false);
   const [open, setOpen] = useState(false);
   const [phone, setPhone] = useState(false);
@@ -161,39 +186,57 @@ function MountedSlotPicker({
     .sort()
     .join(",");
   useEffect(() => {
-    const controller = new AbortController();
-    const timer = setTimeout(async () => {
-      await Promise.all(
-        months.split(",").map(async (m) => {
-          const id = `${signature}:${revision}:${m}`;
-          if (cache[id]) return;
-          let result: AvailabilityResponse;
-          try {
-            const response = await fetch("/api/availability", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...JSON.parse(signature), month: m }),
-              signal: controller.signal,
-            });
+    if (!active || !ready || forcedFallback || flex) return;
+    let current = true;
+    const timer = setTimeout(() => {
+      setFailures({});
+      for (const m of months.split(",")) {
+        const id = `${signature}:${revision}:${m}`;
+        if (cacheRef.current[id]) continue;
+        let request = inFlight.current.get(id);
+        if (!request) {
+          request = fetch("/api/availability", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...JSON.parse(signature), month: m }),
+          }).then(async (response) => {
             if (!response.ok) throw Error();
-            result = await response.json();
-          } catch {
-            if (controller.signal.aborted) return;
-            result = { enabled: false, reason: "unavailable" };
-          }
-          if (!controller.signal.aborted)
-            setCache((c) => ({ ...c, [id]: result }));
-        }),
-      );
+            const result: AvailabilityResponse = await response.json();
+            cacheRef.current[id] = result;
+            return result;
+          });
+          inFlight.current.set(id, request);
+          // Requests already sent finish even when the visible strip changes.
+          void request
+            .finally(() => inFlight.current.delete(id))
+            .catch(() => {});
+        }
+        void request
+          .then((result) => {
+            if (current) setCache((c) => ({ ...c, [id]: result }));
+          })
+          .catch(() => {
+            if (current)
+              setFailures((f) => ({
+                ...f,
+                [id]: { enabled: false, reason: "unavailable" },
+              }));
+          });
+      }
+      setCache({ ...cacheRef.current });
     }, 300);
     return () => {
+      current = false;
       clearTimeout(timer);
-      controller.abort();
     };
-  }, [signature, revision, months, cache]);
+  }, [active, ready, forcedFallback, flex, signature, revision, months]);
   const responses = months
     .split(",")
-    .map((m) => cache[`${signature}:${revision}:${m}`]);
+    .map(
+      (m) =>
+        cache[`${signature}:${revision}:${m}`] ??
+        failures[`${signature}:${revision}:${m}`],
+    );
   const info = responses.find((r) => r?.enabled === true);
   const failure = responses.find((r) => r?.enabled === false);
   const days = responses.flatMap((r) => (r?.enabled ? r.days : []));
@@ -201,18 +244,47 @@ function MountedSlotPicker({
   useEffect(() => {
     if (!info?.enabled || initialized.current === `${signature}:${revision}`)
       return;
-    initialized.current = `${signature}:${revision}`;
-    const first = info.days.find((d) => d.slots.length)?.date || info.firstDate;
+    if (loading || failure || !active || !ready) return;
+    const first = days
+      .filter((d) => d.date >= info.firstDate && d.date <= info.lastDate)
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .find((d) => d.slots.length)?.date;
+    if (!first) {
+      const latest = months.split(",").at(-1)!;
+      if (latest < info.lastDate.slice(0, 7)) {
+        const next = parse(`${latest}-01`);
+        next.setMonth(next.getMonth() + 1);
+        const frame = requestAnimationFrame(() =>
+          setMonth(key(next).slice(0, 7)),
+        );
+        return () => cancelAnimationFrame(frame);
+      }
+      initialized.current = `${signature}:${revision}`;
+      return;
+    }
     // Keep the visitor's day after a conflict, but initialize each new selection.
     if (revision === 0 || !date) {
       const frame = requestAnimationFrame(() => {
+        initialized.current = `${signature}:${revision}`;
         setDate(first);
         setWeek(first);
         setMonth(first.slice(0, 7));
       });
       return () => cancelAnimationFrame(frame);
     }
-  }, [info, signature, revision, date]);
+    initialized.current = `${signature}:${revision}`;
+  }, [
+    info,
+    signature,
+    revision,
+    date,
+    loading,
+    failure,
+    active,
+    ready,
+    days,
+    months,
+  ]);
   const zone = info?.enabled ? info.timeZone : "America/Denver";
   const slots = days.find((d) => d.date === date)?.slots || [];
   function choose(d: string, calendar = false) {
@@ -231,7 +303,7 @@ function MountedSlotPicker({
     <>
       <Calendar
         mode="single"
-        autoFocus
+        autoFocus={!phone}
         month={parse(`${month}-01`)}
         onMonthChange={(d) => setMonth(key(d).slice(0, 7))}
         selected={date ? parse(date) : undefined}
@@ -266,6 +338,7 @@ function MountedSlotPicker({
     <Button
       type="button"
       variant="outline"
+      ref={triggerRef}
       className="size-11"
       aria-label="Pick a date from the calendar"
     >
@@ -273,7 +346,7 @@ function MountedSlotPicker({
     </Button>
   );
   const reason = failure && !failure.enabled ? failure.reason : "";
-  if (forcedFallback || flex || failure)
+  if (forcedFallback || flex || (active && ready && failure))
     return (
       <div aria-live="polite">
         {(reason === "consultation_required" || reason === "too_long") && (
@@ -330,7 +403,9 @@ function MountedSlotPicker({
       </p>
       <div className="flex items-center justify-between gap-2">
         <h3 className="font-display">
-          {parse(`${month}-01`).toLocaleDateString("en-US", {
+          {parse(
+            date >= week && date <= add(week, 13) ? date : week,
+          ).toLocaleDateString("en-US", {
             month: "long",
             year: "numeric",
           })}
@@ -367,9 +442,13 @@ function MountedSlotPicker({
               <SheetTrigger render={trigger} />
               <SheetContent
                 side="bottom"
+                initialFocus={heading}
+                finalFocus={triggerRef}
                 className="rounded-t-2xl p-2 pb-[max(1rem,env(safe-area-inset-bottom))] motion-reduce:transition-none"
               >
-                <SheetTitle className="px-2">Choose a date</SheetTitle>
+                <SheetTitle ref={heading} tabIndex={-1} className="px-2">
+                  Choose a date
+                </SheetTitle>
                 <SheetDescription className="sr-only">
                   Choose a day with open times.
                 </SheetDescription>
@@ -379,7 +458,10 @@ function MountedSlotPicker({
           ) : (
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger render={trigger} />
-              <PopoverContent className="w-[320px] motion-reduce:animate-none">
+              <PopoverContent
+                finalFocus={triggerRef}
+                className="w-[320px] motion-reduce:animate-none"
+              >
                 <PopoverTitle>Choose a date</PopoverTitle>
                 {calendar}
               </PopoverContent>
@@ -447,6 +529,7 @@ function MountedSlotPicker({
           </div>
           <h3
             ref={times}
+            tabIndex={-1}
             className="my-3 scroll-mt-[calc(var(--site-header-height)+var(--cinema-compact-height)+1rem)] font-display"
           >
             {date
@@ -547,18 +630,17 @@ function MountedSlotPicker({
           )}
         </>
       )}
-      {slot && (
-        <SlotSummary
-          slot={slot}
-          timeZone={zone}
-          onChange={() => {
-            onSlot(null);
-            requestAnimationFrame(() =>
-              times.current?.scrollIntoView({ block: "start" }),
-            );
-          }}
-        />
-      )}
+      <SlotSummary
+        slot={slot}
+        timeZone={zone}
+        onChange={() => {
+          onSlot(null);
+          requestAnimationFrame(() => {
+            times.current?.focus({ preventScroll: true });
+            times.current?.scrollIntoView({ block: "start" });
+          });
+        }}
+      />
       <button
         type="button"
         onClick={() => {

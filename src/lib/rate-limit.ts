@@ -72,10 +72,14 @@ async function redisCommand(
 }
 
 async function checkRateLimit(request: Request, bucket: Bucket) {
-  const rawAddress = clientAddress(request);
+  return countInWindow(clientAddress(request), bucket);
+}
+
+/** Counts one event for `identity` (hashed, never stored raw) in the bucket's fixed window. */
+async function countInWindow(identity: string, bucket: Bucket) {
   // Avoid storing raw addresses in the limiter or exposing them to notification channels.
   const digest = createHash("sha256")
-    .update(`${bucket.hashPrefix}:${rawAddress}`)
+    .update(`${bucket.hashPrefix}:${identity}`)
     .digest("hex");
   const key = `${bucket.keyPrefix}:${digest}`;
   const redis = redisConfig();
@@ -134,6 +138,34 @@ export function checkContactRateLimit(request: Request) {
 /** Separate, looser bucket for read-only availability lookups. */
 export function checkAvailabilityRateLimit(request: Request) {
   return checkRateLimit(request, availabilityBucket);
+}
+
+// Caps on tentative holds, which make Google email an invitation from
+// Elisabeth's account. They limit invitation spam and calendar flooding beyond
+// the per-address contact limit. Counted only when a hold is about to be written.
+const holdEmailBucket: Bucket = {
+  hashPrefix: "hairnthere-hold-email",
+  keyPrefix: "hold-email",
+  maxRequests: 2,
+  windowSeconds: 7 * 24 * 60 * 60,
+  windows: new Map(),
+};
+const holdDailyBucket: Bucket = {
+  hashPrefix: "hairnthere-hold-day",
+  keyPrefix: "hold-day",
+  maxRequests: 12,
+  windowSeconds: 24 * 60 * 60,
+  windows: new Map(),
+};
+
+/** At most 2 web holds per email address per week. */
+export function checkHoldEmailLimit(email: string) {
+  return countInWindow(email.trim().toLowerCase(), holdEmailBucket);
+}
+
+/** At most 12 web holds per local request date across the whole site. */
+export function checkHoldDailyLimit(localDate: string) {
+  return countInWindow(localDate, holdDailyBucket);
 }
 
 // ---------------------------------------------------------------------------
