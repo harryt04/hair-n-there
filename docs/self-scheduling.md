@@ -1,6 +1,6 @@
 # Self-scheduled tentative holds
 
-Status: approved and implemented (2026-11-16); live holds stay off until Google is configured.
+Status: approved and implemented (2026-11-16); live holds stay off until Google is configured. For requirements, architecture, and how to orchestrate future agents, see [`self-scheduling-trd.md`](self-scheduling-trd.md).
 
 ## What it does
 
@@ -65,7 +65,7 @@ Google setup instructions checked against the linked Google developer documentat
 - `scripts/google-calendar-auth.mjs` (`pnpm google:auth` in `package.json`): local Desktop OAuth/PKCE loopback helper for the refresh token.
 - `src/lib/booking.ts`: live booking gate, request guards, calendar helpers and development-only demo (`BOOKING_DEMO=true pnpm dev`); synthetic holds live in process memory and send no invitations.
 - `src/app/api/availability/route.ts`: bounded, rate-limited JSON POST; validates selections, recomputes duration, reads busy time and returns open slots or fallback status.
-- `src/app/api/contact/route.ts`: validates the time request, rechecks availability under a booking lock, creates the tentative event with customer details and attendee, and attempts the Discord notice. Non-time inquiries retain the Discord acknowledgement path.
+- `src/app/api/contact/route.ts`: validates the time request, rechecks availability under a booking lock, applies the per-email and daily hold caps, creates the tentative event (contact details and services, with no free-form message and no links) with the customer as attendee, and attempts the Discord notice. Non-time inquiries retain the Discord acknowledgement path.
 
 ## Later (not built)
 
