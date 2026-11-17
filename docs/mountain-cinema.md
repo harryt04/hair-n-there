@@ -88,13 +88,13 @@ linked from the app bar and slim footer. Keep **QR Code**
 visible in the app bar on mobile and desktop; it opens `/card`. The QR assets and
 copy link use `https://hairnthere.com/` (home page, without www; originally `/services`).
 
-The gallery uses shadcn’s carousel with 11 real portfolio posts collected from
-@justbeyou_hair without an API key. Content is server-rendered with local images;
-native scrolling works before JavaScript initializes. Follow links go to @hairnthere;
-individual covers link to the original posts. Reel covers are labeled as still
-previews, with playback on Instagram. This is a partial collection, not a live feed.
-`src/data/gallery.ts` derives selected entries from `src/data/instagram-posts.json`;
-see [the inventory](instagram-inventory.md) for original captions, grouping, and gaps.
+The gallery now uses only live @hairnthere media through the server-only Instagram
+API with Instagram Login. Unconfigured and empty feeds show an intentional follow
+panel, with no archived photos. Available posts appear in a native horizontal scroll
+strip that supports touch, trackpads, keyboard access, a scrollbar, and optional
+arrows even after hydration. Reel covers link to playback on Instagram. See README
+for required account authorization, runtime token configuration, and cache behavior.
+The old @justbeyou_hair inventory remains archival only.
 
 Business rules remain in `docs/elisabeth-revision-plan.md` and the existing catalog,
 quote, and availability modules. Harry opened house-call inquiries in the November 5 contact redesign;

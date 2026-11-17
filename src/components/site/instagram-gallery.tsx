@@ -1,15 +1,15 @@
 import Image from "next/image";
+import { Suspense } from "react";
+import { connection } from "next/server";
 import { ArrowUpRight, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InstagramLink } from "@/components/site/instagram-link";
 import { business } from "@/data/business";
-import { CarouselItem } from "@/components/ui/carousel";
 import { PortfolioCarousel } from "./portfolio-carousel";
-import { PortfolioImage } from "./portfolio-image";
-import { gallery } from "@/data/gallery";
+import { getInstagramFeed } from "@/lib/instagram";
 import styles from "./instagram-gallery.module.css";
 
-/** First-party images stay visible without an Instagram embed, cookie prompt, or JS. */
+/** Public posts are server rendered without Instagram embed scripts. */
 export function InstagramGallery() {
   return (
     <section
@@ -38,53 +38,9 @@ export function InstagramGallery() {
           <span className="hidden sm:inline">Open Instagram</span>
         </Button>
       </div>
-      <p className={styles.notice}>
-        Hair by Elisabeth. Follow her next chapter at @hairnthere. Swipe or use
-        the arrows to explore.
-      </p>
-      <PortfolioCarousel count={gallery.length}>
-        {gallery.map((image, index) => {
-          const Photo = index === 0 ? Image : PortfolioImage;
-          return (
-            <CarouselItem
-              key={image.id}
-              className={styles.slide}
-              aria-label={`${index + 1} of ${gallery.length}: ${image.label}`}
-            >
-              <figure>
-                <InstagramLink
-                  href={business.instagramUrl}
-                  className={styles.photo}
-                  aria-label={`Follow @hairnthere on Instagram · ${image.label}`}
-                >
-                  <Photo
-                    src={image.src}
-                    alt={image.alt}
-                    fill
-                    // Account for object-fit: contain inside the 4:5 frame.
-                    sizes={`(max-width: 767px) ${82 * Math.min(1, image.width / image.height / 0.8)}vw, (max-width: 904px) ${42 * Math.min(1, image.width / image.height / 0.8)}vw, ${380 * Math.min(1, image.width / image.height / 0.8)}px`}
-                    preload={index === 0}
-                    quality={60}
-                    fetchPriority={index === 0 ? "high" : "low"}
-                    className={styles.image}
-                  />
-                </InstagramLink>
-                <figcaption>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <span>{image.label}</span>
-                  <ArrowUpRight aria-hidden="true" />
-                </figcaption>
-                <p className={styles.caption}>{image.caption}</p>
-                <p className={styles.mediaType}>
-                  {image.kind === "reel"
-                    ? "Reel cover · follow @hairnthere"
-                    : `${image.photoCount} photos · follow @hairnthere`}
-                </p>
-              </figure>
-            </CarouselItem>
-          );
-        })}
-      </PortfolioCarousel>
+      <Suspense fallback={<GalleryEmpty state="loading" />}>
+        <InstagramPosts />
+      </Suspense>
       <div className={styles.footer}>
         <p>Mountain roots. Your kind of beautiful.</p>
         <InstagramLink
@@ -96,5 +52,80 @@ export function InstagramGallery() {
         </InstagramLink>
       </div>
     </section>
+  );
+}
+
+function GalleryEmpty({
+  state,
+}: {
+  state: "loading" | "empty" | "unconfigured" | "unavailable";
+}) {
+  return (
+    <div className={styles.empty}>
+      <Camera className={styles.emptyIcon} aria-hidden="true" />
+      <p className="eyebrow">A new chapter</p>
+      <h3>
+        {state === "empty"
+          ? "The first post is still to come."
+          : "Good hair has a new home."}
+      </h3>
+      <p>
+        {state === "unavailable"
+          ? "We couldn’t load the latest posts right now. Visit @hairnthere on Instagram for updates."
+          : "Follow @hairnthere for fresh looks, little transformations, and life behind the chair with Elisabeth."}
+      </p>
+      <InstagramLink href={business.instagramUrl} className={styles.emptyLink}>
+        Follow along on Instagram <ArrowUpRight aria-hidden="true" />
+      </InstagramLink>
+    </div>
+  );
+}
+
+async function InstagramPosts() {
+  // Runtime credentials stay out of prerendering; the surrounding page stays static.
+  await connection();
+  const feed = await getInstagramFeed();
+  if (feed.status !== "ready") return <GalleryEmpty state={feed.status} />;
+  return (
+    <>
+      <p className={styles.notice}>
+        The latest from Elisabeth at @hairnthere. Open a post to see more on
+        Instagram.
+      </p>
+      <PortfolioCarousel count={feed.posts.length}>
+        {feed.posts.map((post, index) => (
+          <figure key={post.id} className={styles.slide}>
+            <InstagramLink
+              href={post.url}
+              className={styles.photo}
+              aria-label={`Open Instagram ${post.video ? "reel" : "post"} ${index + 1} from @hairnthere`}
+            >
+              <Image
+                src={post.src}
+                alt={
+                  post.caption
+                    ? post.caption.slice(0, 180)
+                    : `Instagram ${post.video ? "reel cover" : "photo"} from @hairnthere`
+                }
+                fill
+                unoptimized
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                sizes="(max-width: 767px) 82vw, 380px"
+                className={styles.image}
+              />
+            </InstagramLink>
+            <figcaption>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <span>
+                {post.video ? "Reel cover · watch on Instagram" : "@hairnthere"}
+              </span>
+              <ArrowUpRight aria-hidden="true" />
+            </figcaption>
+            {post.caption && <p className={styles.caption}>{post.caption}</p>}
+          </figure>
+        ))}
+      </PortfolioCarousel>
+    </>
   );
 }
