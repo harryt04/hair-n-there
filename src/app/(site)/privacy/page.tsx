@@ -144,6 +144,14 @@ export default function PrivacyPage() {
           Local development and preview deployments do not collect analytics.
         </p>
         <p>
+          When connected, our server retrieves public @hairnthere posts from
+          Instagram and temporarily caches them for the gallery. Your browser
+          loads post images from Meta’s image servers, which receive your
+          network address and browser request information, without a referrer
+          from this site. We do not load Instagram embed scripts. Opening a post
+          takes you to Instagram.
+        </p>
+        <p>
           External websites, including Instagram, have their own privacy
           practices. Following a link to another site is subject to that site’s
           policies.

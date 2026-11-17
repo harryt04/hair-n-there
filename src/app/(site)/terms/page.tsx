@@ -115,7 +115,9 @@ export default function TermsPage() {
           are owned by or licensed to HairnThere. Any third-party images remain
           subject to their respective licenses. Images labeled as style
           inspiration are illustrative and are not presented as Elisabeth’s
-          client portfolio.
+          client portfolio. When connected, the Instagram gallery displays public
+          posts from @hairnthere. Availability depends on Instagram; posts may
+          change or be unavailable, and links open Instagram under its own terms.
         </p>
         <p>
           You may view the website for personal use. Reproducing its original

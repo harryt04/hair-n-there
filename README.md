@@ -118,7 +118,7 @@ The current form discloses that providing a phone number chooses personal calls/
 
 ## Content still to supply
 
-- The first public portfolio collection contains 12 posts from [@justbeyou_hair](https://www.instagram.com/justbeyou_hair/). Eleven appear in the website carousel; an expired appointment promotion is excluded. Older-post discovery and reel video recovery remain incomplete. See [the collection inventory](docs/instagram-inventory.md). Follow links go to [@hairnthere](https://www.instagram.com/hairnthere/).
+- The public gallery uses only live posts from [@hairnthere](https://www.instagram.com/hairnthere/). The old @justbeyou_hair inventory is archival and is no longer displayed.
 - Elisabeth’s approved biography, experience, certifications, specialties, and public support email.
 - Any approved family-package substitutions beyond the stated inclusions.
 - Private travel origin/routing configuration and neighborhood-day discounts.
@@ -165,15 +165,45 @@ Banner assignment is not an A/B test or analytics event. See
 [the design and motion notes](docs/mountain-cinema.md) for the
 artwork, assignment policy, accessibility fallbacks, and future seasonal possibilities.
 
-The @hairnthere gallery shows 11 real posts from Elisabeth’s previous account in a
-server-rendered, horizontally scrollable carousel. Images are served locally; no API
-key or live Instagram feed is needed. Every Instagram link, including photos and reel covers, goes to @hairnthere, and
-original captions appear prominently beneath each image. Source captions, ordered carousel photos, review
-status, and source links are recorded in `src/data/instagram-posts.json`. The follow
-destination is fixed to @hairnthere. Historical source-post URLs are archival only;
-Elisabeth no longer controls @justbeyou_hair or its email account. Public email
-links remain disabled until a replacement business email is confirmed. Legacy
-`NEXT_PUBLIC_INSTAGRAM_URL` and `NEXT_PUBLIC_SUPPORT_EMAIL` values are not used.
+The gallery displays only @hairnthere posts from the **Instagram API with Instagram
+Login**, never the archived @justbeyou_hair collection. Photos and reel covers link
+to their actual posts; videos play on Instagram. The server renders up to 24 recent
+posts into a native horizontal scroll strip with touch/trackpad scrolling, a visible
+scrollbar, keyboard access and optional arrow buttons. The follow link remains
+available without JavaScript.
+
+Until connected, the gallery shows a quiet “Good hair has a new home” panel and a
+follow link, without sample photos or a claim that the account has no posts. A
+successful empty response says “The first post is still to come.” API failures,
+expired credentials, or unexpected account/media data show a friendly unavailable
+state and a direct Instagram link; the rest of the page remains available.
+
+To enable automatic updates:
+
+1. Elisabeth must authorize the **@hairnthere professional (Business or Creator)
+   account** through a Meta app configured for Instagram API with Instagram Login,
+   granting `instagram_business_basic`. A Facebook Page is not required. Follow
+   [Meta’s setup guide](https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/)
+   for account roles, access level/app review, and a long-lived Instagram user token.
+2. Set `INSTAGRAM_ACCESS_TOKEN` as a **server-only runtime** environment variable in
+   Coolify and restart the application. Do not paste tokens into Git, chat, public
+   variables, or logs. Previews should stay unconfigured or use separate credentials.
+3. Confirm the gallery against the authorized account, including an empty response
+   and the first image/reel post. Media whose username is not `hairnthere` is rejected,
+   including tokens accidentally issued for the archived account.
+4. Renew the token before its provider expiry using Meta’s token lifecycle process,
+   then replace the Coolify value and restart. Automatic token renewal is not included.
+
+API calls happen only on the server at request time, have a five-second timeout,
+and are cached for 15 minutes with a one-hour expiry (refresh is traffic-driven).
+Missing configuration and errors are cached too; restarting clears the process cache.
+No credentials are needed for the build. Images load directly from validated Meta
+CDN hosts without sending a referrer; no Instagram embed scripts are loaded.
+The integration requires real account authorization to verify live delivery; a
+username alone cannot supply an automatic supported feed. The archived inventory
+and images remain on disk for reference but have no public gallery import.
+Legacy `NEXT_PUBLIC_INSTAGRAM_URL` and `NEXT_PUBLIC_SUPPORT_EMAIL` values are not used.
+Public email links remain disabled until a replacement business email is confirmed.
 The **QR Code** app-bar shortcut opens `/card`; the large QR presentation lives on `/card`, linked in the footer.
 
 ### Local cinema regression checks
