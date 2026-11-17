@@ -296,7 +296,7 @@ Use an isolated Coolify staging application/branch for visual review if requeste
 
 1. Resolved: Mountain Cinema / Powder Day replaces the Scenic Journey margin; preserve all three approved banners with fresh random assignment per full page load (including refresh). See `docs/mountain-cinema.md`.
 2. Written requirements/authorization for each exact service location model; salon venue and off-site event arrangements remain unconfirmed. Who will provide the decision and when?
-3. Continue manual confirmation/interest inquiries for this release, or integrate real-time scheduling later? No live scheduling provider has been chosen.
+3. Resolved (2026-11-16): self-scheduled tentative house-call holds using Google Calendar were approved and implemented, off until Google is configured. Elisabeth confirms, moves, or declines requests personally; no booking or price is confirmed by a hold. See [self-scheduling setup](self-scheduling.md).
 4. Resolved: Mommy & Me includes the women’s haircut + blow-dry. Any substitutions or upgrades still need explicit pricing.
 5. Is travel one-way from the Suncrest base, and are city names illustrative? Confirm private origin, rounding/traffic policy, free-consultation location/minimum treatment, and the routing provider before live estimates.
 6. What reduction applies to neighborhood haircut days? Use manual quotes until supplied.
