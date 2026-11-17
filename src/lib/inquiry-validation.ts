@@ -58,6 +58,14 @@ export const inquirySchema = z
       "Please enter a valid time.",
     ),
     address: optionalText(400),
+    // Requested start of a tentative hold (UTC ISO). Re-verified server-side against the live calendar.
+    slotStart: optionalText(40).refine(
+      (value) =>
+        !value ||
+        (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00(\.000)?Z$/.test(value) &&
+          !Number.isNaN(Date.parse(value))),
+      "Please choose an available time.",
+    ),
     message: optionalText(1500),
     smsConsent: z.boolean().default(false),
     phoneContactConsent: z.boolean().default(false),
@@ -123,7 +131,26 @@ export const inquirySchema = z
           "Please provide a phone number for appointment calls or texts.",
       });
     }
-    if (value.preferredTime === "specific" && !value.exactTime) {
+    if (value.slotStart) {
+      if (value.visitType !== "house")
+        context.addIssue({
+          code: "custom",
+          path: ["slotStart"],
+          message: "Online time requests are only open for house calls.",
+        });
+      if (!value.email)
+        context.addIssue({
+          code: "custom",
+          path: ["email"],
+          message:
+            "Please add your email so we can send your calendar invitation.",
+        });
+    }
+    if (
+      !value.slotStart &&
+      value.preferredTime === "specific" &&
+      !value.exactTime
+    ) {
       context.addIssue({
         code: "custom",
         path: ["exactTime"],

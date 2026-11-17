@@ -29,6 +29,8 @@ Use existing shadcn components and inspect their generated APIs: this preset use
 
 Keep the Subaru decorative in Mountain Cinema’s reserved horizontal ribbon below the app bar, driven by normal scroll with passive listeners/requestAnimationFrame and cleanup. Use `src/components/scenic/mountain-cinema.tsx` and `src/data/cinema.ts` when changing motion or assignment. Reduced motion and no-JavaScript states leave a parked car; forms and reading never depend on animation. Avoid scroll hijacking and overlays across controls.
 
+For self-scheduled tentative holds (the stage-2 time picker, availability and booking API, and Google Calendar integration), follow `docs/self-scheduling.md` and validate UI against the approved reference `docs/design/self-scheduling-ux.html` (option B, phone-first).
+
 Keep all service-menu content server rendered. Preserve semantic headings, keyboard access, associated form errors, mobile layouts, and consent links. Use approved biography/portfolio details only; temporary stock is labeled inspiration, never Elisabeth’s work or a before/after pair. Public Instagram is `@hairnthere`; import source is `@justbeyou_hair`.
 
 ## Data handling
