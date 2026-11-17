@@ -234,3 +234,11 @@ or blocked storage, and subscription cleanup. These use Node’s built-in test
 runner with simulated browser storage and time against the actual cinema store;
 they do not exercise browser rendering or animation. No CI or branch protection
 is configured; commits still go directly to main.
+
+## License
+
+Harry-owned project code is available under the [MIT License](LICENSE). This
+license does not grant rights to HairnThere names, logos, branding, photographs,
+portfolio media, or other third-party assets and dependencies. Those materials
+remain subject to their respective owners' rights and licenses; see the image
+credits in `public/images/`.
