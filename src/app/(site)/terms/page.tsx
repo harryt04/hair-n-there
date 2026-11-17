@@ -40,8 +40,9 @@ export default function TermsPage() {
           I confirm pricing, timing, and the visit location with you personally.
           Salon arrangements and special-event services are discussed
           individually, including location and availability. The website does
-          not automatically reserve appointments or collect deposits or
-          payments.
+          offer confirmed bookings or collect deposits or payments. When
+          configured, house-call time requests create tentative holds for my
+          review.
         </p>
         <p>
           The illustrated Subaru is part of the brand. It does not represent an
@@ -51,8 +52,9 @@ export default function TermsPage() {
       </PolicySection>
       <PolicySection title="An inquiry starts a conversation">
         <p>
-          Submitting a form or reviewing an estimate does not reserve a time,
-          create a binding booking, or guarantee availability. Service prices,
+          An ordinary inquiry or estimate does not reserve a time. A time
+          request creates a tentative hold, not a confirmed booking or price;
+          Elisabeth may confirm, move, or decline it. Service prices,
           travel charges, location, timing, and any other appointment conditions
           must be confirmed before you agree to proceed.
         </p>
@@ -81,6 +83,15 @@ export default function TermsPage() {
         </p>
       </PolicySection>
       <PolicySection title="Appointment follow-up and messaging">
+        <p>
+          Requesting a time requires an email address for a Google Calendar
+          invitation. Your name, email, phone number (if given), address,
+          selected services or packages and counts, estimated duration, and
+          message are stored in a tentative event on Elisabeth’s Google
+          Calendar. Google is a service provider for this scheduling and sends
+          the invitation to you. Receiving or accepting that invitation does
+          not confirm a booking or price.
+        </p>
         <p>
           Provide a phone number or email so we can respond. By providing a
           phone number, you choose personal calls or texts from me about your

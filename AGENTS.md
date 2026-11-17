@@ -29,12 +29,26 @@ Use existing shadcn components and inspect their generated APIs: this preset use
 
 Keep the Subaru decorative in Mountain Cinema’s reserved horizontal ribbon below the app bar, driven by normal scroll with passive listeners/requestAnimationFrame and cleanup. Use `src/components/scenic/mountain-cinema.tsx` and `src/data/cinema.ts` when changing motion or assignment. Reduced motion and no-JavaScript states leave a parked car; forms and reading never depend on animation. Avoid scroll hijacking and overlays across controls.
 
+For self-scheduled tentative holds (the stage-2 time picker, availability and booking API, and Google Calendar integration), follow `docs/self-scheduling.md` and validate UI against the approved reference `docs/design/self-scheduling-ux.html` (option B, phone-first).
+
 Keep all service-menu content server rendered. Preserve semantic headings, keyboard access, associated form errors, mobile layouts, and consent links. Use approved biography/portfolio details only; temporary stock is labeled inspiration, never Elisabeth’s work or a before/after pair. Public Instagram is `@hairnthere`; import source is `@justbeyou_hair`.
 
 ## Data handling
 
 Preserve the contact endpoint’s bounded input, rate limiting, consent validation, escaped Discord content, disabled mentions, and acknowledgement-before-success behavior. Preview deployments use their own webhook; never fall back to the production destination. The current form collects no phone number or SMS opt-in; preserve validation for legacy consent records. Future SMS needs durable consent/opt-out handling and provider setup. No AI calls/texts are active.
 
+Google OAuth credentials are server-only environment variables; preview uses its own calendar and never falls back to production, and live booking stays off unless `BOOKING_ENABLED=true` and credentials are configured. Tentative holds never confirm a booking or price; see `docs/self-scheduling.md` for setup.
+
 Keep secrets in environment configuration and values out of logs/chat. Analytics receive broad action names, not messages, member labels, addresses, consent records, or contact details. Update Terms/Privacy when actual data handling changes. See the human-facing `README.md` and `.env.example` for configuration and deployment.
 
 Use Next.js icon file conventions in `src/app/` and `scripts/create-brand-assets.mjs` for favicon/app/social exports. Keep the detailed logo for larger placements and the vector H/mountain mark for tiny browser icons; avoid duplicate manual icon metadata.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

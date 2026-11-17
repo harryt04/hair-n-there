@@ -8,6 +8,8 @@ export const availability = {
     model: "client_home",
     status: "Taking inquiries",
     acceptsAppointments: false,
+    // Customers may request a time as a tentative calendar hold that Elisabeth confirms or reschedules.
+    holdsTentativeTimes: true,
     message:
       "Tell me about your hair goals and household. I’ll follow up to discuss availability, your visit, and a personal quote.",
   },
@@ -16,6 +18,7 @@ export const availability = {
     model: "salon_booth",
     status: "Ask for details",
     acceptsAppointments: false,
+    holdsTentativeTimes: false,
     message:
       "Contact me to discuss salon arrangements. We’ll confirm the location, services, and availability together.",
   },
@@ -24,6 +27,7 @@ export const availability = {
     model: "offsite_event",
     status: "Inquiry only",
     acceptsAppointments: false,
+    holdsTentativeTimes: false,
     message:
       "Tell us about your event. Location and service availability must be confirmed before an appointment is offered.",
   },
@@ -34,6 +38,7 @@ export const availability = {
     model: string;
     status: string;
     acceptsAppointments: boolean;
+    holdsTentativeTimes: boolean;
     message: string;
   }
 >;

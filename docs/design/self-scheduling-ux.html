@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Time Picker UX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+<script type="application/json" data-lavish-revisions>
+[{ "id": "r1", "label": "Mobile-first pass", "timestamp": "2026-11-16T20:30:00Z", "summary": "Phone frame with real site chrome is now the default; mobile behaviour per option; new drill-in option D; sticky time bar; bottom-sheet calendar; recommendation moved to B" }]
+</script>
+<style>
+  /* HairnThere tokens copied from src/app/globals.css */
+  :root {
+    color-scheme: light;
+    --background: #fbf7f2; --foreground: #3b2417; --card: #ffffff;
+    --primary: #4b2e4f; --primary-foreground: #fbf7f2;
+    --secondary: #8b6b56; --muted: #f1e8e0; --muted-foreground: #766257;
+    --accent: #e8b5b8; --accent-foreground: #3b2417;
+    --border: #dfd3c8; --ring: #4b2e4f; --destructive: #a12837;
+    --gold: #d4af78; --radius: 0.7rem;
+    --page: #efe6dc; --rec: #2f6b4f; --bezel: #241826;
+    --sky: #e4dce1; --road: #c0adb1;
+  }
+  html.dark {
+    color-scheme: dark;
+    --background: #1f1323; --foreground: #f6ede3; --card: #2f1f33;
+    --primary: #d4af78; --primary-foreground: #1f1323;
+    --secondary: #b18f72; --muted: #39283d; --muted-foreground: #c8b6c7;
+    --accent: #e8b5b8; --accent-foreground: #1f1323;
+    --border: #594454; --ring: #d4af78; --destructive: #ff9b9b;
+    --page: #170d1a; --rec: #8fd1ae; --bezel: #050306;
+    --sky: #45384f; --road: #8d7b8b;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--foreground);
+    font-family: "DM Sans", system-ui, sans-serif; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, h4 { font-family: Manrope, system-ui, sans-serif; font-weight: 600; text-wrap: balance; margin: 0; }
+  p { margin: 0; }
+  button { font: inherit; color: inherit; }
+  button:not(:disabled) { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+  code { font-size: .9em; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 16px 80px; }
+  .muted { color: var(--muted-foreground); }
+  .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--secondary); font-weight: 600; }
+
+  /* Review chrome */
+  .hero { display: grid; gap: 18px; margin-bottom: 28px; }
+  .hero h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.1; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-size: 13px; padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px; background: var(--card); }
+  .chip.strong { border-color: var(--primary); font-weight: 600; }
+  .toolbar { position: sticky; top: 0; z-index: 20; display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center;
+    padding: 10px 14px; margin: 0 -14px 28px; background: color-mix(in oklab, var(--page) 88%, transparent); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border); }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--card); }
+  .seg button { border: 0; background: transparent; padding: 7px 12px; font-size: 13px; }
+  .seg button[aria-pressed="true"] { background: var(--primary); color: var(--primary-foreground); }
+  .toolbar label { font-size: 13px; display: inline-flex; gap: 8px; align-items: center; }
+  .toolbar select { font: inherit; font-size: 13px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--foreground); }
+
+  .why-mobile { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 12px; margin-bottom: 40px; }
+  .why-mobile div { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; font-size: 14px; }
+  .why-mobile b { display: block; font-family: Manrope; margin-bottom: 4px; }
+
+  .option { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 28px; align-items: start; margin-bottom: 64px; }
+  @media (max-width: 900px) { .option { grid-template-columns: minmax(0, 1fr); } }
+  .option-notes { display: grid; gap: 14px; position: sticky; top: 70px; }
+  @media (max-width: 900px) { .option-notes { position: static; } }
+  .option-notes h2 { font-size: 24px; }
+  .tag { display: inline-block; justify-self: start; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--border); }
+  .tag.rec { color: var(--rec); border-color: currentColor; }
+  .pc { display: grid; gap: 6px; font-size: 14px; }
+  .pc ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+  .pc strong { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted-foreground); }
+  .stage-wrap { display: flex; justify-content: center; min-width: 0; }
+
+  /* Device: desktop = bare card; phone = 375×760 scrolling frame with site chrome */
+  .device { position: relative; width: 100%; max-width: 672px; container-type: inline-size; }
+  .screen { background: var(--background); }
+  .chrome { display: none; }
+  .page-intro { display: none; }
+  .phone .device { max-width: 395px; border: 10px solid var(--bezel); border-radius: 40px; overflow: hidden; box-shadow: 0 20px 50px rgb(0 0 0 / .18); }
+  .phone .screen { height: 760px; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { .phone .screen { scroll-behavior: auto; } }
+  .phone .chrome { display: block; position: sticky; top: 0; z-index: 4; }
+  .phone .page { padding: 16px 16px 24px; }
+  .phone .page-intro { display: block; margin: 8px 0 20px; }
+  .appbar { height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: var(--background); border-bottom: 1px solid var(--border); }
+  .appbar .logo { display: flex; align-items: center; gap: 8px; font-family: Manrope; font-weight: 700; }
+  .appbar .logo i { width: 30px; height: 30px; border-radius: 50%; background: var(--primary); display: inline-block; }
+  .ribbon { height: 40px; background: linear-gradient(var(--sky) 0 62%, var(--road) 62%); position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
+  .ribbon svg { position: absolute; left: 42%; bottom: 6px; }
+  .page-intro .eyebrow { font-size: 11px; }
+  .page-intro h2 { font-size: 30px; line-height: 1.1; margin-top: 8px; }
+
+  .card { border: 1px solid var(--border); background: var(--card); border-radius: calc(var(--radius) + 4px); padding: 20px; }
+  @container (min-width: 520px) { .card { padding: 32px; } }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px; }
+  .steps div { min-height: 52px; border-bottom: 2px solid var(--border); padding: 0 4px 10px; font-size: 13px; color: var(--muted-foreground); line-height: 1.3; }
+  .steps div span { display: block; font-size: 11px; }
+  .steps div.cur { border-color: var(--primary); color: var(--foreground); font-weight: 500; }
+  .stage-title { font-size: 26px; margin-bottom: 8px; }
+  @container (min-width: 520px) { .stage-title { font-size: 30px; } }
+  .estimate { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--muted-foreground); margin-bottom: 18px; }
+  .estimate b { color: var(--foreground); font-weight: 600; }
+  .field-label { font-size: 14px; font-weight: 500; margin-bottom: 8px; display: block; }
+  .input { width: 100%; height: 48px; border: 1px solid var(--border); border-radius: calc(var(--radius) - 2px); background: var(--card); color: var(--foreground); padding: 0 12px; font: inherit; font-size: 16px; }
+  .help { font-size: 12px; color: var(--muted-foreground); line-height: 1.6; margin-top: 8px; }
+  .link { background: none; border: 0; padding: 12px 0; min-height: 44px; color: var(--primary); text-decoration: underline; text-underline-offset: 4px; font-size: 14px; text-align: left; }
+  .nav-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 24px; }
+  .btn { height: 48px; padding: 0 18px; border-radius: calc(var(--radius) - 2px); border: 1px solid var(--border); background: var(--card); font-weight: 500; font-size: 15px; }
+  .btn.primary { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+  .btn.ghost { border-color: transparent; background: transparent; }
+  .btn.icon { width: 44px; height: 44px; padding: 0; display: inline-grid; place-items: center; }
+
+  /* shadcn Calendar (react-day-picker) look. Fluid 7-column grid on phones, fixed 40px cells in the desktop split. */
+  .cal { width: 100%; user-select: none; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; height: 44px; margin-bottom: 4px; }
+  .cal-head h4 { font-family: "DM Sans"; font-size: 15px; font-weight: 600; }
+  .cal-nav { width: 44px; height: 44px; border-radius: calc(var(--radius) - 2px); border: 0; background: transparent; display: grid; place-items: center; }
+  .cal-nav:hover:not(:disabled) { background: var(--muted); }
+  .cal-nav:disabled { opacity: .35; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+  .cal-wd { height: 28px; font-size: 12px; color: var(--muted-foreground); display: grid; place-items: center; }
+  .day { position: relative; aspect-ratio: 1; min-height: 42px; border: 0; background: transparent; border-radius: calc(var(--radius) - 2px); font-size: 15px; font-weight: 500; padding: 0; }
+  .day:hover:not(:disabled):not([aria-pressed="true"]) { background: var(--muted); }
+  .day:disabled { color: var(--muted-foreground); opacity: .45; font-weight: 400; cursor: not-allowed; }
+  .day.outside { visibility: hidden; }
+  .day.today:not([aria-pressed="true"]) { box-shadow: inset 0 0 0 1px var(--border); }
+  .day[aria-pressed="true"] { background: var(--primary); color: var(--primary-foreground); }
+  .dots .day.open::after { content: ""; position: absolute; left: 50%; bottom: 5px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--gold); }
+  .dots .day.open[aria-pressed="true"]::after { background: var(--primary-foreground); }
+  .cal-legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted-foreground); margin-top: 8px; flex-wrap: wrap; }
+  .cal-legend i { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); margin-right: 6px; vertical-align: middle; }
+
+  /* Slots */
+  .slots-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 6px; scroll-margin-top: 120px; }
+  .slots-head h4 { font-family: "DM Sans"; font-size: 15px; font-weight: 600; }
+  .group-label { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted-foreground); margin: 14px 0 6px; }
+  .slot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  @container (min-width: 520px) { .slot-grid { grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); } }
+  .slot-list { display: grid; gap: 8px; }
+  .slot { min-height: 52px; border: 1px solid var(--border); background: var(--card); border-radius: calc(var(--radius) - 2px); padding: 6px 10px; font-size: 15px; font-weight: 500; text-align: center; line-height: 1.25; }
+  .slot-list .slot { display: flex; justify-content: space-between; align-items: center; text-align: left; padding: 0 16px; min-height: 56px; }
+  .slot small { display: block; font-size: 12px; font-weight: 400; color: var(--muted-foreground); }
+  .slot:hover:not([aria-checked="true"]) { border-color: var(--primary); }
+  .slot[aria-checked="true"] { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+  .slot[aria-checked="true"] small { color: inherit; opacity: .85; }
+  @container (min-width: 520px) { .slot-scroll { max-height: 340px; overflow-y: auto; padding-right: 4px; } }
+  .empty { border: 1px dashed var(--border); border-radius: var(--radius); padding: 18px; font-size: 14px; color: var(--muted-foreground); text-align: center; }
+
+  .split { display: grid; gap: 22px; }
+  @container (min-width: 560px) {
+    .split { grid-template-columns: max-content minmax(0, 1fr); }
+    .split .cal { width: max-content; }
+    .split .cal-grid { grid-template-columns: repeat(7, 40px); }
+    .split .day { min-height: 40px; }
+  }
+
+  .summary { margin-top: 18px; border: 1px solid var(--border); background: color-mix(in oklab, var(--muted) 60%, var(--card)); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 4px; font-size: 14px; }
+  .summary-top { display: flex; justify-content: space-between; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .summary b { font-size: 15px; }
+  .pill-tent { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--secondary); }
+
+  /* Sticky time bar (phones only) */
+  .sticky-bar { display: none; }
+  .phone .sticky-on .sticky-bar { display: flex; position: sticky; bottom: 0; z-index: 3; margin: 20px -20px -20px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); gap: 12px; align-items: center; justify-content: space-between;
+    background: color-mix(in oklab, var(--card) 94%, transparent); backdrop-filter: blur(6px); border-top: 1px solid var(--border); border-radius: 0 0 calc(var(--radius) + 4px) calc(var(--radius) + 4px); }
+  .sticky-bar .t { font-size: 13px; line-height: 1.3; min-width: 0; }
+  .sticky-bar .t b { display: block; font-size: 14px; }
+  .phone .sticky-on.has-slot .nav-row { display: none; }
+
+  /* Option B: week strip */
+  .week-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .week-head h4 { font-family: "DM Sans"; font-size: 15px; font-weight: 600; }
+  .week { display: grid; grid-auto-flow: column; grid-auto-columns: 56px; gap: 6px; overflow-x: auto; padding: 2px 2px 8px; scroll-snap-type: x proximity; margin: 0 -20px; padding-left: 20px; padding-right: 20px; scroll-padding-left: 20px; scrollbar-width: none; }
+  .week::-webkit-scrollbar { display: none; }
+  @container (min-width: 520px) { .week { grid-auto-columns: minmax(64px, 1fr); margin: 0; padding: 2px 2px 8px; } }
+  .wd { scroll-snap-align: start; border: 1px solid var(--border); background: var(--card); border-radius: var(--radius); padding: 8px 2px; display: grid; gap: 1px; text-align: center; min-height: 78px; }
+  .wd .w { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted-foreground); }
+  .wd .n { font-size: 20px; font-family: Manrope; font-weight: 600; line-height: 1.2; }
+  .wd .c { font-size: 11px; color: var(--muted-foreground); }
+  .wd .m { font-size: 10px; color: var(--secondary); font-weight: 600; text-transform: uppercase; }
+  .wd:disabled { opacity: .45; cursor: not-allowed; }
+  .wd[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+  .wd[aria-pressed="true"] .w, .wd[aria-pressed="true"] .c, .wd[aria-pressed="true"] .m { color: inherit; opacity: .85; }
+  .popover { margin: 8px 0 12px; border: 1px solid var(--border); background: var(--card); border-radius: var(--radius); padding: 10px; box-shadow: 0 10px 30px rgb(0 0 0 / .12); max-width: 340px; }
+  /* On phones the calendar opens as a shadcn Sheet (side="bottom") over the frame */
+  .phone .popover { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; max-width: none; z-index: 10; border-radius: 22px 22px 0 0; padding: 8px 16px 20px; box-shadow: 0 -10px 30px rgb(0 0 0 / .2); }
+  .scrim { display: none; }
+  .phone .scrim { display: block; position: absolute; inset: 0; z-index: 9; background: rgb(0 0 0 / .35); border: 0; width: 100%; }
+  .sheet-grab { display: none; }
+  .phone .sheet-grab { display: block; width: 40px; height: 4px; border-radius: 4px; background: var(--border); margin: 4px auto 10px; }
+  .sheet-title { display: none; }
+  .phone .sheet-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .sheet-title h4 { font-size: 17px; }
+
+  /* Option C: soonest */
+  .soon { display: grid; gap: 8px; }
+  .soon-card { display: flex; justify-content: space-between; align-items: center; gap: 12px; border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; background: var(--card); text-align: left; min-height: 60px; }
+  .soon-card b { display: block; font-size: 15px; }
+  .soon-card span { font-size: 13px; color: var(--muted-foreground); }
+  .soon-card[aria-checked="true"] { border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
+  .radio-dot { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border); flex: none; display: grid; place-items: center; }
+  [aria-checked="true"] .radio-dot { border-color: var(--primary); }
+  [aria-checked="true"] .radio-dot::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); }
+  details.more { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 4px; }
+  details.more summary { padding: 12px 0; font-size: 14px; color: var(--primary); cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
+
+  /* Option D: drill-in */
+  .drill-back { display: flex; align-items: center; gap: 6px; background: none; border: 0; padding: 0 8px 0 0; min-height: 44px; color: var(--primary); font-size: 14px; font-weight: 500; }
+  .drill-title { font-size: 19px; margin: 2px 0 2px; scroll-margin-top: 120px; }
+
+  /* States gallery */
+  .states { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 18px; margin-bottom: 56px; }
+  .state h3 { font-size: 16px; margin-bottom: 8px; }
+  .state .card { padding: 18px; }
+  .alert { border: 1px solid color-mix(in oklab, var(--destructive) 35%, transparent); background: color-mix(in oklab, var(--destructive) 6%, var(--card)); color: var(--destructive); border-radius: calc(var(--radius) - 2px); padding: 12px 14px; font-size: 14px; }
+  .note { border: 1px solid var(--border); background: var(--muted); border-radius: calc(var(--radius) - 2px); padding: 12px 14px; font-size: 14px; }
+  .skel { background: linear-gradient(90deg, var(--muted), color-mix(in oklab, var(--muted) 50%, var(--card)), var(--muted)); background-size: 200% 100%; animation: sh 1.4s infinite linear; border-radius: 8px; }
+  @keyframes sh { to { background-position: -200% 0; } }
+  @media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
+
+  /* Spec + decisions */
+  .spec { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 16px; margin-bottom: 56px; }
+  .spec section { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
+  .spec section.mobile { border-color: var(--primary); }
+  .spec h3 { font-size: 16px; margin-bottom: 8px; }
+  .spec ul { margin: 0; padding-left: 18px; font-size: 14px; display: grid; gap: 6px; }
+  .decide { background: var(--card); border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); padding: 22px; display: grid; gap: 18px; }
+  .decide fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .decide legend { font-weight: 600; margin-bottom: 6px; font-family: Manrope; }
+  .decide label { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+  .decide textarea { width: 100%; min-height: 80px; font: inherit; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--background); color: var(--foreground); }
+  .section-title { font-size: 26px; margin-bottom: 6px; }
+  .section-sub { margin-bottom: 20px; max-width: 70ch; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div role="note" style="border:1px solid var(--rec);color:var(--foreground);background:var(--card);border-radius:var(--radius);padding:14px 16px;font-size:14px">
+      <b style="color:var(--rec)">Approved by Harry on 2026-11-16:</b> direction <b>B · Week strip + time chips</b>, with the calendar as a bottom sheet on phones and a popover on desktop. Kept: sticky bottom time bar on phones, availability dots, slot end times, Morning/Afternoon/Evening groups, and the visitor-time-zone hint. Not adopted: the “soonest openings” row. Options A, C and D stay here for context only. Decision record: <code>docs/self-scheduling.md</code>.
+    </div>
+    <p class="eyebrow">HairnThere · Contact stage 2 · “Your visit”</p>
+    <h1>How should a customer pick a house-call time on their phone?</h1>
+    <p class="muted" style="max-width:74ch">Four shadcn-based directions for the same job: choose an open time from Elisabeth’s hours, minus anything already on her Google Calendar. Most visitors will be on phones, so every mock now opens in a 375px phone frame. The frame includes the site’s sticky app bar and the Subaru ribbon, so the fold and scroll distances are realistic. Switch to “Desktop card” to see how each option scales up. The data is built from her hours (Mon–Wed &amp; Sat 9–9, Thu–Fri 9–2, Sun 9–3), a 30-minute travel buffer, and 24-hour notice. Every mock is clickable.</p>
+    <div class="chips">
+      <span class="chip strong">Phone-first</span>
+      <span class="chip">House calls only</span>
+      <span class="chip">Tentative hold, never “booked”</span>
+      <span class="chip">Mountain Time</span>
+      <span class="chip">Duration is an estimate</span>
+      <span class="chip">“Today” in this mock: Sun, Nov 16, 7:50 PM</span>
+    </div>
+  </header>
+
+  <div class="why-mobile" data-lavish-revision="r1">
+    <div><b>Thumb, not cursor</b>Every target is at least 44px (days, nav) or 52px (times), and the main action sits in the bottom third of the screen.</div>
+    <div><b>Short scroll</b>The app bar and ribbon take 104px. On a 760px screen, the date and time choices should fit in about one scroll without hunting.</div>
+    <div><b>Familiar pattern</b>Salon-booking apps (Fresha, Booksy, Vagaro) use a swipeable date strip with a time list. Calendly-style mobile flows drill from date into times.</div>
+    <div><b>No keyboard pop-ups</b>Choosing a time is all taps. The only typing in stage 2 is the address, with 16px text so iOS doesn’t zoom in.</div>
+  </div>
+
+  <div class="toolbar" role="group" aria-label="Preview controls">
+    <span class="seg" role="group" aria-label="Viewport">
+      <button type="button" data-vp="phone" aria-pressed="true">Phone 375px</button>
+      <button type="button" data-vp="desktop" aria-pressed="false">Desktop card</button>
+    </span>
+    <span class="seg" role="group" aria-label="Theme">
+      <button type="button" data-theme-btn="light" aria-pressed="true">Light</button>
+      <button type="button" data-theme-btn="dark" aria-pressed="false">Dark</button>
+    </span>
+    <label>Visit from stage 1
+      <select id="scenario">
+        <option value="75">1 haircut · about 1 hr 15 min</option>
+        <option value="150" selected>3 haircuts · about 2 hr 30 min</option>
+        <option value="105">Mommy &amp; Me · about 1 hr 45 min</option>
+        <option value="285">2 cuts + 1 color · about 4 hr 45 min</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="dots" checked> Availability dots</label>
+    <label><input type="checkbox" id="sticky" checked> Sticky time bar (phone)</label>
+  </div>
+
+  <main id="stage" class="phone">
+    <section class="option" id="opt-b" aria-labelledby="b-title" data-lavish-revision="r1">
+      <div class="option-notes">
+        <span class="tag rec">Recommended for phones</span>
+        <h2 id="b-title">B · Week strip + time chips</h2>
+        <p class="muted" style="font-size:14px">A swipeable row of days, each showing how many times are open, with times grouped below by Morning/Afternoon/Evening. The calendar button opens the full month as a bottom <code>Sheet</code> on phones and a <code>Popover</code> on desktop.</p>
+        <div class="pc"><strong>Why</strong><ul><li>Days and times share one screen, so there’s little scrolling between choices.</li><li>The salon-app convention customers already know.</li><li>The “4 open / Full” label on each day saves dead-end taps.</li><li>The strip runs edge to edge, so the partly visible next day signals that it scrolls.</li></ul></div>
+        <div class="pc"><strong>Cost</strong><ul><li>Dates more than about a week out are one tap away (the calendar sheet).</li><li>The strip is custom UI on top of shadcn <code>Button</code>; it needs careful focus handling and labels.</li></ul></div>
+      </div>
+      <div class="stage-wrap"><div class="device" data-device="B"></div></div>
+    </section>
+
+    <section class="option" id="opt-d" aria-labelledby="d-title" data-lavish-revision="r1">
+      <div class="option-notes">
+        <span class="tag">New · Calendly-style</span>
+        <h2 id="d-title">D · Drill-in: date, then times</h2>
+        <p class="muted" style="font-size:14px">A full-width month calendar. Tapping a day replaces it with that day’s times as a full-width list, with “← Dates” to go back. On desktop it falls back to option A’s side-by-side layout.</p>
+        <div class="pc"><strong>Why</strong><ul><li>Each view does one job, so there’s no long scroll.</li><li>Big full-width time rows are the easiest targets.</li><li>Uses the stock shadcn <code>Calendar</code>.</li></ul></div>
+        <div class="pc"><strong>Cost</strong><ul><li>Comparing days means going back and forth.</li><li>The view swap needs focus management, moving focus to the new heading.</li></ul></div>
+      </div>
+      <div class="stage-wrap"><div class="device" data-device="D"></div></div>
+    </section>
+
+    <section class="option" id="opt-a" aria-labelledby="a-title">
+      <div class="option-notes">
+        <span class="tag">Best on desktop</span>
+        <h2 id="a-title">A · Month calendar + time list</h2>
+        <p class="muted" style="font-size:14px">The classic shadcn booking block: <code>Calendar</code> beside the times on desktop. On phones the times stack under the calendar, and the page scrolls down to them after a day is picked.</p>
+        <div class="pc"><strong>Why</strong><ul><li>The whole month is visible at once: full days are faded and open days are dotted.</li><li>Least custom code.</li></ul></div>
+        <div class="pc"><strong>Cost on phones</strong><ul><li>The calendar takes about 380px, so the times start below the fold and we auto-scroll down to them.</li><li>Going back to change the day means scrolling up.</li></ul></div>
+      </div>
+      <div class="stage-wrap"><div class="device" data-device="A"></div></div>
+    </section>
+
+    <section class="option" id="opt-c" aria-labelledby="c-title">
+      <div class="option-notes">
+        <span class="tag">Fewest taps</span>
+        <h2 id="c-title">C · Soonest openings first</h2>
+        <p class="muted" style="font-size:14px">The next three openings appear as a <code>RadioGroup</code>, with “See all dates &amp; times” expanding a calendar underneath. This could also sit on top of B or D.</p>
+        <div class="pc"><strong>Why</strong><ul><li>One tap for “whenever’s soonest”.</li><li>Fills earlier gaps in her calendar.</li></ul></div>
+        <div class="pc"><strong>Cost</strong><ul><li>Can feel pushy, and anyone with a particular day in mind gets an extra step.</li><li>On a phone the expanded calendar makes this the longest page.</li></ul></div>
+      </div>
+      <div class="stage-wrap"><div class="device" data-device="C"></div></div>
+    </section>
+
+    <h2 class="section-title">States every option shares</h2>
+    <p class="muted section-sub">These are static frames of the edge cases implementers must cover, using the same components.</p>
+    <div class="states" id="states"></div>
+
+    <h2 class="section-title">Interaction spec for implementers</h2>
+    <p class="muted section-sub">This is the checklist the UI agent and the reviewer will validate against. Mobile rules come first.</p>
+    <div class="spec">
+      <section class="mobile" data-lavish-revision="r1"><h3>Mobile (primary)</h3><ul>
+        <li>Design at 360–390px first; desktop is an enhancement through container/breakpoint rules.</li>
+        <li>Targets: days and nav at least 44px; time buttons at least 52px tall, in 2 columns (B/A) or full-width rows (D).</li>
+        <li>Once a time is chosen, a sticky bottom bar shows “Wed, Nov 18 · 10:00 AM” and <b>Continue</b>, with safe-area padding. It must never cover the field being typed in: hide it while the address input is focused.</li>
+        <li>The month calendar opens as a bottom <code>Sheet</code> on phones, not a popover.</li>
+        <li>After choosing a day, keep the times in view (scroll into view, or drill in), allowing for the 104px sticky app bar and ribbon (<code>scroll-margin-top</code>).</li>
+        <li>Inputs use 16px text (no iOS zoom), and the address uses <code>autocomplete="street-address"</code>.</li>
+        <li>No horizontal page scroll at 360px; only the week strip scrolls sideways, edge to edge, with the next day partly visible.</li>
+      </ul></section>
+      <section><h3>Calendar</h3><ul>
+        <li>shadcn <code>Calendar</code>, <code>mode="single"</code>; a fluid 7-column grid on phones (<code>[--cell-size:--spacing(11)]</code>, minimum 44px) and fixed 40px cells in the desktop split.</li>
+        <li>Disable dates outside the first/last bookable dates and dates with 0 slots; don’t hide them.</li>
+        <li>Optional gold “has openings” dot via a <code>modifiers</code> class.</li>
+        <li>Month navigation refetches; “previous” is disabled before the first bookable month. Opens on the first date with slots.</li>
+      </ul></section>
+      <section><h3>Times</h3><ul>
+        <li>A <code>RadioGroup</code> of button-styled radios: arrow keys move between times and Tab leaves the group.</li>
+        <li>Label: start time large, end time small (“10:00 AM / until 12:30 PM”).</li>
+        <li>Grouped Morning (&lt;12), Afternoon (12–5), Evening (≥5) when there are more than 6 slots.</li>
+        <li>“Times are in Utah (Mountain Time)” is always visible, plus a hint if the visitor’s time zone is different.</li>
+        <li>The buffer is private: never show it, and never show busy reasons.</li>
+      </ul></section>
+      <section><h3>After choosing</h3><ul>
+        <li>A summary appears: day, time range, “Tentative hold”, “Change”, using <code>aria-live="polite"</code>.</li>
+        <li>Copy: “Elisabeth will confirm or suggest another time.” Never “Booked” or “Confirmed”.</li>
+        <li>Stage 3 email becomes required, with the hint “Your calendar invitation goes here.”</li>
+      </ul></section>
+      <section><h3>Fallbacks</h3><ul>
+        <li>“None of these work? Describe your timing instead” switches back to today’s free-text fields and clears the slot.</li>
+        <li>Consultation needed, too long, or live times unavailable: show the free-text fields with a short note.</li>
+        <li>Slot taken (409): go back to stage 2 with an alert, clear the slot, refetch, and keep the date.</li>
+        <li>Loading uses skeletons sized like the final layout so nothing jumps.</li>
+      </ul></section>
+      <section><h3>Accessibility &amp; order</h3><ul>
+        <li>A <code>fieldset</code>/<code>legend</code> “Choose a time”; errors linked with <code>aria-describedby</code>; disabled days announce “No times available”.</li>
+        <li>Drill-in and sheet views move focus to their heading and return it on close.</li>
+        <li>Order: estimate line, picker, summary, address, then Back/Continue. Continue isn’t blocked without a slot (that means a flexible inquiry, as today).</li>
+      </ul></section>
+    </div>
+
+    <h2 class="section-title">Your call</h2>
+    <p class="muted section-sub">Pick a direction and the details, then queue it. You can also annotate anything on the page directly.</p>
+    <form class="decide" data-lavish-question="time-picker-ux" id="decide">
+      <fieldset><legend>Direction</legend>
+        <label><input type="radio" name="dir" value="B · Week strip + time chips (calendar as bottom sheet on phones)" checked> B · Week strip + time chips (recommended for phones)</label>
+        <label><input type="radio" name="dir" value="D · Drill-in: date, then times (A's split layout on desktop)"> D · Drill-in: date, then times</label>
+        <label><input type="radio" name="dir" value="A · Month calendar + time list"> A · Month calendar + time list</label>
+        <label><input type="radio" name="dir" value="C · Soonest openings first"> C · Soonest openings first</label>
+        <label><input type="radio" name="dir" value="B on phones, A side-by-side on desktop"> Responsive hybrid: B on phones, A on desktop</label>
+      </fieldset>
+      <fieldset><legend>Details</legend>
+        <label><input type="checkbox" name="opt" value="sticky bottom time bar on phones" checked> Sticky bottom bar with the chosen time + Continue on phones</label>
+        <label><input type="checkbox" name="opt" value="soonest-openings row above the picker"> “Soonest openings” row above the picker (from C)</label>
+        <label><input type="checkbox" name="opt" value="availability dots" checked> Gold “has openings” dots on calendar days</label>
+        <label><input type="checkbox" name="opt" value="show end time" checked> Show each slot’s end time</label>
+        <label><input type="checkbox" name="opt" value="morning/afternoon/evening groups" checked> Group times by Morning / Afternoon / Evening</label>
+        <label><input type="checkbox" name="opt" value="visitor-timezone hint" checked> Hint when the visitor’s time zone isn’t Mountain</label>
+      </fieldset>
+      <fieldset><legend>Anything else?</legend>
+        <textarea name="notes" placeholder="Copy changes, colors, what to drop…"></textarea>
+      </fieldset>
+      <div><button class="btn primary" type="submit">Queue this answer</button> <span id="queued" class="muted" style="font-size:13px;margin-left:8px" aria-live="polite"></span></div>
+    </form>
+  </main>
+</div>
+
+<script>
+(() => {
+  // ---------- Fake availability built from Elisabeth's hours ----------
+  const HOURS = { 0: [540, 900], 1: [540, 1260], 2: [540, 1260], 3: [540, 1260], 4: [540, 840], 5: [540, 840], 6: [540, 1260] };
+  const STEP = 30, BUFFER = 30;
+  const FIRST_DAY = new Date(2026, 10, 17);
+  const EARLIEST_MIN = 1190; // Mon Nov 17 7:50 PM (24h notice)
+  const LAST = new Date(2027, 0, 15); // +60 days
+  const FULL = new Set(["2026-11-22", "2026-11-26", "2026-11-27", "2026-12-06", "2026-12-24", "2026-12-25"]);
+  const BLOCKS = [[600, 690], [720, 780], [810, 900], [960, 1080], [1110, 1200]];
+  let duration = 150;
+
+  const key = (dt) => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+  const parse = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+  const hash = (s) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+  function busyFor(dt) { const h = hash(key(dt)); return Array.from({ length: h % 3 }, (_, i) => BLOCKS[(h >> (i * 3)) % BLOCKS.length]); }
+  function slotsFor(dt) {
+    if (dt > LAST || dt < FIRST_DAY || FULL.has(key(dt))) return [];
+    const [open, close] = HOURS[dt.getDay()];
+    const minStart = key(dt) === key(FIRST_DAY) ? EARLIEST_MIN : 0;
+    const busy = busyFor(dt), out = [];
+    for (let s = open; s + duration <= close; s += STEP) {
+      if (s < minStart) continue;
+      const a = s - BUFFER, b = s + duration + BUFFER;
+      if (!busy.some(([x, y]) => a < y && x < b)) out.push({ s, e: s + duration });
+    }
+    return out;
+  }
+  const fmt = (m) => { const h = Math.floor(m / 60), mm = m % 60; return `${((h + 11) % 12) + 1}:${String(mm).padStart(2, "0")} ${h >= 12 ? "PM" : "AM"}`; };
+  const dur = (m) => { const h = Math.floor(m / 60), r = m % 60; return h ? `${h} hr${r ? ` ${r} min` : ""}` : `${r} min`; };
+  const dayLong = (dt) => dt.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  const dayShort = (dt) => dt.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  function firstOpen() { const d = new Date(FIRST_DAY); while (d <= LAST) { if (slotsFor(d).length) return new Date(d); d.setDate(d.getDate() + 1); } return null; }
+  function soonest(n) { const out = []; const d = new Date(FIRST_DAY); while (out.length < n && d <= LAST) { const s = slotsFor(d); if (s.length) out.push({ date: new Date(d), slot: s[0] }); d.setDate(d.getDate() + 1); } return out; }
+  const group = (m) => (m < 720 ? "Morning" : m < 1020 ? "Afternoon" : "Evening");
+  const dotsOn = () => document.getElementById("dots").checked;
+  const isPhone = () => document.getElementById("stage").classList.contains("phone");
+
+  // ---------- Shared pieces ----------
+  const car = `<svg width="46" height="20" viewBox="0 0 46 20" aria-hidden="true"><rect x="4" y="5" width="36" height="9" rx="3" fill="#1b1b1b"/><rect x="10" y="1" width="22" height="7" rx="2" fill="#1b1b1b"/><rect x="2" y="1" width="30" height="2" rx="1" fill="#8b6b56"/><circle cx="12" cy="15" r="3.5" fill="#333" stroke="#999"/><circle cx="33" cy="15" r="3.5" fill="#333" stroke="#999"/></svg>`;
+  const chrome = `<div class="chrome" aria-hidden="true"><div class="appbar"><span class="logo"><i></i>HairnThere</span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></div><div class="ribbon">${car}</div></div>`;
+  const intro = `<div class="page-intro" aria-hidden="true"><p class="eyebrow">A good hair day starts with hello</p><h2>One less thing on your list.</h2></div>`;
+  const steps = `<div class="steps" aria-hidden="true"><div><span>01</span>Your people</div><div class="cur"><span>02</span>Your visit</div><div><span>03</span>Stay in touch</div></div>`;
+  const estimate = () => `<p class="estimate"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="flex:none;margin-top:2px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Estimated visit <b>about ${dur(duration)}</b>, including setup. Elisabeth will confirm the final timing. Times are in Utah (Mountain Time).</span></p>`;
+  const chevron = (dir) => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="${dir === "l" ? "M15 18l-6-6 6-6" : "M9 18l6-6-6-6"}"/></svg>`;
+  const calIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>`;
+  const address = `<div style="margin-top:22px"><label class="field-label">Visit address</label><input class="input" data-addr placeholder="Street address, city & ZIP" autocomplete="off"></div>`;
+  const nav = `<div class="nav-row"><button type="button" class="btn">Back</button><button type="button" class="btn primary">Continue</button></div>`;
+  const flexible = `<button type="button" class="link" data-act="flex">None of these work? Describe your timing instead</button>`;
+  const stickyBar = (st) => st.slot == null ? "" : `<div class="sticky-bar" aria-hidden="true"><span class="t"><span class="pill-tent">Requested time</span><b>${dayShort(st.date)} · ${fmt(st.slot)}</b></span><button type="button" class="btn primary" tabindex="-1">Continue</button></div>`;
+
+  function calendar(st, idp) {
+    const y = st.month.getFullYear(), m = st.month.getMonth();
+    const first = new Date(y, m, 1), days = new Date(y, m + 1, 0).getDate();
+    const canPrev = !(y === 2026 && m <= 10), canNext = new Date(y, m + 1, 1) <= LAST;
+    let cells = "";
+    for (let i = 0; i < first.getDay(); i++) cells += `<span class="day outside" aria-hidden="true"></span>`;
+    for (let d = 1; d <= days; d++) {
+      const dt = new Date(y, m, d), n = slotsFor(dt).length, sel = st.date && key(st.date) === key(dt);
+      const today = y === 2026 && m === 10 && d === 16;
+      cells += `<button type="button" class="day ${n ? "open" : ""} ${today ? "today" : ""}" data-act="day" data-d="${key(dt)}" ${n ? "" : "disabled"} aria-pressed="${!!sel}" aria-label="${dayLong(dt)}${n ? `, ${n} times open` : ", no times available"}">${d}</button>`;
+    }
+    return `<div class="cal ${dotsOn() ? "dots" : ""}" role="group" aria-labelledby="${idp}-cap">
+      <div class="cal-head"><button type="button" class="cal-nav" data-act="prev" ${canPrev ? "" : "disabled"} aria-label="Previous month">${chevron("l")}</button>
+      <h4 id="${idp}-cap" aria-live="polite">${first.toLocaleDateString("en-US", { month: "long", year: "numeric" })}</h4>
+      <button type="button" class="cal-nav" data-act="next" ${canNext ? "" : "disabled"} aria-label="Next month">${chevron("r")}</button></div>
+      <div class="cal-grid">${["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((w) => `<div class="cal-wd" aria-hidden="true">${w}</div>`).join("")}${cells}</div>
+      ${dotsOn() ? `<div class="cal-legend"><span><i></i>Times open</span><span style="opacity:.7">Faded = full or unavailable</span></div>` : ""}</div>`;
+  }
+  function slotButtons(st, layout = "grid") {
+    if (!st.date) return `<div class="empty">Pick a day to see open times.</div>`;
+    const list = slotsFor(st.date);
+    if (!list.length) return `<div class="empty">No times left on ${dayShort(st.date)}.</div>`;
+    const btn = (s) => layout === "list"
+      ? `<button type="button" role="radio" class="slot" data-act="slot" data-s="${s.s}" aria-checked="${st.slot === s.s}"><span>${fmt(s.s)}</span><small>until ${fmt(s.e)}</small></button>`
+      : `<button type="button" role="radio" class="slot" data-act="slot" data-s="${s.s}" aria-checked="${st.slot === s.s}">${fmt(s.s)}<small>until ${fmt(s.e)}</small></button>`;
+    const cls = layout === "list" ? "slot-list" : "slot-grid";
+    if (list.length <= 6) return `<div role="radiogroup" aria-label="Times on ${dayLong(st.date)}" class="${cls}">${list.map(btn).join("")}</div>`;
+    const by = {}; list.forEach((s) => (by[group(s.s)] ||= []).push(s));
+    return `<div role="radiogroup" aria-label="Times on ${dayLong(st.date)}">${Object.entries(by).map(([g, ss]) => `<p class="group-label">${g}</p><div class="${cls}">${ss.map(btn).join("")}</div>`).join("")}</div>`;
+  }
+  function summary(st) {
+    if (!st.date || st.slot == null) return `<div aria-live="polite"></div>`;
+    return `<div class="summary" aria-live="polite"><div class="summary-top"><span class="pill-tent">Requested time · tentative hold</span><button type="button" class="link" style="padding:0;min-height:32px" data-act="clear">Change</button></div>
+      <b>${dayLong(st.date)} · ${fmt(st.slot)} – ${fmt(st.slot + duration)}</b>
+      <span class="muted">Elisabeth will confirm or suggest another time. You’ll get a calendar invitation by email.</span></div>`;
+  }
+  function flexFields() {
+    return `<div class="note" style="margin-bottom:16px">Describe what works and Elisabeth will follow up with options.</div>
+      <div style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))">
+      <div><label class="field-label">Preferred date · optional</label><input class="input" type="date"></div>
+      <div><label class="field-label">Preferred time</label><select class="input"><option>Flexible</option><option>Morning</option><option>Afternoon</option><option>Evening</option></select></div></div>
+      <button type="button" class="link" data-act="unflex">Back to open times</button>`;
+  }
+  const fs = (inner, legend = "Choose a time") => `<fieldset style="border:0;padding:0;margin:0;min-width:0"><legend class="sr">${legend}</legend>${inner}</fieldset>`;
+
+  // ---------- Options ----------
+  const states = {};
+  function init(k) { const d = firstOpen(); states[k] = { date: d, month: new Date(d.getFullYear(), d.getMonth(), 1), slot: null, flex: false, weekStart: new Date(FIRST_DAY), pop: false, view: "days", more: false }; }
+  ["A", "B", "C", "D"].forEach(init);
+
+  const bodies = {
+    A: (st) => fs(`<div class="split">${calendar(st, "a")}
+        <div><div class="slots-head" data-scroll-target><h4>${st.date ? dayLong(st.date) : "Choose a day"}</h4><span class="muted" style="font-size:12px">${st.date ? slotsFor(st.date).length + " open" : ""}</span></div>
+        <div class="slot-scroll">${slotButtons(st, "grid")}</div></div></div>${summary(st)}${flexible}`),
+    B: (st) => {
+      const ws = st.weekStart;
+      const days = Array.from({ length: 14 }, (_, i) => { const d = new Date(ws); d.setDate(d.getDate() + i); return d; });
+      const canPrev = ws > FIRST_DAY;
+      const pop = st.pop ? `<button type="button" class="scrim" data-act="pop" aria-label="Close calendar"></button><div class="popover" role="dialog" aria-label="Choose a date"><div class="sheet-grab"></div><div class="sheet-title"><h4>Choose a date</h4><button type="button" class="btn icon ghost" data-act="pop" aria-label="Close">✕</button></div>${calendar(st, "b")}</div>` : "";
+      return fs(`<div class="week-head"><h4>${st.date ? st.date.toLocaleDateString("en-US", { month: "long", year: "numeric" }) : ""}</h4>
+        <div style="display:flex;gap:2px"><button type="button" class="btn icon ghost" data-act="wprev" ${canPrev ? "" : "disabled"} aria-label="Earlier days">${chevron("l")}</button><button type="button" class="btn icon ghost" data-act="wnext" aria-label="Later days">${chevron("r")}</button><button type="button" class="btn icon" data-act="pop" aria-expanded="${st.pop}" aria-label="Pick a date from the calendar">${calIcon}</button></div></div>
+        ${isPhone() ? "" : pop}
+        <div class="week" role="group" aria-label="Days">${days.map((d) => { const n = slotsFor(d).length; const sel = st.date && key(st.date) === key(d);
+          const showMonth = d.getDate() === 1;
+          return `<button type="button" class="wd" data-act="day" data-d="${key(d)}" ${n ? "" : "disabled"} aria-pressed="${!!sel}" aria-label="${dayLong(d)}${n ? `, ${n} times open` : ", full"}">${showMonth ? `<span class="m">${d.toLocaleDateString("en-US", { month: "short" })}</span>` : `<span class="w">${d.toLocaleDateString("en-US", { weekday: "short" })}</span>`}<span class="n">${d.getDate()}</span><span class="c">${n ? n + " open" : "Full"}</span></button>`; }).join("")}</div>
+        <div class="slots-head" style="margin-top:10px" data-scroll-target><h4>${st.date ? dayLong(st.date) : ""}</h4></div>
+        ${slotButtons(st, "grid")}${summary(st)}${flexible}`) + (isPhone() ? `<template data-portal>${pop}</template>` : "");
+    },
+    C: (st) => {
+      const top = soonest(3);
+      return fs(`<p class="field-label">Soonest openings</p><div class="soon" role="radiogroup" aria-label="Soonest openings">${top.map((o) => { const on = st.date && key(st.date) === key(o.date) && st.slot === o.slot.s;
+          return `<button type="button" role="radio" class="soon-card" data-act="soon" data-d="${key(o.date)}" data-s="${o.slot.s}" aria-checked="${!!on}"><span><b>${dayShort(o.date)}</b><span>${fmt(o.slot.s)} – ${fmt(o.slot.e)}</span></span><span class="radio-dot"></span></button>`; }).join("")}</div>
+        <details class="more" ${st.more ? "open" : ""}><summary data-act="more">See all dates &amp; times</summary>
+          <div class="split" style="margin-top:8px">${calendar(st, "c")}<div><div class="slots-head" data-scroll-target><h4>${st.date ? dayLong(st.date) : "Choose a day"}</h4></div><div class="slot-scroll">${slotButtons(st, "grid")}</div></div></div>
+        </details>${summary(st)}${flexible}`);
+    },
+    D: (st) => {
+      if (!isPhone()) return bodies.A(st); // desktop falls back to A's split
+      if (st.view === "days") return fs(`<p class="field-label">Choose a day</p>${calendar(st, "d")}${st.slot != null ? summary(st) : ""}${flexible}`);
+      return fs(`<button type="button" class="drill-back" data-act="back">${chevron("l")} Dates</button>
+        <h4 class="drill-title" tabindex="-1" data-scroll-target>${dayLong(st.date)}</h4><p class="muted" style="font-size:13px;margin-bottom:6px">${slotsFor(st.date).length} times open</p>
+        ${slotButtons(st, "list")}${summary(st)}${flexible}`);
+    },
+  };
+
+  function render(k) {
+    const dev = document.querySelector(`[data-device="${k}"]`), st = states[k];
+    const prevScroll = dev.querySelector(".screen")?.scrollTop ?? 0;
+    const sticky = document.getElementById("sticky").checked;
+    dev.innerHTML = `<div class="screen">${chrome}<div class="page">${intro}
+      <div class="card ${sticky ? "sticky-on" : ""} ${st.slot != null ? "has-slot" : ""}" data-mock="${k}">${steps}<h3 class="stage-title">Your visit</h3>${estimate()}
+      ${st.flex ? flexFields() : bodies[k](st)}${address}${nav}${stickyBar(st)}</div></div></div>`;
+    const portal = dev.querySelector("template[data-portal]");
+    if (portal) { const holder = document.createElement("div"); holder.dataset.mock = k; holder.innerHTML = portal.innerHTML; dev.append(...holder.childNodes.length ? [holder] : []); portal.remove(); }
+    const sc = dev.querySelector(".screen"); if (sc) sc.scrollTop = prevScroll;
+  }
+  const all = () => ["A", "B", "C", "D"];
+  function renderAll() { all().forEach(render); renderStates(); }
+
+  function revealTimes(k) {
+    if (!isPhone()) return;
+    requestAnimationFrame(() => document.querySelector(`[data-device="${k}"] [data-scroll-target]`)?.scrollIntoView({ block: "start" }));
+  }
+
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest("[data-act]"); if (!t) return;
+    const mock = t.closest("[data-mock]"); if (!mock) return;
+    const k = mock.dataset.mock, st = states[k], act = t.dataset.act;
+    if (act === "more") { requestAnimationFrame(() => { st.more = t.parentElement.open; }); return; }
+    if (act === "day") {
+      st.date = parse(t.dataset.d); st.slot = null;
+      if (k === "B" && st.pop) { st.pop = false; st.weekStart = st.date < FIRST_DAY ? new Date(FIRST_DAY) : new Date(st.date); }
+      if (k === "D" && isPhone()) st.view = "times";
+    }
+    if (act === "slot") st.slot = Number(t.dataset.s);
+    if (act === "soon") { st.date = parse(t.dataset.d); st.month = new Date(st.date.getFullYear(), st.date.getMonth(), 1); st.slot = Number(t.dataset.s); }
+    if (act === "prev") st.month = new Date(st.month.getFullYear(), st.month.getMonth() - 1, 1);
+    if (act === "next") st.month = new Date(st.month.getFullYear(), st.month.getMonth() + 1, 1);
+    if (act === "wprev") { const w = new Date(st.weekStart); w.setDate(w.getDate() - 7); st.weekStart = w < FIRST_DAY ? new Date(FIRST_DAY) : w; }
+    if (act === "wnext") { const w = new Date(st.weekStart); w.setDate(w.getDate() + 7); st.weekStart = w; }
+    if (act === "pop") { st.pop = !st.pop; if (st.date) st.month = new Date(st.date.getFullYear(), st.date.getMonth(), 1); }
+    if (act === "clear") { st.slot = null; if (k === "D") st.view = "times"; }
+    if (act === "back") st.view = "days";
+    if (act === "flex") { st.flex = true; st.slot = null; }
+    if (act === "unflex") st.flex = false;
+    render(k);
+    const dev = document.querySelector(`[data-device="${k}"]`);
+    if (act === "day" && (k === "A" || k === "B" || k === "C")) revealTimes(k);
+    if (act === "day" && k === "D" && isPhone()) { revealTimes(k); dev.querySelector(".drill-title")?.focus({ preventScroll: true }); return; }
+    const focusSel = { slot: `[data-act="slot"][data-s="${t.dataset.s}"]`, day: `[data-act="day"][data-d="${t.dataset.d}"]`, soon: `[data-act="soon"][data-s="${t.dataset.s}"]`, prev: '[data-act="prev"]', next: '[data-act="next"]', wprev: '[data-act="wprev"]', wnext: '[data-act="wnext"]', back: '[data-act="day"][aria-pressed="true"]' }[act];
+    if (act === "pop") (st.pop ? dev.querySelector('.popover [data-act="day"][aria-pressed="true"], .popover [data-act="next"]') : dev.querySelector('.week-head [data-act="pop"]'))?.focus({ preventScroll: true });
+    else if (focusSel) dev.querySelector(focusSel)?.focus({ preventScroll: true });
+  });
+  // Arrow keys within radiogroups (slot behaviour spec); Escape closes the sheet
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && states.B.pop) { states.B.pop = false; render("B"); document.querySelector('[data-device="B"] .week-head [data-act="pop"]')?.focus(); return; }
+    const r = e.target.closest('[role="radio"]'); if (!r || !["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(e.key)) return;
+    const g = [...r.closest('[role="radiogroup"]').querySelectorAll('[role="radio"]')];
+    const i = g.indexOf(r) + (["ArrowRight", "ArrowDown"].includes(e.key) ? 1 : -1);
+    g[(i + g.length) % g.length].focus(); e.preventDefault();
+  });
+  // Spec: hide the sticky bar while the address field is focused (keyboard open)
+  document.addEventListener("focusin", (e) => { if (e.target.matches("[data-addr]")) e.target.closest(".card").classList.remove("sticky-on"); });
+  document.addEventListener("focusout", (e) => { if (e.target.matches("[data-addr]") && document.getElementById("sticky").checked) e.target.closest(".card").classList.add("sticky-on"); });
+
+  // ---------- States gallery ----------
+  function renderStates() {
+    const d = new Date(2026, 10, 18);
+    const box = (title, body) => `<div class="state"><h3>${title}</h3><div class="card">${body}</div></div>`;
+    document.getElementById("states").innerHTML = [
+      box("Loading times", `${estimate()}<div style="display:grid;gap:8px"><div class="skel" style="height:24px;width:50%"></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px">${'<div class="skel" style="height:78px"></div>'.repeat(5)}</div><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">${'<div class="skel" style="height:52px"></div>'.repeat(4)}</div></div><p class="sr" role="status">Loading open times…</p>`),
+      box("Slot just taken (409)", `<div class="alert" role="alert">Someone just requested ${fmt(600)} on ${dayShort(d)}. Please choose another time. Your other details are saved.</div><p class="help">Back on stage 2 with the slot cleared, the same day selected, and fresh times loaded.</p>`),
+      box("Needs a consultation first", `<div class="note">This visit needs a quick chat first. Share your preferred timing and I’ll follow up.</div><p class="help">For extensions or “timing confirmed during consultation” services, and estimates over 8 hours. Shows the free-text date/time fields.</p>`),
+      box("Live times unavailable", `<div class="note">Live times couldn’t load right now. Share your preferred timing and I’ll follow up.</div><p class="help">Google Calendar unreachable or not configured. Never show “free” on error; fall back to the flexible fields.</p>`),
+      box("Stage 3 · email required", `<div class="summary" style="margin:0 0 14px"><span class="pill-tent">Requested time · tentative hold</span><b>${dayShort(d)} · ${fmt(600)} – ${fmt(600 + 150)}</b></div><label class="field-label">Email</label><input class="input" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com"><p class="help">Required for online time requests. Your calendar invitation goes here.</p>`),
+      box("Success", `<h3 style="font-size:22px;margin-bottom:8px">Your time request is in</h3><p class="muted" style="font-size:14px">I’ve held <b style="color:var(--foreground)">${dayLong(d)}, ${fmt(600)}</b> as a tentative appointment and sent a calendar invitation to your email. I’ll confirm the time and your personal quote, or suggest another time if needed.</p>`),
+    ].join("");
+  }
+
+  // ---------- Toolbar ----------
+  document.querySelectorAll("[data-vp]").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll("[data-vp]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    document.getElementById("stage").className = b.dataset.vp;
+    all().forEach((k) => { states[k].pop = false; if (b.dataset.vp === "desktop") states[k].view = "days"; });
+    renderAll();
+  }));
+  document.querySelectorAll("[data-theme-btn]").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll("[data-theme-btn]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    document.documentElement.classList.toggle("dark", b.dataset.themeBtn === "dark");
+  }));
+  document.getElementById("scenario").addEventListener("change", (e) => {
+    duration = Number(e.target.value);
+    all().forEach((k) => { const keepFlex = states[k].flex; init(k); states[k].flex = keepFlex; });
+    renderAll();
+  });
+  document.getElementById("dots").addEventListener("change", renderAll);
+  document.getElementById("sticky").addEventListener("change", renderAll);
+
+  document.getElementById("decide").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    const dir = f.get("dir"), opts = f.getAll("opt"), notes = (f.get("notes") || "").trim();
+    const allOpts = [...e.currentTarget.querySelectorAll('input[name="opt"]')].map((i) => i.value);
+    const off = allOpts.filter((o) => !opts.includes(o));
+    const text = `Time picker UX: use ${dir}. Keep: ${opts.join(", ") || "none"}. Drop: ${off.join(", ") || "none"}.${notes ? " Notes: " + notes : ""}`;
+    if (window.lavish?.queuePrompt) {
+      window.lavish.queuePrompt(text, { tag: "choice", text, element: e.currentTarget, queueKey: "time-picker-ux", data: { question: "time-picker-ux", direction: dir, keep: opts, drop: off, notes } });
+      document.getElementById("queued").textContent = "Queued. Press Send to Agent in the Lavish bar.";
+    } else {
+      navigator.clipboard?.writeText(text);
+      document.getElementById("queued").textContent = "Lavish isn’t connected here, so the answer was copied. Paste it into chat.";
+    }
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

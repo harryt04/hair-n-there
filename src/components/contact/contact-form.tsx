@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { SlotPicker, SlotSummary, slotTime } from "./slot-picker";
+import type { Slot } from "@/lib/schedule-types";
 import { useId, useRef, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, LoaderCircle } from "lucide-react";
@@ -19,7 +21,7 @@ import { trackEvent } from "@/components/site/telemetry";
 const stages = ["Your people", "Your visit", "Stay in touch"];
 const stageFields = [
   ["haircutCount", "colorCount", "message", "services", "packages"],
-  ["preferredDate", "preferredTime", "exactTime", "address"],
+  ["preferredDate", "preferredTime", "exactTime", "address", "slotStart"],
   ["name", "phone", "email"],
 ];
 type FieldErrors = Record<string, string>;
@@ -57,6 +59,12 @@ export function ContactForm({
   topic?: "general" | "neighborhood";
 }) {
   const prefix = useId();
+  const [slot, setSlot] = useState<Slot | null>(null);
+  const [timeZone, setTimeZone] = useState("America/Denver");
+  const [bookingFallback, setBookingFallback] = useState(false);
+  const [revision, setRevision] = useState(0);
+  const [addressFocused, setAddressFocused] = useState(false);
+  const [held, setHeld] = useState(false);
   const [selection, setSelection] = useState(initialSelection);
   const [step, setStep] = useState(0);
   const [values, setValues] = useState({
@@ -101,6 +109,7 @@ export function ContactForm({
     }
   }
   function update(field: keyof typeof values, value: string) {
+    if (field === "haircutCount" || field === "colorCount") setSlot(null);
     setValues((current) => ({ ...current, [field]: value }));
   }
   function props(field: keyof typeof values) {
@@ -132,10 +141,19 @@ export function ContactForm({
   function payload() {
     return {
       ...values,
+      ...(slot
+        ? {
+            slotStart: slot.start,
+            preferredDate: "",
+            preferredTime: "flexible",
+            exactTime: "",
+          }
+        : {}),
       haircutCount:
         values.haircutCount === "" ? NaN : Number(values.haircutCount),
       colorCount: values.colorCount === "" ? NaN : Number(values.colorCount),
-      exactTime: values.preferredTime === "specific" ? values.exactTime : "",
+      exactTime:
+        !slot && values.preferredTime === "specific" ? values.exactTime : "",
       visitType,
       intent,
       topic,
@@ -216,6 +234,19 @@ export function ContactForm({
       });
       const result = await response.json().catch(() => null);
       if (!response.ok || result?.success !== true) {
+        if (
+          result?.code === "slot_unavailable" ||
+          result?.code === "booking_unavailable"
+        ) {
+          setSlot(null);
+          if (result.code === "booking_unavailable") setBookingFallback(true);
+          else setRevision((r) => r + 1);
+          showErrors(
+            { slotStart: result.error || "Please choose another time." },
+            result.error,
+          );
+          return;
+        }
         const found: FieldErrors = {};
         if (result?.fieldErrors && typeof result.fieldErrors === "object") {
           for (const [key, value] of Object.entries(result.fieldErrors)) {
@@ -232,6 +263,7 @@ export function ContactForm({
         );
         return;
       }
+      setHeld(!!result.hold);
       setSuccess(
         typeof result.message === "string"
           ? result.message
@@ -258,6 +290,10 @@ export function ContactForm({
     }
     setErrors({});
     setError("");
+    if (slot && !values.email.trim()) {
+      showErrors({ email: "Enter your email for the calendar invitation." });
+      return;
+    }
     const parsed = await validate();
     if (!parsed || sending.current) return;
     if (!parsed.success) {
@@ -272,6 +308,50 @@ export function ContactForm({
     void deliver(parsed.data);
   }
 
+  const timingFields = (
+    <div className="grid gap-5 sm:grid-cols-2">
+      <div className="space-y-2">
+        <Label htmlFor={`${prefix}-preferredDate`}>
+          Preferred date · optional
+        </Label>
+        <Input
+          {...props("preferredDate")}
+          type="date"
+          className="h-12 text-base"
+        />
+        {fieldError("preferredDate")}
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor={`${prefix}-preferredTime`}>Preferred time</Label>
+        <select
+          {...props("preferredTime")}
+          className="h-12 w-full rounded-lg border border-input bg-card px-3 text-base"
+        >
+          <option value="flexible">Flexible</option>
+          <option value="morning">Morning</option>
+          <option value="afternoon">Afternoon</option>
+          <option value="evening">Evening</option>
+          <option value="specific">A specific time</option>
+        </select>
+        {fieldError("preferredTime")}
+      </div>
+      {values.preferredTime === "specific" && (
+        <div className="space-y-2 sm:col-span-2">
+          <Label htmlFor={`${prefix}-exactTime`}>
+            Time you have in mind · Mountain Time
+          </Label>
+          <Input
+            {...props("exactTime")}
+            type="time"
+            required
+            className="h-12 text-base"
+          />
+          {fieldError("exactTime")}
+        </div>
+      )}
+    </div>
+  );
+
   if (success)
     return (
       <div
@@ -281,7 +361,9 @@ export function ContactForm({
         className="rounded-xl border border-border bg-card p-7 outline-none sm:p-10"
       >
         <Check className="mb-5 size-6 text-primary" aria-hidden="true" />
-        <h2 className="font-display text-3xl">One less thing on your list.</h2>
+        <h2 className="font-display text-3xl">
+          {held ? "Your time request is in" : "One less thing on your list."}
+        </h2>
         <p className="mt-4 text-sm leading-7 text-muted-foreground">
           {success}
         </p>
@@ -308,7 +390,9 @@ export function ContactForm({
     );
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 sm:p-8">
+    <div
+      className={`min-w-0 rounded-xl border border-border bg-card p-5 sm:p-8 ${step === 1 && slot ? "mb-24 sm:mb-0" : ""}`}
+    >
       <form
         onChange={startInquiry}
         onSubmit={submit}
@@ -374,7 +458,10 @@ export function ContactForm({
                 id={`${prefix}-selection`}
                 name="selection"
                 value={selection}
-                onChange={(event) => setSelection(event.target.value)}
+                onChange={(event) => {
+                  setSelection(event.target.value);
+                  setSlot(null);
+                }}
                 aria-invalid={!!errors.services || !!errors.packages}
                 aria-describedby={
                   errors.services
@@ -483,54 +570,35 @@ export function ContactForm({
                 {policy.message}
               </p>
             )}
-            <div className="grid gap-5 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor={`${prefix}-preferredDate`}>
-                  Preferred date · optional
-                </Label>
-                <Input
-                  {...props("preferredDate")}
-                  type="date"
-                  className="h-12 text-base"
-                />
-                {fieldError("preferredDate")}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`${prefix}-preferredTime`}>
-                  Preferred time
-                </Label>
-                <select
-                  {...props("preferredTime")}
-                  className="h-12 w-full rounded-lg border border-input bg-card px-3 text-base"
-                >
-                  <option value="flexible">Flexible</option>
-                  <option value="morning">Morning</option>
-                  <option value="afternoon">Afternoon</option>
-                  <option value="evening">Evening</option>
-                  <option value="specific">A specific time</option>
-                </select>
-                {fieldError("preferredTime")}
-              </div>
-              {values.preferredTime === "specific" && (
-                <div className="space-y-2 sm:col-span-2">
-                  <Label htmlFor={`${prefix}-exactTime`}>
-                    Time you have in mind · Mountain Time
-                  </Label>
-                  <Input
-                    {...props("exactTime")}
-                    type="time"
-                    required
-                    className="h-12 text-base"
-                  />
-                  {fieldError("exactTime")}
-                </div>
-              )}
+            {house ? (
+              <SlotPicker
+                active={step === 1}
+                selection={payload()}
+                slot={slot}
+                onSlot={(next, zone) => {
+                  setSlot(next);
+                  if (zone) setTimeZone(zone);
+                }}
+                forcedFallback={bookingFallback}
+                revision={revision}
+                errorId={
+                  errors.slotStart ? `${prefix}-slotStart-error` : undefined
+                }
+                fallback={timingFields}
+              />
+            ) : (
+              timingFields
+            )}
+            {fieldError("slotStart")}
+            <div className="mt-4 grid gap-5 sm:grid-cols-2">
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor={`${prefix}-address`}>
                   {house ? "Visit address" : "City or venue · optional"}
                 </Label>
                 <Input
                   {...props("address")}
+                  onFocus={() => setAddressFocused(true)}
+                  onBlur={() => setAddressFocused(false)}
                   autoComplete={house ? "street-address" : "off"}
                   required={house}
                   maxLength={400}
@@ -550,6 +618,13 @@ export function ContactForm({
             </p>
           </div>
           <div hidden={step !== 2}>
+            {slot && (
+              <SlotSummary
+                slot={slot}
+                timeZone={timeZone}
+                onChange={() => focusStage(1)}
+              />
+            )}
             <p className="mb-5 text-sm leading-7 text-muted-foreground">
               Leave a phone number or email so I can discuss your visit and a
               personal quote. If you provide a phone number, we’ll use calls or
@@ -584,16 +659,33 @@ export function ContactForm({
               </div>
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor={`${prefix}-email`}>
-                  Email · required if you leave phone blank
+                  {slot
+                    ? "Email · required"
+                    : "Email · required if you leave phone blank"}
                 </Label>
                 <Input
                   {...props("email")}
                   type="email"
                   autoComplete="email"
-                  required={!values.phone.trim()}
+                  required={!!slot || !values.phone.trim()}
+                  aria-describedby={
+                    slot
+                      ? `${prefix}-email-hint${errors.email ? ` ${prefix}-email-error` : ""}`
+                      : errors.email
+                        ? `${prefix}-email-error`
+                        : undefined
+                  }
                   maxLength={254}
                   className="h-12 text-base"
                 />
+                {slot && (
+                  <p
+                    id={`${prefix}-email-hint`}
+                    className="text-xs text-muted-foreground"
+                  >
+                    Your calendar invitation goes here.
+                  </p>
+                )}
                 {fieldError("email")}
               </div>
             </div>
@@ -619,7 +711,9 @@ export function ContactForm({
               maxLength={200}
             />
           </div>
-          <div className="mt-7 flex gap-3">
+          <div
+            className={`mt-7 flex gap-3 ${step === 1 && slot && !addressFocused ? "hidden sm:flex" : ""}`}
+          >
             {step > 0 && (
               <Button
                 type="button"
@@ -655,6 +749,33 @@ export function ContactForm({
               )}
             </Button>
           </div>
+          {step === 1 && slot && !addressFocused && (
+            <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-card px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
+              <span className="text-sm">
+                <span className="block text-xs text-primary">
+                  Requested time
+                </span>
+                {new Intl.DateTimeFormat("en-US", {
+                  timeZone,
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                }).format(new Date(slot.start))}{" "}
+                · {slotTime(slot.start, timeZone)}
+              </span>
+              <Button
+                type="button"
+                variant="ghost"
+                className="h-12 px-3"
+                onClick={() => move(step - 1)}
+              >
+                Back
+              </Button>
+              <Button type="submit" className="h-12">
+                Continue
+              </Button>
+            </div>
+          )}
         </fieldset>
         {step === 2 && (
           <p className="mt-4 text-xs leading-6 text-muted-foreground">

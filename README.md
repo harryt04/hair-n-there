@@ -4,7 +4,7 @@
 
 HairnThere is Elisabeth’s hair-services website, based around Suncrest in Draper, Utah. Its Mountain Cinema design combines warm mountain landscapes, a little Subaru that follows your scroll, and a clear menu for individual and family services.
 
-The site welcomes **house-call inquiries** for manual follow-up by Elisabeth. A submitted inquiry does not reserve a time or confirm a price. The salon booth is a future plan, and event locations must be discussed individually. House-call appointment requests are rejected server-side pending licensing; consultation inquiries remain open. There is no live booking calendar, deposit collection, payment checkout, or automated phone/SMS agent.
+The site welcomes **house-call inquiries** for follow-up by Elisabeth. When configured, customers can request tentative Google Calendar holds; Elisabeth confirms, moves, or declines them personally. A request never confirms a booking or price. The salon booth is a future plan, and event locations must be discussed individually. There is no deposit collection, payment checkout, or automated phone/SMS agent.
 
 ## What’s included
 
@@ -12,6 +12,7 @@ The site welcomes **house-call inquiries** for manual follow-up by Elisabeth. A 
 - A QR-first digital business card at `/card`, with a viewport-filling presentation view, copyable website link and downloadable QR image. No Apple/Google Wallet integration or membership enrollment.
 - A scroll-driven wagon in dedicated scenic bands. It responds to normal mouse, trackpad, keyboard, and touch scrolling; reduced-motion preferences park the car.
 - A server-rendered service menu with prices, supplied estimated durations, featured bundles, and service-specific inquiry links. Unspecified durations are confirmed during consultation; final quotes remain personal.
+- Self-scheduled tentative house-call holds with Google Calendar invitations, off until Google credentials and `BOOKING_ENABLED=true` are configured. See [setup instructions](docs/self-scheduling.md).
 - A simple three-stage inquiry: service counts, visit preferences and address, then name and phone and/or email. `/quote` redirects to `/contact`.
 - Internal catalog, package, minimum, and travel rules retained for planning. Travel and neighborhood-day reductions are discussed individually; published bundles use the shared catalog.
 - Validated inquiries with acknowledged Discord delivery and updated Terms/Privacy; appointment-only phone contact preferences recorded separately from legacy automated SMS consent.
@@ -29,6 +30,10 @@ pnpm dev
 ```
 
 Open `http://localhost:3000`. The service menu works without delivery credentials. Sending an inquiry requires a configured Discord webhook; without it, the form shows an error rather than claiming the message arrived.
+
+### Try time requests locally
+
+Run `BOOKING_DEMO=true pnpm dev`, then open `/contact` and select services/counts to try stage 2. This development-only demo uses synthetic busy times and in-memory holds; it never calls Google or sends calendar invitations. Restarting clears demo holds. Production builds ignore `BOOKING_DEMO`.
 
 Useful local commands:
 
@@ -51,6 +56,21 @@ Copy the variable names from `.env.example`. In Coolify, set them in the applica
 | `DISCORD_CONTACT_WEBHOOK_URL`                           | Server-only destination for production/local inquiries.                                                           |
 | `DISCORD_PREVIEW_WEBHOOK_URL`                           | Separate preview destination. Previews never use the production webhook.                                          |
 | `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` | Optional shared request limiting. Configure the pair together.                                                    |
+
+Google booking variables below are **server-only runtime** settings in Coolify, not build-time values. Restart/redeploy after changing them; never prefix them with `NEXT_PUBLIC_`. See [Google Calendar setup](docs/self-scheduling.md) for authorization and verification.
+
+| Variable | Purpose |
+| -------- | ------- |
+| `BOOKING_ENABLED` | Set exactly `true` to enable live tentative holds once credentials/calendar access are configured; unset to turn off. |
+| `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET` | OAuth Desktop app credentials for the authorized calendar owner. |
+| `GOOGLE_CALENDAR_REFRESH_TOKEN` | Secret obtained locally with `pnpm google:auth`, signed in as Elisabeth. |
+| `GOOGLE_CALENDAR_ID` | Production/local hold calendar owned by the authorized account; defaults to `primary` if empty. |
+| `GOOGLE_BUSY_CALENDAR_IDS` | Optional comma-separated additional production/local calendars to check for busy time. |
+| `GOOGLE_PREVIEW_CALENDAR_ID` | Required hold calendar for `VERCEL_ENV=preview`; never falls back to the production calendar. |
+| `GOOGLE_PREVIEW_BUSY_CALENDAR_IDS` | Optional comma-separated additional preview busy calendars; production busy IDs are ignored in preview. |
+| `BOOKING_DEMO` | Local development only: `true` enables synthetic availability and in-memory holds without Google; ignored in production builds. |
+
+The hold calendar is always included in busy checks; at most 10 distinct calendars total are accepted. Preview uses the same OAuth variable names but must receive isolated preview credentials and calendars, with no production secrets. Keep `VERCEL_ENV=preview` at build and runtime as described below. Booking credentials are not needed to build the application.
 
 Public environment values are embedded at build time, so rebuild and redeploy after changing them. The application still reads the legacy names below; Coolify does not supply them automatically.
 
@@ -106,13 +126,13 @@ Family Trim is $85 and Little Crew is $70. Mommy & Me is $75 and includes a wome
 
 House-call convenience fees are planned at $20/$30/$40/$55/$75 for the supplied time bands, once per household. The $75 band covers 46–60 minutes from the Suncrest base; trips over 60 minutes and neighborhood-day reductions need a custom quote. Final travel pricing is confirmed before an appointment. The $60 service minimum excludes travel and is not an automatic surcharge. Free extension-consultation location and format are confirmed separately. There is no live address-routing integration or invented city-based travel result.
 
-`src/data/availability.ts` is the shared availability policy. Both the interface and contact endpoint enforce it. Appointment requests for inactive categories are rejected even if someone directly calls the endpoint. House-call appointment inquiries are accepted following Harry’s November 5 decision; salon/event appointment requests remain rejected. An inquiry never reserves a time. Opening a category requires a deliberate business decision and a server deployment after its location requirements are confirmed. The illustrated Subaru does not represent an operating vehicle salon.
+`src/data/availability.ts` is the shared availability policy. Both the interface and contact endpoint enforce it. Appointment requests for inactive categories are rejected even if someone directly calls the endpoint. House-call appointment inquiries are accepted following Harry’s November 5 decision; salon/event appointment requests remain rejected. An ordinary inquiry never reserves a time; a configured time request creates only a tentative hold. Opening a category requires a deliberate business decision and a server deployment after its location requirements are confirmed. The illustrated Subaru does not represent an operating vehicle salon.
 
 ## Inquiry delivery and future messaging
 
 The current form sends an optional selected service/package interest, haircut/color counts, preferred date/time (Mountain Time), visit address, name, phone and/or email, and an optional note. At least one valid contact method is required; every supplied contact method must be valid. Providing a phone number selects personal appointment calls/texts from Elisabeth, even when email is also supplied. Counts overlap when someone wants both services. The server validates bounded counts, real dates/times and required house-call details, checks category availability, and sends a Discord notification with mentions disabled. The private text attachment contains the exact address; the embed shows the selected interest, counts, and time preferences. No numeric quote is calculated for this form. Legacy catalog submissions still use server-recomputed prices.
 
-Success is shown only after Discord acknowledges delivery. Errors preserve the form for retry. There is no application database, queue, durable idempotency store, or automatic resend; after an uncertain timeout, the first message may already have arrived. Discord is the current inquiry destination. Avoid logging form contents and webhook URLs.
+For ordinary inquiries, success is shown only after Discord acknowledges delivery. For a selected time request, Google event creation is the acknowledgement and Discord notification is best effort; an email address is required for the invitation. The event contains the customer’s name, email, optional phone, address, selected services/packages and counts, estimated duration, and message. Errors preserve the form for retry. There is no application database, queue, durable idempotency store, or automatic resend; after an uncertain timeout, the first message may already have arrived. Discord is the current inquiry destination. Avoid logging form contents and webhook URLs.
 
 The current form discloses that providing a phone number chooses personal calls/texts from Elisabeth only for appointment inquiries and appointment confirmations, now or for future appointments. Email is required when phone is omitted. Contact information is never sold; there is no marketing permission, and customers can ask Elisabeth to stop calling/texting at any time. `phoneContactConsent` records this preference separately from legacy `smsConsent`; the Discord notification and private attachment include the preference, disclosure/version, submission time, and source. The form never sets legacy automated SMS consent. Legacy validation remains; a checked opt-in requires a phone number. No automated or AI calls/texts are sent by this website. Before activating AgentPhone or another provider, finalize public support details, verify registration requirements, implement STOP/HELP and opt-out enforcement, and retain durable consent records independently of Discord. Policy templates are not evidence of carrier approval.
 
