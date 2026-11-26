@@ -25,7 +25,7 @@ Harry explicitly chose **no automated test suites, test runners, pull request pr
 
 ## UI and content
 
-Use existing shadcn components and inspect their generated APIs: this preset uses **Base UI**, with `render` and `nativeButton={false}` for button-styled links, not `asChild`.
+Use the existing components in `src/components/ui/` and inspect their APIs before use. Most are built on **UI SDK** (see the UI SDK section below); `select.tsx` is still Base UI. Use `render` for button-styled links, not `asChild`.
 
 Keep the Subaru decorative in Mountain Cinema’s reserved horizontal ribbon below the app bar, driven by normal scroll with passive listeners/requestAnimationFrame and cleanup. Use `src/components/scenic/mountain-cinema.tsx` and `src/data/cinema.ts` when changing motion or assignment. Reduced motion and no-JavaScript states leave a parked car; forms and reading never depend on animation. Avoid scroll hijacking and overlays across controls.
 
@@ -42,6 +42,21 @@ Google OAuth credentials are server-only environment variables; preview uses its
 Keep secrets in environment configuration and values out of logs/chat. Analytics receive broad action names, not messages, member labels, addresses, consent records, or contact details. Update Terms/Privacy when actual data handling changes. See the human-facing `README.md` and `.env.example` for configuration and deployment.
 
 Use Next.js icon file conventions in `src/app/` and `scripts/create-brand-assets.mjs` for favicon/app/social exports. Keep the detailed logo for larger placements and the vector H/mountain mark for tiny browser icons; avoid duplicate manual icon metadata.
+
+## UI SDK
+
+Interactive components in `src/components/ui/` are built on [UI SDK](https://ui-sdk.dev) (`@ui-sdk/react` + `@ui-sdk/core`, beta), a behavior library from shadcn and Vercel. It supplies keyboard, focus, popup, selection and ARIA behavior; the wrappers keep this project's shadcn-style exports and Tailwind classes.
+
+- **Read the installed docs first.** UI SDK is newer than most models' training data. Read `node_modules/@ui-sdk/react/docs/llms.txt` and `node_modules/@ui-sdk/core/skills/ui-sdk/SKILL.md` (or run `npx skills@latest add vercel-labs/ui --skill ui-sdk`) before writing or changing a component. Do not guess the API from Radix or Base UI.
+- **Imports are per component:** `import { Dialog, DialogContent } from "@ui-sdk/react/dialog"`. App code imports from `src/components/ui/`, not from `@ui-sdk/react` directly.
+- **Adding a component:** check the UI SDK catalog first and wrap its parts in `src/components/ui/` with this project's styles. Do not run `shadcn add` for a component UI SDK ships, and do not regenerate existing wrappers with the shadcn CLI; both would bring Radix or Base UI back. Build a missing component from `@ui-sdk/core` behaviors (`definePrimitive`, `createParts`) only when no shipped component fits.
+- **Styling:** UI SDK owns its `data-slot` names and state attributes, so style against those or add your own marker attribute. `src/app/globals.css` imports `@ui-sdk/core/web.css` into the `components` layer; its dialog defaults centre and inset content, so full-screen sheets set their own geometry.
+- **Controlled inputs** take `onValueChange`; without it, agent edits do not reach React state.
+- **Agent bridge:** `src/components/site/agent-bridge.tsx` mounts `createAgent()` and `registerTools()` (WebMCP) once at the app root, so a browser agent can read and drive the page through `snapshot`, `act` and `query`. Its `allow` function is a deny-by-default allow list. When you add an interactive control, decide whether agents may use it and update `allow`; mark irreversible actions `data-agent-confirm`, sensitive fields `data-agent-secret`, and content agents should not see `data-agent-hidden`.
+- **Beta:** pin exact versions and upgrade both packages together; APIs may change before general availability.
+- **Composition:** use `render` for button-styled links, not `asChild`. Popups inside a form portal to the body, and popups that must return focus after Escape set an explicit focus target.
+- **Still on other libraries:** `select.tsx` stays on Base UI until UI SDK ships scroll-arrow controls; `calendar.tsx` (DayPicker), `carousel.tsx` (Embla) and `sonner.tsx` (Sonner) keep their own libraries; `badge.tsx` and `card.tsx` are presentational.
+- **Bookings:** the agent bridge must keep refusing the final inquiry submission and redacting addresses.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
