@@ -442,8 +442,8 @@ function MountedSlotPicker({
               <SheetTrigger render={trigger} />
               <SheetContent
                 side="bottom"
-                initialFocus={heading}
-                finalFocus={triggerRef}
+                initialFocus={() => heading.current}
+                finalFocus={() => triggerRef.current}
                 className="rounded-t-2xl p-2 pb-[max(1rem,env(safe-area-inset-bottom))] motion-reduce:transition-none"
               >
                 <SheetTitle ref={heading} tabIndex={-1} className="px-2">
@@ -459,7 +459,7 @@ function MountedSlotPicker({
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger render={trigger} />
               <PopoverContent
-                finalFocus={triggerRef}
+                finalFocus={() => triggerRef.current}
                 className="w-[320px] motion-reduce:animate-none"
               >
                 <PopoverTitle>Choose a date</PopoverTitle>

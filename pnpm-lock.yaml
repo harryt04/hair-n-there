@@ -11,6 +11,12 @@ importers:
       '@base-ui/react':
         specifier: ^1.9.0
         version: 1.9.0(@date-fns/tz@1.5.0)(@types/react@19.3.0)(date-fns@4.4.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@ui-sdk/core':
+        specifier: 0.1.0-beta.17
+        version: 0.1.0-beta.17
+      '@ui-sdk/react':
+        specifier: 0.1.0-beta.17
+        version: 0.1.0-beta.17(@types/react@19.3.0)(@ui-sdk/core@0.1.0-beta.17)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -812,6 +818,20 @@ packages:
   '@typescript-eslint/visitor-keys@8.72.1':
     resolution: {integrity: sha512-SB8xqipSzZHUePCCLNeYxqnxq83X61/qzNhjQGbTfjxGZIeOEP7tBgWYX05Tcd6CgE02WdTJnh5b8kMZJ/+bnQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@ui-sdk/core@0.1.0-beta.17':
+    resolution: {integrity: sha512-wBWNqT0Qf1sE6fqD1XuBnSGBFcY6+cek1z7rKl/r4j2bsv2or9i7z44PLy0J9hmflm3IJ5MLW0P4ur2H9BCIvg==}
+
+  '@ui-sdk/react@0.1.0-beta.17':
+    resolution: {integrity: sha512-oAJu+/e8woA5gboO28nm3aiO2qZbjccGc8hukCijSz3biX71AYBw8mo14HkMAZUuPlbSnzVAuNYQMaW0z8vsrw==}
+    peerDependencies:
+      '@types/react': '>=19.2.10'
+      '@ui-sdk/core': ^0.1.0-beta.17
+      react: '>=19'
+      react-dom: '>=19'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   '@unrs/resolver-binding-android-arm-eabi@1.13.0':
     resolution: {integrity: sha512-60E5mvmIiW+i1E/HYeSX4iE4A8s9NJSGYPu7UM0DJght1c2tTkWwuyDyAwzsEXhKM/XbbndfnTiXdfrf27d2hw==}
@@ -3628,6 +3648,16 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.72.1
       eslint-visitor-keys: 5.0.1
+
+  '@ui-sdk/core@0.1.0-beta.17': {}
+
+  '@ui-sdk/react@0.1.0-beta.17(@types/react@19.3.0)(@ui-sdk/core@0.1.0-beta.17)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+    dependencies:
+      '@ui-sdk/core': 0.1.0-beta.17
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
+    optionalDependencies:
+      '@types/react': 19.3.0
 
   '@unrs/resolver-binding-android-arm-eabi@1.13.0':
     optional: true

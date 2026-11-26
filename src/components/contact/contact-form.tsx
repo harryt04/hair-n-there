@@ -117,15 +117,16 @@ export function ContactForm({
       id: `${prefix}-${field}`,
       name: field,
       value: values[field],
-      onChange: (
-        e: React.ChangeEvent<
-          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-        >,
-      ) => update(field, e.target.value),
       "aria-invalid": !!errors[field],
       "aria-describedby": errors[field]
         ? `${prefix}-${field}-error`
         : undefined,
+    };
+  }
+  function textProps(field: keyof typeof values) {
+    return {
+      ...props(field),
+      onValueChange: (value: string) => update(field, value),
     };
   }
   function fieldError(field: string) {
@@ -315,7 +316,7 @@ export function ContactForm({
           Preferred date · optional
         </Label>
         <Input
-          {...props("preferredDate")}
+          {...textProps("preferredDate")}
           type="date"
           className="h-12 text-base"
         />
@@ -325,6 +326,7 @@ export function ContactForm({
         <Label htmlFor={`${prefix}-preferredTime`}>Preferred time</Label>
         <select
           {...props("preferredTime")}
+          onChange={(event) => update("preferredTime", event.target.value)}
           className="h-12 w-full rounded-lg border border-input bg-card px-3 text-base"
         >
           <option value="flexible">Flexible</option>
@@ -341,7 +343,7 @@ export function ContactForm({
             Time you have in mind · Mountain Time
           </Label>
           <Input
-            {...props("exactTime")}
+            {...textProps("exactTime")}
             type="time"
             required
             className="h-12 text-base"
@@ -514,7 +516,7 @@ export function ContactForm({
                   People wanting haircuts
                 </Label>
                 <Input
-                  {...props("haircutCount")}
+                  {...textProps("haircutCount")}
                   type="number"
                   inputMode="numeric"
                   min={0}
@@ -530,7 +532,7 @@ export function ContactForm({
                   People wanting color
                 </Label>
                 <Input
-                  {...props("colorCount")}
+                  {...textProps("colorCount")}
                   type="number"
                   inputMode="numeric"
                   min={0}
@@ -554,7 +556,8 @@ export function ContactForm({
                   A little more about your plans
                 </Label>
                 <Textarea
-                  {...props("message")}
+                  {...textProps("message")}
+                  data-agent-secret
                   maxLength={1500}
                   rows={3}
                   placeholder="A color idea, styling or extensions, or a neighborhood haircut day…"
@@ -596,7 +599,8 @@ export function ContactForm({
                   {house ? "Visit address" : "City or venue · optional"}
                 </Label>
                 <Input
-                  {...props("address")}
+                  {...textProps("address")}
+                  data-agent-secret
                   onFocus={() => setAddressFocused(true)}
                   onBlur={() => setAddressFocused(false)}
                   autoComplete={house ? "street-address" : "off"}
@@ -634,7 +638,8 @@ export function ContactForm({
               <div className="space-y-2">
                 <Label htmlFor={`${prefix}-name`}>Your name</Label>
                 <Input
-                  {...props("name")}
+                  {...textProps("name")}
+                  data-agent-secret
                   autoComplete="name"
                   required
                   maxLength={100}
@@ -647,7 +652,8 @@ export function ContactForm({
                   Phone · optional if you provide email
                 </Label>
                 <Input
-                  {...props("phone")}
+                  {...textProps("phone")}
+                  data-agent-secret
                   type="tel"
                   autoComplete="tel"
                   required={!values.email.trim()}
@@ -664,7 +670,8 @@ export function ContactForm({
                     : "Email · required if you leave phone blank"}
                 </Label>
                 <Input
-                  {...props("email")}
+                  {...textProps("email")}
+                  data-agent-secret
                   type="email"
                   autoComplete="email"
                   required={!!slot || !values.phone.trim()}
@@ -706,6 +713,7 @@ export function ContactForm({
             <label htmlFor={`${prefix}-website`}>Leave this field empty</label>
             <input
               {...props("website")}
+              onChange={(event) => update("website", event.target.value)}
               autoComplete="off"
               tabIndex={-1}
               maxLength={200}
@@ -728,6 +736,11 @@ export function ContactForm({
             <Button
               type="submit"
               disabled={submitting}
+              data-agent-confirm={
+                step === 2
+                  ? "Send this inquiry and request any selected time"
+                  : undefined
+              }
               className="h-12 flex-1 px-5"
             >
               {submitting ? (

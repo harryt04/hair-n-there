@@ -1,4 +1,6 @@
-import { Button as ButtonPrimitive } from "@base-ui/react/button";
+"use client";
+
+import { Button as ButtonPrimitive } from "@ui-sdk/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 
@@ -43,8 +45,13 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  nativeButton,
   ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+}: React.ComponentProps<typeof ButtonPrimitive> & {
+  nativeButton?: boolean;
+} & VariantProps<typeof buttonVariants>) {
+  // UI SDK infers native link semantics from the rendered element.
+  void nativeButton;
   return (
     <ButtonPrimitive
       data-slot="button"
