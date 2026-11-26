@@ -37,7 +37,7 @@
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^26.6.6",
-    "@types/react": "^19",
+    "@types/react": "^19.3.3",
     "@types/react-dom": "^19",
     "eslint": "^9.39.5",
     "eslint-config-next": "16.4.6",
