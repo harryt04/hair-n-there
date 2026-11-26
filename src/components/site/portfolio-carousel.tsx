@@ -1,11 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  CarouselViewport,
+} from "@/components/ui/carousel";
 import styles from "./instagram-gallery.module.css";
 
-/** Native overflow keeps touch, trackpad, scrollbar and no-JS access intact. */
 export function PortfolioCarousel({
   children,
   count,
@@ -13,64 +19,29 @@ export function PortfolioCarousel({
   children: ReactNode;
   count: number;
 }) {
-  const track = useRef<HTMLDivElement>(null);
-  const [edges, setEdges] = useState({ start: true, end: true });
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    const element = track.current;
-    if (!element) return;
-    const update = () => {
-      setEdges({
-        start: element.scrollLeft <= 1,
-        end:
-          element.scrollLeft + element.clientWidth >= element.scrollWidth - 1,
-      });
-      setReady(true);
-    };
-    update();
-    element.addEventListener("scroll", update, { passive: true });
-    const observer = new ResizeObserver(update);
-    observer.observe(element);
-    return () => {
-      element.removeEventListener("scroll", update);
-      observer.disconnect();
-    };
-  }, [count]);
-  const move = (direction: number) =>
-    track.current?.scrollBy({
-      left: direction * track.current.clientWidth * 0.85,
-      behavior: "auto",
-    });
   return (
-    <div className={styles.carousel} data-ready={ready}>
+    <Carousel aria-label="Instagram posts" slidesPerPage="auto" dragFree>
       <div className={styles.controls}>
         <span id="portfolio-help">
           {count} {count === 1 ? "post" : "posts"} · Swipe or scroll sideways to
           explore
         </span>
-        <Button
-          variant="outline"
+        <CarouselPrevious
           className="size-11 rounded-sm"
           aria-label="Previous Instagram posts"
           aria-controls="instagram-posts"
-          disabled={edges.start}
-          onClick={() => move(-1)}
         >
           <ArrowLeft aria-hidden="true" />
-        </Button>
-        <Button
-          variant="outline"
+        </CarouselPrevious>
+        <CarouselNext
           className="size-11 rounded-sm"
           aria-label="Next Instagram posts"
           aria-controls="instagram-posts"
-          disabled={edges.end}
-          onClick={() => move(1)}
         >
           <ArrowRight aria-hidden="true" />
-        </Button>
+        </CarouselNext>
       </div>
-      <div
-        ref={track}
+      <CarouselViewport
         id="instagram-posts"
         className={styles.track}
         role="region"
@@ -78,8 +49,31 @@ export function PortfolioCarousel({
         aria-describedby="portfolio-help"
         tabIndex={0}
       >
-        {children}
-      </div>
-    </div>
+        <CarouselContent className={styles.content} aria-live="off">
+          {children}
+        </CarouselContent>
+      </CarouselViewport>
+    </Carousel>
+  );
+}
+
+export function PortfolioSlide({ children }: { children: ReactNode }) {
+  return (
+    <CarouselItem
+      className={styles.slide}
+      render={(props) => (
+        // Keep the whole portfolio available in reading order, including off-screen links.
+        <figure
+          {...props}
+          inert={false}
+          role={undefined}
+          aria-hidden={undefined}
+          aria-label={undefined}
+          aria-roledescription={undefined}
+        />
+      )}
+    >
+      {children}
+    </CarouselItem>
   );
 }

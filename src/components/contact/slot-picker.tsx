@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import { Radio, RadioGroup } from "@/components/ui/radio-group";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import {
@@ -159,6 +161,7 @@ function MountedSlotPicker({
     [...selection.services, ...selection.packages].every((item) =>
       Number.isFinite(item.quantity),
     );
+  const calendarPopup = useRef<HTMLDivElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [flex, setFlex] = useState(false);
@@ -299,34 +302,29 @@ function MountedSlotPicker({
         times.current?.scrollIntoView({ block: "start", behavior: "instant" });
     });
   }
+  const openCount = (d: string) =>
+    days.find((day) => day.date === d)?.slots.length ?? 0;
   const calendar = (
     <>
       <Calendar
         mode="single"
-        autoFocus={!phone}
-        month={parse(`${month}-01`)}
-        onMonthChange={(d) => setMonth(key(d).slice(0, 7))}
-        selected={date ? parse(date) : undefined}
-        onSelect={(d) => {
-          if (d) choose(key(d), true);
+        month={month}
+        onMonthChange={setMonth}
+        value={date || null}
+        deselectable
+        onValueChange={(value) => {
+          const chosen = value ?? date;
+          if (typeof chosen === "string" && chosen) choose(chosen, true);
         }}
-        startMonth={info?.enabled ? parse(info.firstDate) : undefined}
-        endMonth={info?.enabled ? parse(info.lastDate) : undefined}
-        disabled={(d) =>
-          !days.some((day) => day.date === key(d) && day.slots.length > 0)
+        min={info?.firstDate}
+        max={info?.lastDate}
+        today={today}
+        unavailable={(d) => !openCount(d)}
+        hasOpenings={(d) => openCount(d) > 0}
+        dayLabel={(d) =>
+          `${parse(d).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}, ${openCount(d) || "no"} times available`
         }
-        modifiers={{
-          open: (d) =>
-            days.some((day) => day.date === key(d) && day.slots.length > 0),
-        }}
-        modifiersClassNames={{
-          open: "after:absolute after:bottom-0.5 after:left-1/2 after:size-1 after:rounded-full after:bg-[#d4af78]",
-        }}
-        labels={{
-          labelDayButton: (d) =>
-            `${d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}, ${days.find((day) => day.date === key(d))?.slots.length || "no"} times available`,
-        }}
-        className="w-full [--cell-size:44px] sm:[--cell-size:40px]"
+        className="w-full"
       />
       <p className="text-xs text-muted-foreground">
         <span className="text-[#d4af78]">●</span> Times open · Faded = full or
@@ -459,6 +457,21 @@ function MountedSlotPicker({
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger render={trigger} />
               <PopoverContent
+                ref={calendarPopup}
+                initialFocus={() => {
+                  const popup = calendarPopup.current;
+                  return (
+                    popup?.querySelector<HTMLElement>(
+                      '[data-hnt-calendar-day][data-selected]:not([aria-disabled="true"])',
+                    ) ??
+                    popup?.querySelector<HTMLElement>(
+                      `[data-hnt-calendar-day^="${month}-"]:not([aria-disabled="true"])`,
+                    ) ??
+                    popup?.querySelector<HTMLElement>(
+                      '[data-hnt-calendar-day][tabindex="0"]',
+                    )
+                  );
+                }}
                 finalFocus={() => triggerRef.current}
                 className="w-[320px] motion-reduce:animate-none"
               >
@@ -491,10 +504,14 @@ function MountedSlotPicker({
         </div>
       ) : (
         <>
-          <div
+          <ToggleGroup
             className="-mx-5 flex snap-x gap-1.5 overflow-x-auto px-5 py-3 sm:mx-0 sm:px-0"
-            role="group"
             aria-label="Days"
+            value={date ? [date] : []}
+            deselectable={false}
+            onValueChange={([day]) => {
+              if (day) choose(day);
+            }}
           >
             {Array.from({ length: 14 }, (_, i) => add(week, i))
               .filter((d) => !info?.enabled || d <= info.lastDate)
@@ -502,14 +519,12 @@ function MountedSlotPicker({
                 const count =
                   days.find((day) => day.date === d)?.slots.length || 0;
                 return (
-                  <button
-                    type="button"
+                  <ToggleGroupItem
                     key={d}
+                    value={d}
                     disabled={!count}
-                    aria-pressed={date === d}
                     aria-label={`${parse(d).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}, ${count ? `${count} times open` : "full, no times available"}`}
-                    onClick={() => choose(d)}
-                    className="grid min-h-[78px] w-[60px] shrink-0 snap-start gap-0.5 rounded-lg border border-border bg-card py-2 text-center disabled:opacity-45 aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+                    className="grid h-auto min-h-[78px] w-[60px] shrink-0 snap-start gap-0.5 rounded-lg border border-border bg-card px-0 py-2 text-center font-normal text-foreground data-disabled:opacity-45 aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
                   >
                     <span className="text-[11px] uppercase">
                       {parse(d).toLocaleDateString("en-US", {
@@ -523,10 +538,10 @@ function MountedSlotPicker({
                     <span className="text-[11px]">
                       {count ? `${count} open` : "Full"}
                     </span>
-                  </button>
+                  </ToggleGroupItem>
                 );
               })}
-          </div>
+          </ToggleGroup>
           <h3
             ref={times}
             tabIndex={-1}
@@ -540,32 +555,13 @@ function MountedSlotPicker({
                 })
               : "Choose a day"}
           </h3>
-          <div
-            role="radiogroup"
+          <RadioGroup
             aria-label="Open times"
-            onKeyDown={(e) => {
-              if (
-                !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(
-                  e.key,
-                )
-              )
-                return;
-              e.preventDefault();
-              const buttons = Array.from(
-                e.currentTarget.querySelectorAll<HTMLButtonElement>(
-                  '[role="radio"]',
-                ),
-              );
-              const i = buttons.indexOf(e.target as HTMLButtonElement);
-              const next =
-                buttons[
-                  (i +
-                    (["ArrowRight", "ArrowDown"].includes(e.key) ? 1 : -1) +
-                    buttons.length) %
-                    buttons.length
-                ];
-              next?.focus();
-              next?.click();
+            className="block"
+            value={slot?.start ?? null}
+            onValueChange={(start) => {
+              const selected = slots.find((s) => s.start === start);
+              if (selected) onSlot(selected, zone);
             }}
           >
             {["Morning", "Afternoon", "Evening"].map((group) => {
@@ -592,35 +588,23 @@ function MountedSlotPicker({
                     )}
                     <div className="mb-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
                       {list.map((s) => (
-                        <button
-                          type="button"
+                        <Radio
                           key={s.start}
-                          role="radio"
-                          aria-checked={slot?.start === s.start}
-                          tabIndex={
-                            slot
-                              ? slot.start === s.start
-                                ? 0
-                                : -1
-                              : slots[0] === s
-                                ? 0
-                                : -1
-                          }
-                          onClick={() => onSlot(s, zone)}
-                          className="min-h-[52px] rounded-lg border border-border px-2 py-2 text-sm aria-checked:border-primary aria-checked:bg-primary aria-checked:text-primary-foreground"
+                          value={s.start}
+                          className="block h-auto min-h-[52px] w-full rounded-lg border border-border bg-transparent px-2 py-2 text-center text-sm text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none aria-checked:border-primary aria-checked:bg-primary aria-checked:text-primary-foreground"
                         >
-                          {slotTime(s.start, zone)}
+                          {slotTime(s.start, zone)}{" "}
                           <small className="block opacity-75">
                             until {slotTime(s.end, zone)}
                           </small>
-                        </button>
+                        </Radio>
                       ))}
                     </div>
                   </div>
                 )
               );
             })}
-          </div>
+          </RadioGroup>
           {!slots.length && (
             <p role="status" className="rounded-lg bg-muted p-5 text-sm">
               {date

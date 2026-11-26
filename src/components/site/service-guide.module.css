@@ -32,6 +32,9 @@
   margin-top: 1rem;
 }
 .goal {
+  display: block;
+  height: auto;
+  white-space: normal;
   padding: clamp(1rem, 3vw, 1.5rem);
   border: 1px solid var(--border);
   border-radius: var(--radius);

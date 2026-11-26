@@ -3,7 +3,8 @@
 import { Children, useId, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Heart, Palette, Scissors, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { serviceGuideGoals, serviceGuidePaths } from "@/data/service-guide";
 import styles from "./service-guide.module.css";
 
@@ -17,20 +18,26 @@ export function ServiceGuideControls({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <div className={styles.goals} role="group" aria-label="Your hair goal">
+      <ToggleGroup
+        className={styles.goals}
+        aria-label="Your hair goal"
+        deselectable={false}
+        value={goalId ? [goalId] : []}
+        onValueChange={([nextGoal]) => {
+          if (nextGoal) {
+            setGoalId(nextGoal);
+            setPathId(null);
+          }
+        }}
+      >
         {serviceGuideGoals.map((item) => {
           const Icon = icons[item.id];
           return (
-            <button
+            <ToggleGroupItem
               key={item.id}
-              type="button"
+              value={item.id}
               className={styles.goal}
-              aria-pressed={goalId === item.id}
               aria-controls={`${prefix}-follow-up`}
-              onClick={() => {
-                setGoalId(item.id);
-                setPathId(null);
-              }}
             >
               <Icon
                 className={styles.icon}
@@ -39,10 +46,10 @@ export function ServiceGuideControls({ children }: { children: ReactNode }) {
               />
               <span className={styles.goalTitle}>{item.title}</span>
               <span className={styles.goalCopy}>{item.description}</span>
-            </button>
+            </ToggleGroupItem>
           );
         })}
-      </div>
+      </ToggleGroup>
       <div id={`${prefix}-follow-up`} aria-live="polite" aria-atomic="false">
         <section
           className={styles.followUp}
@@ -69,29 +76,33 @@ export function ServiceGuideControls({ children }: { children: ReactNode }) {
           ) : goal ? (
             <>
               <h3 className="text-xl">{goal.question}</h3>
-              <div
+              <ToggleGroup
                 className={styles.choices}
-                role="group"
                 aria-label={goal.question}
+                deselectable={false}
+                value={pathId ? [pathId] : []}
+                onValueChange={([nextPath]) => {
+                  if (nextPath) setPathId(nextPath);
+                }}
               >
                 {serviceGuidePaths
                   .filter((path) =>
                     (goal.paths as readonly string[]).includes(path.id),
                   )
                   .map((path) => (
-                    <Button
+                    <ToggleGroupItem
                       key={path.id}
-                      type="button"
-                      variant="outline"
-                      aria-pressed={pathId === path.id}
+                      value={path.id}
                       aria-controls={`${prefix}-${path.id}`}
-                      className={styles.choice}
-                      onClick={() => setPathId(path.id)}
+                      className={buttonVariants({
+                        variant: "outline",
+                        className: styles.choice,
+                      })}
                     >
                       {path.label}
-                    </Button>
+                    </ToggleGroupItem>
                   ))}
-              </div>
+              </ToggleGroup>
             </>
           ) : null}
           {/* All menu panels arrive as server-rendered children, including before JS. */}

@@ -1,5 +1,4 @@
-import { mergeProps } from "@base-ui/react/merge-props";
-import { useRender } from "@base-ui/react/use-render";
+import { renderElement, type PartProps } from "@ui-sdk/react/primitive";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
 
@@ -31,21 +30,26 @@ function Badge({
   variant = "default",
   render,
   ...props
-}: useRender.ComponentProps<"span"> & VariantProps<typeof badgeVariants>) {
-  return useRender({
-    defaultTagName: "span",
-    props: mergeProps<"span">(
-      {
-        className: cn(badgeVariants({ variant }), className),
-      },
-      props,
-    ),
-    render,
-    state: {
-      slot: "badge",
-      variant,
+}: PartProps<
+  "span",
+  { slot: "badge"; variant: VariantProps<typeof badgeVariants>["variant"] }
+> &
+  VariantProps<typeof badgeVariants>) {
+  const state = { slot: "badge", variant } as const;
+  return renderElement(
+    "span",
+    {
+      ...props,
+      "data-slot": state.slot,
+      "data-variant": variant,
+      className: cn(
+        badgeVariants({ variant }),
+        typeof className === "function" ? className(state) : className,
+      ),
     },
-  });
+    render,
+    state,
+  );
 }
 
 export { Badge, badgeVariants };
