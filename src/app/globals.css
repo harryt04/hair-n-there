@@ -1,6 +1,14 @@
+@layer ui-sdk;
 @import "tailwindcss";
+@import "@ui-sdk/core/web.css" layer(components);
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@layer components {
+  a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+}
 @custom-variant dark (&:is(.dark *));
 @theme inline {
   --font-sans: var(--font-dm-sans);
@@ -35,6 +43,12 @@
 }
 :root {
   color-scheme: light;
+  --ui-background: var(--card);
+  --ui-foreground: var(--foreground);
+  --ui-primary: var(--primary);
+  --ui-ring: var(--ring);
+  --ui-input: var(--border);
+  --ui-border: var(--border);
   --site-header-height: 64px;
   --cinema-banner-height: 145px;
   --cinema-compact-height: 40px;

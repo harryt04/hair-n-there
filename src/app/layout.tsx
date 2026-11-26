@@ -1,3 +1,4 @@
+import { AgentBridge } from "@/components/site/agent-bridge";
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Manrope } from "next/font/google";
 import { Providers } from "@/components/site/providers";
@@ -65,6 +66,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen">
         <Providers>
+          <AgentBridge />
           <a
             href="#main-content"
             className="sr-only fixed top-3 left-3 z-100 rounded-lg bg-primary px-4 py-3 text-primary-foreground focus:not-sr-only"
