@@ -59,16 +59,16 @@ Copy the variable names from `.env.example`. In Coolify, set them in the applica
 
 Google booking variables below are **server-only runtime** settings in Coolify, not build-time values. Restart/redeploy after changing them; never prefix them with `NEXT_PUBLIC_`. See [Google Calendar setup](docs/self-scheduling.md) for authorization and verification.
 
-| Variable | Purpose |
-| -------- | ------- |
-| `BOOKING_ENABLED` | Set exactly `true` to enable live tentative holds once credentials/calendar access are configured; unset to turn off. |
-| `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET` | OAuth Desktop app credentials for the authorized calendar owner. |
-| `GOOGLE_CALENDAR_REFRESH_TOKEN` | Secret obtained locally with `pnpm google:auth`, signed in as Elisabeth. |
-| `GOOGLE_CALENDAR_ID` | Production/local hold calendar owned by the authorized account; defaults to `primary` if empty. |
-| `GOOGLE_BUSY_CALENDAR_IDS` | Optional comma-separated additional production/local calendars to check for busy time. |
-| `GOOGLE_PREVIEW_CALENDAR_ID` | Required hold calendar for `VERCEL_ENV=preview`; never falls back to the production calendar. |
-| `GOOGLE_PREVIEW_BUSY_CALENDAR_IDS` | Optional comma-separated additional preview busy calendars; production busy IDs are ignored in preview. |
-| `BOOKING_DEMO` | Local development only: `true` enables synthetic availability and in-memory holds without Google; ignored in production builds. |
+| Variable                                                  | Purpose                                                                                                                         |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `BOOKING_ENABLED`                                         | Set exactly `true` to enable live tentative holds once credentials/calendar access are configured; unset to turn off.           |
+| `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET` | OAuth Desktop app credentials for the authorized calendar owner.                                                                |
+| `GOOGLE_CALENDAR_REFRESH_TOKEN`                           | Secret obtained locally with `pnpm google:auth`, signed in as Elisabeth.                                                        |
+| `GOOGLE_CALENDAR_ID`                                      | Production/local hold calendar owned by the authorized account; defaults to `primary` if empty.                                 |
+| `GOOGLE_BUSY_CALENDAR_IDS`                                | Optional comma-separated additional production/local calendars to check for busy time.                                          |
+| `GOOGLE_PREVIEW_CALENDAR_ID`                              | Required hold calendar for `VERCEL_ENV=preview`; never falls back to the production calendar.                                   |
+| `GOOGLE_PREVIEW_BUSY_CALENDAR_IDS`                        | Optional comma-separated additional preview busy calendars; production busy IDs are ignored in preview.                         |
+| `BOOKING_DEMO`                                            | Local development only: `true` enables synthetic availability and in-memory holds without Google; ignored in production builds. |
 
 The hold calendar is always included in busy checks; at most 10 distinct calendars total are accepted. Preview uses the same OAuth variable names but must receive isolated preview credentials and calendars, with no production secrets. Keep `VERCEL_ENV=preview` at build and runtime as described below. Booking credentials are not needed to build the application.
 

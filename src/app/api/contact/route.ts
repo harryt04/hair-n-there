@@ -191,8 +191,7 @@ async function requestHold(input: ContactInput, sourcePath: SourcePath) {
     if (!(await checkHoldEmailLimit(input.email!)).allowed)
       return bookingFailure("booking_unavailable", HOLD_LIMIT, 429);
 
-    const firstName =
-      personName(input.name).split(" ")[0] || "website request";
+    const firstName = personName(input.name).split(" ")[0] || "website request";
     const serviceNames = new Map(
       services.map((service) => [service.id, service.name]),
     );
@@ -225,7 +224,9 @@ async function requestHold(input: ContactInput, sourcePath: SourcePath) {
       `Name: ${personName(input.name)}`,
       `Email: ${input.email}`,
       ...(input.phone ? [`Phone: ${input.phone}`] : []),
-      ...(input.message ? ["", "Your note was sent to Elisabeth separately."] : []),
+      ...(input.message
+        ? ["", "Your note was sent to Elisabeth separately."]
+        : []),
     ].join("\n");
 
     await placeTentativeHold({
