@@ -5,7 +5,7 @@ import { ArrowUpRight, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InstagramLink } from "@/components/site/instagram-link";
 import { business } from "@/data/business";
-import { PortfolioCarousel } from "./portfolio-carousel";
+import { PortfolioCarousel, PortfolioSlide } from "./portfolio-carousel";
 import { getInstagramFeed } from "@/lib/instagram";
 import styles from "./instagram-gallery.module.css";
 
@@ -94,7 +94,7 @@ async function InstagramPosts() {
       </p>
       <PortfolioCarousel count={feed.posts.length}>
         {feed.posts.map((post, index) => (
-          <figure key={post.id} className={styles.slide}>
+          <PortfolioSlide key={post.id}>
             <InstagramLink
               href={post.url}
               className={styles.photo}
@@ -123,7 +123,7 @@ async function InstagramPosts() {
               <ArrowUpRight aria-hidden="true" />
             </figcaption>
             {post.caption && <p className={styles.caption}>{post.caption}</p>}
-          </figure>
+          </PortfolioSlide>
         ))}
       </PortfolioCarousel>
     </>

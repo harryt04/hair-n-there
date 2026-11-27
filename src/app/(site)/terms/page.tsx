@@ -54,9 +54,9 @@ export default function TermsPage() {
         <p>
           An ordinary inquiry or estimate does not reserve a time. A time
           request creates a tentative hold, not a confirmed booking or price;
-          Elisabeth may confirm, move, or decline it. Service prices,
-          travel charges, location, timing, and any other appointment conditions
-          must be confirmed before you agree to proceed.
+          Elisabeth may confirm, move, or decline it. Service prices, travel
+          charges, location, timing, and any other appointment conditions must
+          be confirmed before you agree to proceed.
         </p>
         <p>
           Where a service or travel fee is marked “to be confirmed,” it is not
@@ -89,8 +89,8 @@ export default function TermsPage() {
           selected services or packages and counts, estimated duration, and
           message are stored in a tentative event on Elisabeth’s Google
           Calendar. Google is a service provider for this scheduling and sends
-          the invitation to you. Receiving or accepting that invitation does
-          not confirm a booking or price.
+          the invitation to you. Receiving or accepting that invitation does not
+          confirm a booking or price.
         </p>
         <p>
           Provide a phone number or email so we can respond. By providing a
@@ -126,9 +126,10 @@ export default function TermsPage() {
           are owned by or licensed to HairnThere. Any third-party images remain
           subject to their respective licenses. Images labeled as style
           inspiration are illustrative and are not presented as Elisabeth’s
-          client portfolio. When connected, the Instagram gallery displays public
-          posts from @hairnthere. Availability depends on Instagram; posts may
-          change or be unavailable, and links open Instagram under its own terms.
+          client portfolio. When connected, the Instagram gallery displays
+          public posts from @hairnthere. Availability depends on Instagram;
+          posts may change or be unavailable, and links open Instagram under its
+          own terms.
         </p>
         <p>
           You may view the website for personal use. Reproducing its original

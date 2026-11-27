@@ -44,15 +44,16 @@
   color: var(--muted-foreground);
 }
 .track {
-  display: flex;
-  gap: 18px;
-  margin-left: 0;
-  padding: 4px 2px 18px;
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-snap-type: x proximity;
   scrollbar-width: auto;
   scrollbar-color: var(--primary) var(--muted);
   overscroll-behavior-x: contain;
+}
+.content {
+  gap: 18px;
+  padding: 4px 2px 18px;
 }
 .track:focus-visible {
   outline: 2px solid var(--primary);
@@ -150,16 +151,6 @@
   }
 }
 
-.slide figure {
-  margin: 0;
-}
-.carousel:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 4px;
-}
-.carousel[data-ready="false"] .controls button {
-  visibility: hidden;
-}
 .empty {
   display: flex;
   flex-direction: column;

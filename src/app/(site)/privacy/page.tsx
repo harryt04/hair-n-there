@@ -48,10 +48,10 @@ export default function PrivacyPage() {
         <p>
           I use your details to respond by your preferred contact method,
           discuss services and a personal quote, check the visit location and
-          availability, and coordinate your visit. When time requests are available,
-          choosing a time creates a tentative hold, not a confirmed booking or
-          price. Elisabeth may confirm, move, or decline it. An ordinary inquiry
-          does not reserve a time.
+          availability, and coordinate your visit. When time requests are
+          available, choosing a time creates a tentative hold, not a confirmed
+          booking or price. Elisabeth may confirm, move, or decline it. An
+          ordinary inquiry does not reserve a time.
         </p>
         <p>
           Our form does not enroll you in a newsletter or authorize unrelated
@@ -96,10 +96,10 @@ export default function PrivacyPage() {
           address, selected services or packages and service counts, estimated
           duration, and message are stored as a tentative event on Elisabeth’s
           Google Calendar. Google acts as a service provider for scheduling and
-          sends a Google Calendar invitation to your email address. As an invited
-          attendee, you can read the event details. Elisabeth uses the event to
-          confirm, move, or decline your request; the invitation does not confirm
-          a booking or price.
+          sends a Google Calendar invitation to your email address. As an
+          invited attendee, you can read the event details. Elisabeth uses the
+          event to confirm, move, or decline your request; the invitation does
+          not confirm a booking or price.
         </p>
         <p>
           The website and contact endpoint run on infrastructure managed through

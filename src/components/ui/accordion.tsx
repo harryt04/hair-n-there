@@ -4,13 +4,45 @@ import * as Primitive from "@ui-sdk/react/accordion";
 import { cn } from "cn";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 
+function navigateHeaders(event: React.KeyboardEvent<HTMLDivElement>) {
+  const { currentTarget, key, target } = event;
+  if (
+    !(target instanceof HTMLElement) ||
+    !target.matches("[data-hnt-accordion-trigger]") ||
+    target.closest("[data-hnt-accordion]") !== currentTarget ||
+    !["ArrowUp", "ArrowDown", "Home", "End"].includes(key)
+  )
+    return;
+
+  const headers = Array.from(
+    currentTarget.querySelectorAll<HTMLElement>("[data-hnt-accordion-trigger]"),
+  ).filter(
+    (header) => header.closest("[data-hnt-accordion]") === currentTarget,
+  );
+  const index = headers.indexOf(target);
+  const next = {
+    Home: 0,
+    End: headers.length - 1,
+    ArrowUp: (index - 1 + headers.length) % headers.length,
+    ArrowDown: (index + 1) % headers.length,
+  }[key];
+  if (next === undefined) return;
+  event.preventDefault();
+  headers[next]?.focus();
+}
+
 function Accordion({
   className,
+  onKeyDown,
   ...props
 }: React.ComponentProps<typeof Primitive.Accordion>) {
   return (
     <Primitive.Accordion
-      data-slot="accordion"
+      data-hnt-accordion=""
+      onKeyDown={(event) => {
+        onKeyDown?.(event);
+        if (!event.defaultPrevented) navigateHeaders(event);
+      }}
       className={cn("flex w-full flex-col", className)}
       {...props}
     />
@@ -40,7 +72,7 @@ function AccordionTrigger({
   return (
     <Primitive.AccordionHeader className="flex">
       <Primitive.AccordionTrigger
-        data-slot="accordion-trigger"
+        data-hnt-accordion-trigger=""
         className={cn(
           "group/accordion-trigger relative flex flex-1 items-start justify-between rounded-lg border border-transparent py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:after:border-ring aria-disabled:pointer-events-none aria-disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-muted-foreground",
           className,

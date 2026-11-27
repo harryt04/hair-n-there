@@ -59,16 +59,16 @@ Copy the variable names from `.env.example`. In Coolify, set them in the applica
 
 Google booking variables below are **server-only runtime** settings in Coolify, not build-time values. Restart/redeploy after changing them; never prefix them with `NEXT_PUBLIC_`. See [Google Calendar setup](docs/self-scheduling.md) for authorization and verification.
 
-| Variable | Purpose |
-| -------- | ------- |
-| `BOOKING_ENABLED` | Set exactly `true` to enable live tentative holds once credentials/calendar access are configured; unset to turn off. |
-| `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET` | OAuth Desktop app credentials for the authorized calendar owner. |
-| `GOOGLE_CALENDAR_REFRESH_TOKEN` | Secret obtained locally with `pnpm google:auth`, signed in as Elisabeth. |
-| `GOOGLE_CALENDAR_ID` | Production/local hold calendar owned by the authorized account; defaults to `primary` if empty. |
-| `GOOGLE_BUSY_CALENDAR_IDS` | Optional comma-separated additional production/local calendars to check for busy time. |
-| `GOOGLE_PREVIEW_CALENDAR_ID` | Required hold calendar for `VERCEL_ENV=preview`; never falls back to the production calendar. |
-| `GOOGLE_PREVIEW_BUSY_CALENDAR_IDS` | Optional comma-separated additional preview busy calendars; production busy IDs are ignored in preview. |
-| `BOOKING_DEMO` | Local development only: `true` enables synthetic availability and in-memory holds without Google; ignored in production builds. |
+| Variable                                                  | Purpose                                                                                                                         |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `BOOKING_ENABLED`                                         | Set exactly `true` to enable live tentative holds once credentials/calendar access are configured; unset to turn off.           |
+| `GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET` | OAuth Desktop app credentials for the authorized calendar owner.                                                                |
+| `GOOGLE_CALENDAR_REFRESH_TOKEN`                           | Secret obtained locally with `pnpm google:auth`, signed in as Elisabeth.                                                        |
+| `GOOGLE_CALENDAR_ID`                                      | Production/local hold calendar owned by the authorized account; defaults to `primary` if empty.                                 |
+| `GOOGLE_BUSY_CALENDAR_IDS`                                | Optional comma-separated additional production/local calendars to check for busy time.                                          |
+| `GOOGLE_PREVIEW_CALENDAR_ID`                              | Required hold calendar for `VERCEL_ENV=preview`; never falls back to the production calendar.                                   |
+| `GOOGLE_PREVIEW_BUSY_CALENDAR_IDS`                        | Optional comma-separated additional preview busy calendars; production busy IDs are ignored in preview.                         |
+| `BOOKING_DEMO`                                            | Local development only: `true` enables synthetic availability and in-memory holds without Google; ignored in production builds. |
 
 The hold calendar is always included in busy checks; at most 10 distinct calendars total are accepted. Preview uses the same OAuth variable names but must receive isolated preview credentials and calendars, with no production secrets. Keep `VERCEL_ENV=preview` at build and runtime as described below. Booking credentials are not needed to build the application.
 
@@ -150,7 +150,7 @@ Temporary inspiration images: [portrait source](https://images.unsplash.com/phot
 
 - `src/app/`: homepage, services, contact, policies, metadata, API routes, and the retired planner redirect.
 - `src/components/scenic/`: mountain artwork and scroll-driven wagon.
-- `src/components/ui/`: generated shadcn components using Base UI.
+- `src/components/ui/`: shadcn-style components built on UI SDK (`@ui-sdk/react` and `@ui-sdk/core`, exact-pinned at 0.1.0-beta.17). See the UI SDK section of `AGENTS.md`.
 - `src/data/`: service menu, packages, business details, and availability.
 - `src/lib/`: quote rules, input validation, notification delivery, and request limiting.
 - `public/brand/`: original illustration copy, wordmark exports, app icons, and social card.
@@ -232,8 +232,15 @@ Run `pnpm test:cinema` to verify winter-first visits, refresh variation, the
 24-hour inactivity boundary and renewal, multiple tabs, restored pages, invalid
 or blocked storage, and subscription cleanup. These use Node’s built-in test
 runner with simulated browser storage and time against the actual cinema store;
-they do not exercise browser rendering or animation. No CI or branch protection
-is configured; commits still go directly to main.
+they do not exercise browser rendering or animation.
+
+### Agent policy checks
+
+Run `pnpm test:agent-policy` to verify the allow list for the in-page agent
+bridge (`src/lib/agent-policy.ts`): unknown controls and actions are refused,
+anything marked `data-agent-confirm` waits for a person, and the final inquiry
+submission is never pressable. `pnpm test` runs both suites with Node’s
+built-in test runner. No CI or branch protection is configured.
 
 ## License
 

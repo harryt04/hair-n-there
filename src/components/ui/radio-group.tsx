@@ -43,4 +43,4 @@ function RadioGroupItem({
   );
 }
 
-export { RadioGroup, RadioGroupItem };
+export { RadioPrimitive as Radio, RadioGroup, RadioGroupItem };
